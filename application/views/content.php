@@ -36,7 +36,7 @@
                              $nip = $this->session->userdata('nip');
                              $jnskel = $this->mpegawai->getjnskel($nip);
                              if ($jnskel == 'LAKI-LAKI') {
-                             	$warna = 'btn-info btn-lg';
+                             	$warna = 'btn-primary btn-lg';
 			     } else if ($jnskel == 'PEREMPUAN') {
                         	$warna = 'btn-warning btn-lg';
 			     }
@@ -69,12 +69,13 @@
 	            		//	echo "<h5>Anda terlihat <b>".$sebutan."</b> hari ini. Semoga hari-hari anda penuh berkah dan menyenangkan bersama kami.</h5>";
 				?>
 			        
-				<h2>::: SILKa Online :::</h2>
-				<h5>Sistem Informasi dan Layanan Kepegawaian Online</h5><h4>BKPPD Kabupaten Balangan</h4>
+				<h2>::: SILKa :::</h2>
+				<h5>Sistem Informasi dan Layanan Kepegawaian</h5><h4>BKPSDM Kabupaten Balangan</h4>
 			</div>
 		</center>
 	</div>
 </div>
+
 <!-- Modal -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
