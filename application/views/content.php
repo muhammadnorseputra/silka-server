@@ -589,7 +589,7 @@
 //        $("#myModal").modal('show');
 //    });
 //</script>
-
+//
 <script>
 
 //function openSurvey() {
@@ -627,8 +627,7 @@
 //		var nip = $("[name='nip_survey']").val();
 //		$.post('<?= base_url("home/cekSurvey") ?>', {
 //			nipuser: nip
-//		}, function (result) {
-//			
+//		}, function (result) {			
 //			if (result.length == 0) {
 //				$("#myModal").modal('show');
 //			} else if (result.length > 0) {
@@ -639,8 +638,7 @@
 
 //	$("#formSurvey").on('submit', function (e) {
 //		e.preventDefault();
-//		var form = $(this);
-		
+//		var form = $(this);		
 //		//cek validasi
 //		if(form[0].mySurvey1.value == '') {
 //			swal('error!', 'Harap isi semua survey', 'warning'); //pesan validasi kosong 	
@@ -668,6 +666,7 @@
 //	})
 //});
 </script>
+
 <!--
 <div class="row">
 	<div class="col-md-8  col-md-offset-2" style="margin-top:5%;" align="center">
