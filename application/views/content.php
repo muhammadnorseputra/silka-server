@@ -584,11 +584,11 @@
 
 </style>
 
-//<script>
+<script>
 //	$(document).ready(function() {
 //        $("#myModal").modal('show');
 //    });
-//</script>
+</script>
 
 <script>
 
@@ -640,7 +640,6 @@
 //	$("#formSurvey").on('submit', function (e) {
 //		e.preventDefault();
 //		var form = $(this);		
-//		cek validasi
 //		if(form[0].mySurvey1.value == '') {
 //			swal('error!', 'Harap isi semua survey', 'warning'); //pesan validasi kosong 	
 //		} else {
