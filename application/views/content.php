@@ -591,7 +591,7 @@
 //</script>
 
 <script>
-	
+
 //function openSurvey() {
 //	$("#ModalSurvey #wel").slideUp();
 //	$(".tab-content").fadeIn();
@@ -634,14 +634,13 @@
 //			} else if (result.length > 0) {
 //				$("#myModal").modal('hide');
 //			}
-//
 //		}, 'json');
 //	}
 
 //	$("#formSurvey").on('submit', function (e) {
 //		e.preventDefault();
 //		var form = $(this);
-//		
+		
 //		//cek validasi
 //		if(form[0].mySurvey1.value == '') {
 //			swal('error!', 'Harap isi semua survey', 'warning'); //pesan validasi kosong 	
