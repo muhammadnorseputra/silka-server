@@ -109,6 +109,8 @@
     <div class="container-fluid" id="content-data">
     <?php $this->load->view($content); ?>        
     </div>        
-    <?php //$this->load->view('footer'); ?>    
+    <?php 
+	//$this->load->view('footer');
+    ?>    
   </body>
 </html>

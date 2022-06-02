@@ -36,7 +36,7 @@
                              $nip = $this->session->userdata('nip');
                              $jnskel = $this->mpegawai->getjnskel($nip);
                              if ($jnskel == 'LAKI-LAKI') {
-                             	$warna = 'btn-primary btn-lg';
+                             	$warna = 'btn-info btn-lg';
 			     } else if ($jnskel == 'PEREMPUAN') {
                         	$warna = 'btn-warning btn-lg';
 			     }
@@ -637,7 +637,7 @@
 //
 //		}, 'json');
 //	}
-//
+
 //	$("#formSurvey").on('submit', function (e) {
 //		e.preventDefault();
 //		var form = $(this);
