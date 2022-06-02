@@ -589,13 +589,14 @@
 //        $("#myModal").modal('show');
 //    });
 //</script>
-//
+
 <script>
 
 //function openSurvey() {
 //	$("#ModalSurvey #wel").slideUp();
 //	$(".tab-content").fadeIn();
 //}
+
 //function closeSurvey() {
 //	$("#myModal").modal('hide');
 //}
@@ -639,7 +640,7 @@
 //	$("#formSurvey").on('submit', function (e) {
 //		e.preventDefault();
 //		var form = $(this);		
-//		//cek validasi
+//		cek validasi
 //		if(form[0].mySurvey1.value == '') {
 //			swal('error!', 'Harap isi semua survey', 'warning'); //pesan validasi kosong 	
 //		} else {
