@@ -308,27 +308,31 @@ class Cuti extends CI_Controller {
         $photo = "../photo/nophoto.jpg";
       }
 
+      echo "<center><img src='$photo' width='60' height='80' alt='$nip.jpg' class='img-thumbnail'><br />$nama";
+ 	
+	/*
       if ($pernahusul) {
         // echo "<center><b><span style='color: #FF0000'>ASN pernah diusulkan pada pengantar<br />Nomor : ".$this->mcuti->getnopengantarbynip($nip,date('Y'))."<br />Tanggal : ".tgl_indo($this->mcuti->gettglpengantarbynip($nip,date('Y')))."</span></b></center>";
-    	   echo "<center><img src='$photo' width='120' height='160' alt='$nip.jpg' class='img-thumbnail'><br />$nama";      
+    	   echo "<center><img src='$photo' width='60' height='80' alt='$nip.jpg' class='img-thumbnail'><br />$nama";      
     	   echo "<center><b><span style='color: #FF0000'>Usul CUTI TAHUNAN Tahun ".$thnusul." sedang diproses</span></b></center>";
         // cek apakah data riwayat SKP ada	
       } else if (($skpada == 0) AND ($tmtcpns != $tahun)) {
-          echo "<center><img src='$photo' width='120' height='160' alt='$nip.jpg' class='img-thumbnail'><br />$nama";
+          echo "<center><img src='$photo' width='60' height='80' alt='$nip.jpg' class='img-thumbnail'><br />$nama";
           echo "<center><b><span style='color: #FF0000'>Data SKP Tahun ".$tahun." tidak ditemukan dalam riwayat SKP</span></b></center>";
         // cek jika file SKP tidak ada
       } else if ((!file_exists('./fileskp/'.$nmfile.'.pdf')) AND (!file_exists('./fileskp/'.$nmfile.'.PDF')) AND ($tmtcpns != $tahun)) {
-          echo "<center><img src='$photo' width='120' height='160' alt='$nip.jpg' class='img-thumbnail'><br />$nama";
+          echo "<center><img src='$photo' width='60' height='80' alt='$nip.jpg' class='img-thumbnail'><br />$nama";
           echo "<center><b><span style='color: #FF0000'>File Berkas SKP Tahun ".$tahun." belum diupload</span></b></center>";
       } else {
-          echo "<center><img src='$photo' width='120' height='160' alt='$nip.jpg' class='img-thumbnail'><br />$nama";
+          echo "<center><img src='$photo' width='60' height='80' alt='$nip.jpg' class='img-thumbnail'><br />$nama";
           echo "<input type='hidden' name='nipsimpan' size='20' value='$nip' />";
           echo "<br />      
               <button type='submit' class='btn btn-success btn-sm'>
               <span class='glyphicon glyphicon-floppy-disk' aria-hidden='true'></span>&nbspSimpan
               </button>
               </center>";        
-      }           
+      } 
+	*/
     } else {
         echo "<center><b><span style='color: #FF0000'>ASN tidak ditemukan,<br/>atau berada diluar kewenangan anda.</span></b></center>";
     }    
@@ -348,18 +352,80 @@ class Cuti extends CI_Controller {
 
   // untuk ajax tambahan keterangan sesuai jenis cuti dgn metode post  
   function showketcuti() {
-    $idjc = $this->input->post('idjnscuti');    // kalau menggunakan metode post untuk ajax
+    $idjc = $this->input->get('idjnscuti');
+    $thnusul = $this->input->get('thn');
+    $nip = $this->input->get('nip');
+    $kel = $this->input->get('kel');
     $jnscuti = $this->mcuti->getnamajeniscuti($idjc);
-    if ($jnscuti == 'CUTI TAHUNAN') {
+
+    if ($nip == "" OR $thnusul == "" OR $jnscuti == "") {
+      echo "<div align='center'><span class='text-warning'><b>Lengkapi data NIP, Tahun Cuti, dan Jenis Cuti</b></span></div>";	
+    } else if ($jnscuti == 'CUTI TAHUNAN') {
+      $sp = $this->mpegawai->getstatpeg($nip);
+      if ($sp == "PNS") {
       echo "<input type='hidden' name='hari_tunda' size='10' maxlength='2' value='0' />";
       //echo "+ cuti tunda : <input type='text' name='hari_tunda' size='10' maxlength='2' value='0' onkeyup='validAngka(this)' /> hari";
+      
+      // cek apakah nip berada pada unit kerja sesuai hak user, dgn metode getnama_session
+      $nama = $this->mpegawai->getnama_session($nip);
+      // cek apakah NIP pernah diusulkan tahun ini date('Y')
+      $pernahusul = $this->mcuti->cektelahusul($nip, $thnusul, $kel);
+      $tahun = $thnusul-1;
+      $skpada = $this->mpegawai->cekskpthn($nip, $tahun);
+      $nmfile = $nip."-".$tahun;
+      $tmtcpns = $this->mpegawai->gettmtcpns($nip);
+    
+      if ($pernahusul) {
+        echo "<div align='center'><b><span style='color: #FF0000'>Usul CUTI TAHUNAN Tahun ".$thnusul." sedang diproses</span></b></center>";
+      } else if (($skpada == 0) AND ($tmtcpns != $tahun)) {
+          echo "<br/><b><span style='color: #FF0000'>DATA SKP TAHUN ".$tahun."<br/>TIDAK DITEMUKAN DALAM RIWAYAT SKP</span></b></center>";
+      } else if ((!file_exists('./fileskp/'.$nmfile.'.pdf')) AND (!file_exists('./fileskp/'.$nmfile.'.PDF')) AND ($tmtcpns != $tahun)) {
+          echo "<br/><b><span style='color: #FF0000'>FILE BERKAS SKP TAHUN ".$tahun."<br/>BELUM DIUPLOAD</span></b></center>";
+      } else {
+          echo "<input type='hidden' name='nipsimpan' size='20' value='$nip' />";
+          echo "<br /><div align='center'>
+              <button type='submit' class='btn btn-success btn-sm'>
+              <span class='glyphicon glyphicon-floppy-disk' aria-hidden='true'></span>&nbspSimpan Usul
+              </button></div>";
+      }
+      } else if ($sp == "CPNS"){
+	echo "<br/><div align='center'><span class='text-danger'><b>STATUS MASIH CPNS</b></span></div>";
+      }
     } else if ($jnscuti == 'CUTI SAKIT') {
-      echo "Keterangan sakit : <input type='text' name='ketjnscuti' size='50' maxlength='' value='' required />";
+      echo "<br/><div align='center'>Keterangan sakit : <input type='text' name='ketjnscuti' size='50' maxlength='' value='' required />";
+      echo "<input type='hidden' name='nipsimpan' size='20' value='$nip' />";
+      echo "<br /><br/>
+	    <button type='submit' class='btn btn-success btn-sm'>
+            <span class='glyphicon glyphicon-floppy-disk' aria-hidden='true'></span>&nbspSimpan Usul
+            </button></div>";
     } else if ($jnscuti == 'CUTI BERSALIN') {
-      echo "Untuk persalinan yang ke : <input type='text' name='ketjnscuti' size='10' maxlength='2' onkeyup='validAngka(this)' required />";  
+      echo "<br/><div align='center'>Untuk persalinan yang ke : <input type='text' name='ketjnscuti' size='10' maxlength='2' onkeyup='validAngka(this)' required />";  
+      echo "<input type='hidden' name='nipsimpan' size='20' value='$nip' />";
+      echo "<br /><br />
+            <button type='submit' class='btn btn-success btn-sm'>
+            <span class='glyphicon glyphicon-floppy-disk' aria-hidden='true'></span>&nbspSimpan Usul
+            </button></div>";
     } else if ($jnscuti == 'CUTI BESAR') {
-      echo "Telah bekerja secara terus menerus selama : <input type='text' name='ketjnscuti' size='5' maxlength='' required /> tahun";  
-    }    
+      $mkcpnsthn = getmkcpns($nip, "TAHUN");
+      $mkcpnsbln = getmkcpns($nip, "BULAN");
+      //echo $mkcpnsthn," ",$mkcpnsbln;
+      if ($mkcpnsthn >= '5') {
+      	echo "<br/><div align='center'>Telah bekerja secara terus menerus selama : 
+	      <input type='text' name='ketjnscuti' size='5' maxlength='' value='$mkcpnsthn' required disabled /> tahun";  
+      	echo "<input type='hidden' name='nipsimpan' size='20' value='$nip' />";
+      	echo "<br /><br />
+            <button type='submit' class='btn btn-success btn-sm'>
+            <span class='glyphicon glyphicon-floppy-disk' aria-hidden='true'></span>&nbspSimpan Usul
+            </button></div>";
+      } else {
+	echo "<br/><div align='center'><span class='text-danger'><b>MASA KERJA KURANG DARI 5 TAHUN</b></span></div>";
+      }
+    } else {
+      echo "<br /><div align='center'>
+            <button type='submit' class='btn btn-success btn-sm'>
+            <span class='glyphicon glyphicon-floppy-disk' aria-hidden='true'></span>&nbspSimpan Usul
+            </button></div>";
+    }   
   }
 
   public function cetakusul()  

@@ -61,20 +61,6 @@
     a.value = a.value.substring(0,a.value.length-1000);
     }
   }
-  
-  function showKetCuti(idjnscuti) {
-  $.ajax({
-    type: "POST",
-    url: "<?php echo site_url('cuti/showketcuti'); ?>",
-    data: "idjnscuti="+idjnscuti,
-    success: function(data) {
-      $("#KetCuti").html(data);
-    },
-    error:function (XMLHttpRequest) {
-      alert(XMLHttpRequest.responseText);
-    }
-    })
-  };
 
   function GetXmlHttpObject()
   {
@@ -89,6 +75,54 @@
       return new ActiveXObject("Microsoft.XMLHTTP");
       }
     return null;
+  }
+
+  /*
+  function showKetCuti(idjnscuti) {
+  $.ajax({
+    type: "POST",
+    url: "<?php echo site_url('cuti/showketcuti'); ?>",
+    data: "idjnscuti="+idjnscuti,
+    success: function(data) {
+      $("#KetCuti").html(data);
+    },
+    error:function (XMLHttpRequest) {
+      alert(XMLHttpRequest.responseText);
+    }
+    })
+  };
+  */
+
+  function showKetCuti(str1, str2, str3, str4)
+  {
+    //document.getElementById("nama").innerHTML= "NAMA";
+    //window.location="getdatacuti?cmd=nama&nip=198104072009041002"
+    xmlhttp=GetXmlHttpObject();
+    if (xmlhttp==null)
+    {
+      alert ("Browser does not support HTTP Request");
+      return;
+    }
+
+    var url="showketcuti";
+    url=url+"?idjnscuti="+str1;
+    url=url+"&thn="+str2;
+    url=url+"&nip="+str3;
+    url=url+"&kel="+str4;
+    url=url+"&sid="+Math.random();
+    xmlhttp.onreadystatechange=stateChangedKetCuti;
+    xmlhttp.open("GET",url,true);
+    xmlhttp.send(null);
+  }
+
+  function stateChangedKetCuti(){
+    if (xmlhttp.readyState==4)
+    {
+      document.getElementById("KetCuti").innerHTML=xmlhttp.responseText;
+    }if (xmlhttp.readyState==1 || xmlhttp.readyState=="loading") {
+      document.getElementById("KetCuti").innerHTML=
+      "<center><br/><img src=<?php echo '../assets/loading5.gif'; ?> /><br/>Silahkan tunggu</center><br/>";
+    }
   }
 
   function showNama(str1, str2, str3)
@@ -147,36 +181,50 @@
         <div class='panel-heading' align='left'><span class="glyphicon glyphicon-file" aria-hidden="true"></span>
         <b>TAMBAH USUL CUTI</b>
         </div>
-
-        <table class="table">
+	
+        <table class="table table-condensed">
           <tr>
-            <td align='center'>              
-             
+	
+            <td align='center'>                           
               <table class="table table-condensed">
                 <tr>
                   <td align='right' width='110'>No. Pengantar :</td>
                   <td width='300'><input type="text" name="nopengantar" value="<?php echo $nopengantar; ?>" disabled/></td>
                   <td align='right' width='110'>Tgl. Pengantar :</td>
-                  <td><input type="text" name="tglpengantar" class="tanggal" value="<?php echo tgl_indo($tglpengantar); ?>" disabled /></td>
-                  <td rowspan='6'><div id='nama'></div></td>
+                  <td width='200'><input type="text" name="tglpengantar" class="tanggal" value="<?php echo tgl_indo($tglpengantar); ?>" disabled /></td>
+                  <td rowspan='1' align='center'>
+		  </td>
                 </tr>
 		<tr>
-                  <td align='right'>Tahun Cuti :</td>
-                  <td>
-                    <input type="text" name="tahun" size='8' maxlength='4' onkeyup="validAngka(this)" value="<?php echo date('Y'); ?>" onChange="showNama(this.value, formtambahusulcuti.nip.value, 'CUTI LAINNYA')" required/>
+                  <td align='right' class='warning'>Tahun Cuti :</td>
+                  <td class='warning'>
+                    <input type="text" name="tahun" id="tahun" size='8' maxlength='4' onkeyup="validAngka(this)" value="<?php echo date('Y'); ?>" 
+		    onChange="showKetCuti(formtambahusulcuti.id_jnscuti.value, this.value, formtambahusulcuti.nip.value, 'CUTI LAINNYA')" required />
                   </td>
-                  <td align='left' colspan='2'></td>
+		  <td rowspan='3' colspan='2' class='warning' align='center'>
+			<span class='text-primary'>Silahkan entri data Tahun Cuti, NIP dan Jenis Cuti</span>
+			<div id='nama'></div>
+		  </td>
+                  <td width='280' rowspan='3' colspan='2' class='warning' align='center'>
+			<span class='text-primary'>Saat ini, HANYA CUTI TAHUNAN mewajibkan DATA SKP TAHUNAN</span>
+			<div id='KetCuti'></div>
+		  </td>
                 </tr>
                 <tr>
-                  <td align='right'>NIP :</td>
-                  <!-- NIP ini hanay untuk pencarian, NIP yang disimpan ke database pada pada Controller cuti.php getdatacuti(), dengan metode ajax -->
-                  <td><input type="text" name="nip" id="nip" size='25' maxlength='18' onkeyup="validAngka(this)" onChange="showNama(formtambahusulcuti.tahun.value, this.value, 'CUTI LAINNYA')" value='' required /></td>                  
-                  <td align='left' colspan='2' rowspan='2'><div id='KetCuti'></div></td>
-                </tr>                
+                  <td align='right' class='warning'>NIP :</td>
+                  <!-- NIP ini hanya untuk pencarian, NIP yang disimpan ke database pada Controller cuti.php getdatacuti(), dengan metode ajax -->
+		  <td class='warning'>
+			<input type="text" name="nip" id="nip" size='25' maxlength='18' onkeyup="validAngka(this)"
+			onChange="showNama(formtambahusulcuti.tahun.value, this.value, 'CUTI LAINNYA')" 
+			value='' required />
+		  </td>
+		</tr>                
                 <tr>
-                  <td align='right'>Jenis Cuti :</td>
-                  <td>
-                    <select name="id_jnscuti" id="id_jnscuti" onChange="showKetCuti(this.value)" required />
+                  <td align='right' class='warning'>Jenis Cuti :</td>
+                  <td class='warning'>
+                    <select name="id_jnscuti" id="id_jnscuti" 
+		    onChange="showKetCuti(this.value, formtambahusulcuti.tahun.value, formtambahusulcuti.nip.value, 'CUTI LAINNYA')" 
+		    required>			
                       <?php
                       echo "<option value=''>- Pilih Jenis Cuti -</option>";
                       foreach($jnscuti as $jc)
@@ -197,13 +245,14 @@
                   </select>                      
                   </td>
                   <td align='right'>Tanggal Cuti :</td>
-                  <td colspan='1'>
-                    <input type="text" name="tglmulai" size='12' class="tanggal" required /> s/d <input type="text" name="tglselesai" size='12' class="tanggal" required />
+                  <td colspan='3'>
+                    <input type="text" name="tglmulai" size='12' class="tanggal" required /> s/d 
+		    <input type="text" name="tglselesai" size='12' class="tanggal" required />
                   </td>
                 </tr>
                 <tr>
                   <td align='right'>Alamat :</td>
-                  <td colspan='3'>
+                  <td colspan='6'>
                     <input type="text" name="alamat" size='90' maxlength='200' required/>
                   </td>                  
                 </tr>
@@ -219,7 +268,7 @@
                   <td colspan='2' align='center'>
                     <textarea id="catatan_atasan" name="catatan_atasan" rows="7" cols="35"></textarea>
                   </td>
-                  <td colspan='2' align='left'>
+                  <td colspan='3' align='left'>
                     <textarea id="keputusan_pej" name="keputusan_pej" rows="7" cols="35"></textarea>
                   </td>
                 </tr>
@@ -227,6 +276,7 @@
             </td>
           </tr>
         </table>
+	
       </div>
        <!-- Tombol submit ada pada file cuti.php function getdatacuti() dengan metode ajax -->
        <!-- 

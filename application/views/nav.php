@@ -358,6 +358,8 @@ if ($this->session->userdata('level') == "PNS") {
                 echo "<li><a href='".base_url('kinerja/statistika2020')."'>Statistik PNS 2020</a></li>"; 
 		echo "<li><a href='".base_url('kinerja/statistika2021')."'>Statistik PNS 2021</a></li>";
 		echo "<li><a href='".base_url('kinerja_pppk/statistika2021')."'>Statistik PPPK 2021</a></li>";
+		echo "<li><a href='".base_url('kinerja/statistika2022')."'>Statistik PNS 2022</a></li>";
+                echo "<li><a href='".base_url('kinerja_pppk/statistika2022')."'>Statistik PPPK 2022</a></li>";
             }
 
             ?>

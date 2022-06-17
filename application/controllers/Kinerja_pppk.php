@@ -1109,6 +1109,15 @@ class Kinerja_pppk extends CI_Controller {
       }
     }
 
+    function statistika2022()
+    {
+      if ($this->session->userdata('level') == "ADMIN") {
+        $data['rwyperbulan'] = $this->mkinerja_pppk->getjmlrwyperbulan('2022');
+        $data['content'] = 'kinerja/statistika2022_pppk';
+        $this->load->view('template',$data);
+      }
+    }
+
   // HITUNG TPP MANUAL
   private $filename = "import_hitungtpp";
   public function import_hitungmanual(){

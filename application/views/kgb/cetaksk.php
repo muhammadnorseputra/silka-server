@@ -363,7 +363,7 @@ class PDF extends FPDF
                 $this->setFont('Arial','U',11);
                 $this->setXY(110,$y+235); $this->cell(70,5,'H. SUTIKNO, M.AP',0,1,'C',1); 
                 $this->setFont('Arial','',11);
-                $this->setXY(110,$y+240); $this->cell(70,5,'Pembina Utama Muda',0,1,'C',1); 
+                $this->setXY(110,$y+240); $this->cell(70,5,'Pembina Utama Madya',0,1,'C',1); 
                 $this->setXY(110,$y+245); $this->cell(70,5,'NIP. 197604171994121001',0,1,'C',1);                 
             } else {
                 $this->setXY(100,$y+205);

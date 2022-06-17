@@ -1607,12 +1607,12 @@ class Pegawai extends CI_Controller {
 	        
 	        <tr>
           		<td align='right'>TMT Jabatan :</td>
-          		<td><input type="date" class="tanggal" name="tmt_jabatan" size='15' maxlength='10' value='2022-04-20' required /></td>
+          		<td><input type="date" class="tanggal" name="tmt_jabatan" size='15' maxlength='10' value='2022-06-02' required /></td>
         	  </tr>
         	  <tr>
           		<td align='right'>Tanggal Pelantikan :</td>
           		<td>
-          			<input type="date" class="tanggal" name="tgl_pelantikan" size='15' value='2022-04-20' maxlength='10'/>
+          			<input type="date" class="tanggal" name="tgl_pelantikan" size='15' value='2022-06-02' maxlength='10'/>
           			<p class="help-block text-danger">*(Boleh dikosongi bila kadida.) <br></p>
           		</td>
         	  </tr>
@@ -1629,7 +1629,7 @@ class Pegawai extends CI_Controller {
         	</tr>
         	<tr class='warning'>
 	          <td align='right'>Nomor SK :</td>
-	          <td><input type="text" name="nosk" size='50' maxlength='200' value='821/084/BKPSDM-BLG/2022' required /></td>
+	          <td><input type="text" name="nosk" size='50' maxlength='200' value='821/114/BKPSDM-BLG/2022' required /></td>
 	        </tr>
 	        
 	        <tr class='warning'>
@@ -1639,7 +1639,7 @@ class Pegawai extends CI_Controller {
 	        
 	        <tr class='warning'>
           		<td align='right'>Tgl. SK :</td>
-          		<td><input type="date" name="tglsk" class="tanggal" size='15' maxlength='10'  value='2022-04-19' required /></td>
+          		<td><input type="date" name="tglsk" class="tanggal" size='15' maxlength='10'  value='2022-06-02' required /></td>
         	</tr>
                 <tr class='danger'>
                   <td align='right'>Jenis Prosedur</td>
@@ -1786,7 +1786,7 @@ class Pegawai extends CI_Controller {
   				'fid_unit_kerja' => $unitkerja_id,
   				'fid_jabft' => $jabatan_id,
 				'fid_jabatan' => null,
-                                'fid_jabfu' => null,
+            'fid_jabfu' => null,
   				'fid_eselon' => $eselon_id,
   				'tmt_jabatan' => $p['tmt_jabatan'],
   				'fid_jnsjab' => '3'
@@ -1811,6 +1811,7 @@ class Pegawai extends CI_Controller {
 		];
 		
 		$nama = $this->mpegawai->getnama($nip);
+		//var_dump($data_pegawai);die();
 		
 		$db_riwayat = $this->mpegawai->insert_rwyjab('riwayat_jabatan', $data_riwayat);
 		if($db_riwayat) {
@@ -1887,7 +1888,7 @@ class Pegawai extends CI_Controller {
 
 		   } // END jika Integrasi SAPK
 		   else {
-  		   	$data['pesan'] = '<b>Sukses</b>, Riwayat Jabatan PNS A.n. <u>'.$nama.'</u> berhasil ditambah, SAPK BKN TIDAK DIUPDATE.';
+  		   $data['pesan'] = '<b>Sukses</b>, Riwayat Jabatan PNS A.n. <u>'.$nama.'</u> berhasil ditambah, SAPK BKN TIDAK DIUPDATE.';
       		   	$data['jnspesan'] = 'alert alert-info';
 		   }
 		} else {

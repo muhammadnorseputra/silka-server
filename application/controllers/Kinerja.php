@@ -2390,6 +2390,15 @@ class Kinerja extends CI_Controller {
     }
   }
 
+  function statistika2022() {
+    if (($this->session->userdata('level') == "ADMIN") OR ($this->session->userdata('nip') == "198309042007011001")) {
+      $data['rwyperbulan'] = $this->mkinerja->getjmlrwyperbulan('2022');
+      $data['content'] = 'kinerja/statistika2022';
+      $this->load->view('template',$data);
+    }
+  }
+
+
   // End Statistika
 
   function tambahusulsekolah() { 
