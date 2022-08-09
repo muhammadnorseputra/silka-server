@@ -3,8 +3,11 @@
 		<meta charset="utf-8">
 
 		<title><?php echo $title ?></title>
- 		<link rel="stylesheet" href="<?php echo base_url('assets/css/bootstrap.min.css'); ?>" />		
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet"> 
 
+ 		<link rel="stylesheet" href="<?php echo base_url('assets/css/bootstrap.min.css'); ?>" />		
 		<link rel="stylesheet" href="<?php echo base_url('assets/css/font-awesome.css'); ?>" />
 
 		<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
@@ -20,7 +23,7 @@
 	        background-repeat: repeat;
 	        */
 
-	        font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+	        font-family: "Poppins", -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
 		    font-size: 16px;
 		    font-weight: 400;
 		    line-height: 1.5;
@@ -165,15 +168,13 @@
 			      <div class="form-label-group">
 			      <input type="password" id="password" name="password" class="form-control-custom" placeholder="Password" autocomplete="off" required="" >
 			      <label for="password">Password</label>
-			      <button type="button" id="showps" style="position: absolute; top:13; right: 15px;" tabindex="-1">show</button>
+			      <button type="button" id="showps" style="position: absolute; top:15; right: 15px;" tabindex="-1" title="Klik show untuk menampilkan password dan hide untuk enkripsi password">show</button>
 			      </div>
 			      
 			      <div>
 						 <label for="intbknya" style="text-align:left;selection:none; cursor: pointer;display:flex; align-content:center; align-items:start; justify-content:start;user-select: none;-webkit-user-select:none; -moz-user-select: none; -ms-user-select: none">
    					 <input type="checkbox" id="intbknya" name="intbkn" value="YA" style="margin-right:15px;margin-left:4px; transform: scale(1.4)"/>
-						 	Centang untuk aktifkan Fitur Integrasi BKN
-							<!--<span class="fa fa-hand-o-right fa-2x" aria-hidden="true"></span>-->
-							
+						 	Centang untuk aktifkan Fitur Integrasi BKN <i class="fa fa-info-circle" style="margin-left:5px; margin-top:3px;color:#999" title="Fitur ini akan sedikit mempengaruhi kecepatan load halaman yang terkait."></i>
 						 </label>
     			   </div>
     			   <hr>

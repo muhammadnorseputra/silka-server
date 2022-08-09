@@ -404,10 +404,15 @@ if ($this->session->userdata('level') == "PNS") {
 	                <li><a href='<?php echo base_url()."assets/Layanan-Karpeg.pdf"; ?>' target='_blank'>Kartu PNS (Karpeg)</a></li>
 			<li><a href='<?php echo base_url()."assets/Layanan-Karisu.pdf"; ?>' target='_blank'>Karis Karsu</a></li>
 	              </ul>
-			  </li>
-		              
-		    </ul>
-		</li>
+	      </li>
+	      
+	      <?php
+                if (($this->session->userdata('level') == "ADMIN") OR ($this->session->userdata('nip') == "198309042007011001") ) {
+                        echo "<li><a href='".base_url('home/kamusjabatan')."'>Kamus Kelas Jabatan</a></li>";
+                }
+             ?>	
+	    </ul>
+	</li>
 
 <!--         <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Manual<span class="caret"></span></a>

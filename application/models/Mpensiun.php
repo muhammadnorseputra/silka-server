@@ -45,8 +45,23 @@ class Mpensiun extends CI_Model {
 
   public function getjmltmtperbulan($tahun)
   {
-    $query = $this->db->query("select MONTH(tmt_pensiun), count(nip) as 'jumlah', count(nip) as 'jumlah1' from pensiun_detail where tmt_pensiun like '".$tahun."-%' group by MONTH(tmt_pensiun) order by MONTH(tmt_pensiun)");
+    $query = $this->db->query("select MONTH(tmt_pensiun), count(nip) as 'jumlah', count(nip) as 'jumlah1' from pensiun_detail 
+		where tmt_pensiun like '".$tahun."-%' group by MONTH(tmt_pensiun) order by MONTH(tmt_pensiun)");
          
+        if($query->num_rows() > 0){
+            foreach($query->result() as $data){
+                $hasil[] = $data;
+            }
+            return $hasil;
+    }
+  }
+
+  public function getjmlperjnsbulan($tahun,$jenis)
+  {
+    $query = $this->db->query("select MONTH(tmt_pensiun), count(nip) as 'jumlah' from pensiun_detail
+                where fid_jenis_pensiun = '$jenis' and tmt_pensiun like '".$tahun."-%' 
+		group by MONTH(tmt_pensiun) order by MONTH(tmt_pensiun)");
+
         if($query->num_rows() > 0){
             foreach($query->result() as $data){
                 $hasil[] = $data;
@@ -62,6 +77,12 @@ class Mpensiun extends CI_Model {
     return $q->num_rows();
   }
 
+  function gettotalbyjenis($jenis)
+  {
+    $q = $this->db->query("select nip from pensiun_detail where fid_jenis_pensiun = '$jenis'");
+    return $q->num_rows();
+  }
+
   public function getjabasn()
   {
     $data = $this->db->query("select jab_asn from ref_eselon where nama_eselon in ('II/A', 'III/A', 'IV/A', 'JFU', 'JFT')");
@@ -71,7 +92,9 @@ class Mpensiun extends CI_Model {
   function getjmlbyjabasn($jabasn, $thn)
   {
     //$sess_nip = $this->session->userdata('nip');
-    $q = $this->db->query("select pd.nip from pensiun_detail as pd, pegawai_pensiun as pp, ref_eselon as e where pp.nip = pd.nip and pp.fid_eselon = e.id_eselon and e.jab_asn =  '".$jabasn."' and pd.tmt_pensiun like '".$thn."-%'");
+    $q = $this->db->query("select pd.nip from pensiun_detail as pd, pegawai_pensiun as pp, ref_eselon as e 
+	where pp.nip = pd.nip and pp.fid_eselon = e.id_eselon and e.jab_asn =  '".$jabasn."' 
+	and pd.tmt_pensiun like '".$thn."-%'");
     return $q->num_rows();
   }
 

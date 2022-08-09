@@ -80,79 +80,101 @@
         <pre><div class='text-success'><i class="fa fa-bar-chart-o fa-fw"></i> TREN PENSIUN BULANAN TAHUN <?php echo $thn; ?></div></pre>
         <div id="rwybulan" style="height: 100%; width: 100%"></div>
         <script type="text/javascript">
-          Highcharts.chart('rwybulan', {
-              chart: {
-                  type: 'column'
-              },
-              title: {
-                  text: ''
-              },
-              subtitle: {
-                  //text: 'Source: <a href="https://en.wikipedia.org/wiki/World_population">Wikipedia.org</a>'
-              },
-              xAxis: {
-                  categories: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agust', 'Sept', 'Okt', 'Nov', 'Des'],
-                  title: {
-                      text: 'BULAN TMT'
-                  }
-              },
-              yAxis: {
-                  min: 0,
-                  title: {
-                      text: 'JUMLAH',
-                      align: 'right',
-                      color: 'red'
-                  },
-                  labels: {
-                      overflow: 'justify'
-                  }
-              },
-              tooltip: {
-                  //valueSuffix: ' orang',
-                  pointFormat: 'Jumlah : <b>{point.y:f}</b> orang'
-              },
-              plotOptions: {
-                  column: {
-                    dataLabels: {
-                          enabled: true
-                      },
-                      pointPadding: 0.02,
-                      borderWidth: 0,
-                    showInLegend: false
-                  }
-              },
-              legend: {
-                  layout: 'vertical',
-                  align: 'right',
-                  verticalAlign: 'top',
-                  x: -40,
-                  y: 80,
-                  floating: true,
-                  borderWidth: 1,
-                  backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FF0000'),
-                  shadow: true
-              },
-              credits: {
-                  enabled: false
-              },
-              series: [{
-                data :
-                <?php 
-                // data yang diambil dari database
-                if(count($rwyperbulan)>0)
-                {
-                  echo "[";
-                  foreach ($rwyperbulan as $data) {
-                    //echo $data->jumlah1 .",";
-                    echo $data->jumlah .",";
-                    //echo "['" .$jenkel . " (".$data->jumlah.")'," . $data->jumlah ."],\n";
-                  }
-                  echo "]";
-                }
-                ?>
-              }]
-          });
-          </script>
+	Highcharts.chart('rwybulan', {
+    		chart: {
+        		type: 'column'
+    		},
+    		title: {
+        		text: ''
+    		},
+    		xAxis: {
+        		categories: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agust', 'Sept', 'Okt', 'Nov', 'Des']
+    		},
+    		yAxis: {
+        		min: 0,
+        		title: {
+            			text: 'Jumlah (PNS)'
+        	},
+        	stackLabels: {
+            		enabled: true,
+            		style: {
+                		fontWeight: 'bold',
+                		color: ( // theme
+                    			Highcharts.defaultOptions.title.style &&
+                    			Highcharts.defaultOptions.title.style.color
+                		) || 'grey'
+            		}
+        	}
+    		},
+		
+    		legend: {
+        		//align: 'right',
+        		//x: -30,
+        		//verticalAlign: 'top',
+        		//y: 25,
+        		floating: false,
+        		backgroundColor: 'red',
+        		borderColor: '#111',
+        		borderWidth: 2,
+        		shadow: false
+    		},
+
+    		tooltip: {
+        		headerFormat: '<b>{point.x}</b><br/>',
+        		pointFormat: '{series.name}: {point.y}<br/>Total: {point.stackTotal}'
+    		},
+		
+    		plotOptions: {
+        		column: {
+            			stacking: 'normal',
+            			dataLabels: {
+                			enabled: true,
+					style: {
+                                                fontWeight: 'bold',
+						fontSize: '23px',
+                                                color : 'red'
+                                        }
+            			},
+        		}
+    		},
+		
+    		series: [{
+        		name: 'BUP',
+        		data: 
+				<?php
+					$jmlbup = $this->mpensiun->getjmlperjnsbulan('2022','1');
+					echo "[";				
+                        		foreach($jmlbup as $v):
+                                        	echo $v->jumlah.",";
+					endforeach;
+                        		echo "]";
+                                ?>
+    		}, {
+        		name: 'Janda/Duda',
+        		data: 
+				<?php
+                                        $jmljadu = $this->mpensiun->getjmlperjnsbulan('2022','6');
+                                        echo "[";
+                                        foreach($jmljadu as $v):
+                                                echo $v->jumlah.",";
+                                        endforeach;
+                                        echo "]";
+                                ?>
+    		}, {
+        		name: 'APS',
+        		data: 
+				<?php
+                                        $jmlaps = $this->mpensiun->getjmlperjnsbulan('2022','7');
+                                        echo "[";
+                                        foreach($jmlaps as $v):
+                                                echo $v->jumlah.",";
+                                        endforeach;
+                                        echo "]";
+                                ?>
+		}
+		]
+	});
+        </script>
       </div>
 
       <div class="col-lg-4" align='center'>
@@ -228,42 +250,231 @@
 
     <!-- row kedua -->
     <div class="row">
+    <div class="col-lg-12'" align='center'>
+      <pre><div class='text-success'>GRAFIK AKUMULASI TAHUNAN</div></pre>
+    </div>
+    <div class="col-lg-12'" align='center'>
+	<div id="rwytahunperjns" style="height: 100%; width: 100%"></div>
+	<script type="text/javascript">
+          Highcharts.chart('rwytahunperjns', {
+              chart: {
+                  type: 'Combination chart'
+              },
+              title: {
+                  text: ''
+              },
+              subtitle: {
+                  //text: ''
+              },
+	      	
+              xAxis: {
+		  min : 0,
+		  title: {
+                        text: 'TAHUN'
+                  },
+                  categories: 
+		  <?php
+			echo "[";
+			foreach($thncuti as $v):
+				$jmlbup = $this->mpensiun->getjmlbyjenis('1',$v['tahun']);
+            			$jmljadu = $this->mpensiun->getjmlbyjenis('6',$v['tahun']);
+            			$jmlaps = $this->mpensiun->getjmlbyjenis('7',$v['tahun']);
+			        $total = $jmlbup+$jmljadu+$jmlaps;
+				echo $v['tahun'].",";
+				//echo $v['tahun']."".$total;
+				//echo ",";
+			endforeach;
+			echo "]";
+		  ?>,
+		  crosshair: true
+              },
+              yAxis: {
+		min: 0,
+        	title: {
+            		text: 'JUMLAH (PNS)'
+        	}
+              },
+	      
+              tooltip: {
+		headerFormat: '<span style="font-size:12px"><b>{point.key}</b></span><table>',
+        	pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name} </td>' +
+            		'<td style="padding:0"><b>{point.y:.0f} PNS</b></td></tr>',
+        	footerFormat: '</table>',
+        	shared: true,
+        	useHTML: true
+              },
+	
+	      plotOptions: {
+		column: {
+			dataLabels: {
+                          enabled: true
+                      	},
+            		pointPadding: 0,
+            		borderWidth: 0,
+			showInLegend: true
+        	},
+		spline: {
+                        dataLabels: {
+                          enabled: true,
+			},
+		},
+		pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        dataLabels: {
+                          enabled: true,
+                          format: '{point.y:f} [{point.percentage:.1f} %]',
+                        },
+                        showInLegend: false
+                    }
+              },
+	      /*	
+	      legend: {
+                  layout: 'vertical',
+                  align: 'right',
+                  verticalAlign: 'top',
+                  x: -40,
+                  y: 80,
+                  floating: true,
+                  borderWidth: 1,
+                  backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FF0000'),
+                  shadow: true
+              },
+	      */
+              credits: {
+                  enabled: false
+              },
+	      series: [{
+		type: 'column',
+		name : 'BUP',
+                data : 
+			<?php
+			echo "[";
+                        foreach($thncuti as $v):
+				$jmlbup = $this->mpensiun->getjmlbyjenis('1',$v['tahun']);
+                                echo $jmlbup.",";
+                        endforeach;
+                        echo "]";
+			?>
+		},{
+		type: 'column',
+		name : 'Janda/Duda',
+                data : 
+			<?php
+                        echo "[";
+                        foreach($thncuti as $v):
+				$jmljadu = $this->mpensiun->getjmlbyjenis('6',$v['tahun']);
+                                echo $jmljadu.",";
+                        endforeach;
+                        echo "]";
+                        ?>
+		},{
+		type: 'column',
+                name : 'APS',
+                data :
+                        <?php
+                        echo "[";
+                        foreach($thncuti as $v):
+				$jmlaps = $this->mpensiun->getjmlbyjenis('7',$v['tahun']);
+                                echo $jmlaps.",";
+                        endforeach;
+                        echo "]";
+                        ?>
+		},{
+		type: 'spline',
+        	name: 'TOTAL',
+        	data: 
+		<?php
+                        echo "[";
+                        foreach($thncuti as $v):
+                                $jmlbup = $this->mpensiun->getjmlbyjenis('1',$v['tahun']);
+                                $jmljadu = $this->mpensiun->getjmlbyjenis('6',$v['tahun']);
+                                $jmlaps = $this->mpensiun->getjmlbyjenis('7',$v['tahun']);
+                                $total = $jmlbup+$jmljadu+$jmlaps;
+                                echo $total.",";
+                        endforeach;
+                        echo "]";
+                ?>,
+        	marker: {
+            		lineWidth: 2,
+            		fillColor: 'white'
+        		}
+		},{
+		type: 'pie',
+        	name: 'Total :',
+        	data: [{
+            			name: 'BUP',
+            			y:
+				<?php
+					$totbup = $this->mpensiun->gettotalbyjenis('1');
+					echo $totbup.",";
+				?> 
+        		}, {
+            			name: 'Janda/Duda',
+            			y: 
+				<?php
+                                        $totjadu = $this->mpensiun->gettotalbyjenis('6');
+                                        echo $totjadu.",";
+                                ?>			
+        		}, {
+            			name: 'APS',
+            			y: 
+				<?php
+                                        $totaps = $this->mpensiun->gettotalbyjenis('7');
+                                        echo $totaps.",";
+                                ?>
+        		}],
+        	center: [120, 80],
+        	size: 120,
+		}
+              ]
+          });
+          </script>
+
+
+    </div>
+    </div>
+    <!-- end row kedua -->
+
+
+    <!-- row ketiga -->
+    <!--
+    <div class="row">
     <div class="col-lg-12" align='center'>
       <pre><div class='text-success'>AKUMULASI PENSIUN TAHUNAN</div></pre>
         </div>
         <table class='table table-hover table-condensed'>
           <tr>
             <td width='30'><center><b>TAHUN</b></center></td>
-            <!--<td width='30' title=''><center><b>CUTI TUNDA</b></center></td>-->
             <td width='30' title=''><center><b>BUP</b></center></td>
-            <!--<td width='30' title=''><center><b>CUTI TAHUNAN<br />+ TUNDA</b></center></td>-->
             <td width='30' title=''><center><b>JANDA DUDA</b></center></td>
             <td width='30' title=''><center><b>ATAS PERMINTAAN SENDIRI</b></center></td>
             <td width='30'><center><b><u>JUMLAH</u></b></center></td>
           </tr>
           <?php
-            $no = 1;
-            foreach($thncuti as $v):       
-            $jmlbup = $this->mpensiun->getjmlbyjenis('1',$v['tahun']);
-            $jmljadu = $this->mpensiun->getjmlbyjenis('6',$v['tahun']);
-            $jmlaps = $this->mpensiun->getjmlbyjenis('7',$v['tahun']);
-            $total = $jmlbup+$jmljadu+$jmlaps;
+            //$no = 1;
+            //foreach($thncuti as $v):       
+            //$jmlbup = $this->mpensiun->getjmlbyjenis('1',$v['tahun']);
+            //$jmljadu = $this->mpensiun->getjmlbyjenis('6',$v['tahun']);
+            //$jmlaps = $this->mpensiun->getjmlbyjenis('7',$v['tahun']);
+            //$total = $jmlbup+$jmljadu+$jmlaps;
           ?>
           <tr>
-            <td><center><?php echo $v['tahun']; ?></center></td>
-            <td><center><?php echo $jmlbup; ?></center></td>
-            <td><center><?php echo $jmljadu; ?></center></td>
-            <td><center><?php echo $jmlaps; ?></center></td>
-            <td><center><?php echo $total; ?></center></td>
+            <td><center><?php //echo $v['tahun']; ?></center></td>
+            <td><center><?php //echo $jmlbup; ?></center></td>
+            <td><center><?php //echo $jmljadu; ?></center></td>
+            <td><center><?php //echo $jmlaps; ?></center></td>
+            <td><center><?php //echo $total; ?></center></td>
           </tr>          
           <?php
-            $no++;
-            endforeach;
+            //$no++;
+            //endforeach;
           ?>
         </table>
     </div>
   </div>
-  <!-- end row kedua -->
+  -->
+  <!-- end row ketiga -->
 
   
   </div>

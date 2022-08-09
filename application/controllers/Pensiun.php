@@ -257,7 +257,8 @@ class Pensiun extends CI_Controller {
         $thn = date('Y');
         //$thn = 2019;
         $data['thn'] = $thn;
-        $data['rwyperbulan'] = $this->mpensiun->getjmltmtperbulan($thn); 
+        //$data['rwyperbulan'] = $this->mpensiun->getjmltmtperbulan($thn);
+	//$data['rwyperjnsbulan'] = $this->mpensiun->getjmlperjnsbulan($thn);
         $data['content'] = 'pensiun/statistik';
         $this->load->view('template',$data);
       }

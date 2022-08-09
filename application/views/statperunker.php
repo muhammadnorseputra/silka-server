@@ -455,11 +455,11 @@ if ($nmunker == '')
                           <table class='table table-condensed table-hover table-bordered'>
                           <tr>
                             <td width='100'><center><b>Tahun BUP</b></center></td>
-                            <td width='30'><center><b>2017</b></center></td>
-                            <td width='30'><center><b>2018</b></center></td>
-                            <td width='30'><center><b>2019</b></center></td>
-                            <td width='30'><center><b>2020</b></center></td>
-                            <td width='30'><center><b>2021</b></center></td>
+                            <td width='30'><center><b>2022</b></center></td>
+                            <td width='30'><center><b>2023</b></center></td>
+                            <td width='30'><center><b>2024</b></center></td>
+                            <td width='30'><center><b>2025</b></center></td>
+                            <td width='30'><center><b>2026</b></center></td>
                             <td width='30'><center><b>Total</b></center></td>
                           </tr>
                           <tr>

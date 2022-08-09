@@ -1,6 +1,6 @@
 :root {
   --input-padding-x: .90rem;
-  --input-padding-y: .70rem;
+  --input-padding-y: .80rem;
 }
 
 .form-control-custom {
@@ -8,7 +8,7 @@
     width: 100%;
     padding: 0.275rem 0.75rem;
     font-size: 1.3em;
-    line-height: 1.3;
+    line-height: none;
     color: #7b8a8b;
     background-color: #fff;
     background-clip: padding-box;
@@ -40,12 +40,12 @@
   display: block;
   /*width: 100%;*/
   margin-bottom: 0; /* Override default `<label>` margin */
-  line-height: 1.5;
+  line-height: 2;
   color: #495057;
   border: 1px solid transparent;
   border-radius: .25rem;
   transition: all .1s ease-in-out;
-  font-size: 1.1em;
+  font-size: 1em;
 }
 .form-label-group input::-webkit-input-placeholder {
   color: transparent;
@@ -62,15 +62,16 @@
 .form-label-group input::placeholder {
   color: transparent;
 }
-.form-label-group input:not(:placeholder-shown) {
+.form-label-group input:not(:placeholder-shown), .form-label-group input:is(:focus) {
   padding-top: calc(var(--input-padding-y) + var(--input-padding-y) * (2 / 3));
   padding-bottom: calc(var(--input-padding-y) / 3);
 }
-.form-label-group input:not(:placeholder-shown) ~ label {
+.form-label-group input:not(:placeholder-shown) ~ label, .form-label-group input:is(:focus) ~ label {
   padding-top: calc(var(--input-padding-y) / 3);
   padding-bottom: calc(var(--input-padding-y) / 3);
   font-size: 12px;
-  color: #777;
+  color: #000;
+  user-select: none;-webkit-user-select:none; -moz-user-select: none; -ms-user-select: none;
 }
 
 /* CUSTOM BTN */

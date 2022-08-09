@@ -395,7 +395,7 @@ WHERE p.fid_unit_kerja = u.id_unit_kerja and p.fid_unit_kerja = '".$idunker."' o
 
   public function gettahunrwycuti()
   {
-    $q = $this->db->query("select thn_cuti from riwayat_cuti GROUP BY thn_cuti");    
+    $q = $this->db->query("select thn_cuti from riwayat_cuti WHERE thn_cuti >= '2017' GROUP BY thn_cuti");    
     return $q;    
   }
 
@@ -459,7 +459,7 @@ WHERE p.fid_unit_kerja = u.id_unit_kerja and p.fid_unit_kerja = '".$idunker."' o
 
   public function getjmlrwyperbulan()
   {
-    $query = $this->db->query("select MONTH(tgl_mulai), count(nip) as 'jumlah' from riwayat_cuti where thn_cuti = '2021' group by MONTH(tgl_mulai) order by MONTH(tgl_mulai)");
+    $query = $this->db->query("select MONTH(tgl_mulai), count(nip) as 'jumlah' from riwayat_cuti where thn_cuti = '2022' group by MONTH(tgl_mulai) order by MONTH(tgl_mulai)");
          
         if($query->num_rows() > 0){
             foreach($query->result() as $data){

@@ -249,7 +249,7 @@ if ($this->mpegawai->cekpernahkp($nip)) { // pernah KP
 
   public function rwyjab($nip)
   {
-    $q = $this->db->query("select id, unit_kerja, jns_jab, jabatan, eselon, tmt_jabatan, no_sk_baperjakat, tgl_pelantikan, pejabat_sk, no_sk, tgl_sk, prosedur, berkas from riwayat_jabatan where nip='$nip' ORDER BY tmt_jabatan desc");    
+    $q = $this->db->query("select id, unit_kerja, jns_jab, jabatan, eselon, angka_kredit, tunjangan, tmt_jabatan, no_sk_baperjakat, tgl_pelantikan, pejabat_sk, no_sk, tgl_sk, prosedur, berkas from riwayat_jabatan where nip='$nip' ORDER BY tmt_jabatan desc");    
     return $q;    
   }
   
@@ -1628,6 +1628,16 @@ order by p.fid_eselon, p.nip, p.fid_golru_skr, p.tmt_golru_skr");
     return $this->db->get_where('riwayat_vaksinasi', ['nipnik' => $nip]);
   }
 
+  public function carikamusjab($nmjab, $jns)
+  {
+	if ($jns == "jft") {
+		$sql = "SELECT * from ref_kelasjft_perbkn52021 WHERE nama_jft like '%$nmjab%' ORDER BY nama_jft";
+  	} else if ($jns == "jfu") {
+		$sql = "SELECT * from ref_kelasjfu_perbkn52021 WHERE nama_jfu like '%$nmjab%' ORDER BY nama_jfu";
+	}
+
+	return $this->db->query($sql);
+  }
 }
 /* End of file mpegawai.php */
 /* Location: ./application/models/mpegawai.php */

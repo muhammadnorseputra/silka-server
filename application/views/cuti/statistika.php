@@ -1,13 +1,14 @@
 <!-- Default panel contents -->
   <center>
-  <div class="panel panel-default" style="width:99%;height:540px;border:0px solid white">
+  <div class="panel panel-default" style="width:99%;height:580px;border:0px solid white">
   <div class="panel-body">
 
-  <div class="panel panel-info"   style="padding:3px;overflow:auto;width:98%;height:510px;">
+  <div class="panel panel-info"   style="padding:3px;overflow:auto;width:98%;height:540px;">
         <div class='panel-heading' align='left'><span class="glyphicon glyphicon-file" aria-hidden="true"></span>
-        <b>STATISTIK DATA CUTI</b>
+        <b>STATISTIK CUTI</b>
         </div>
   
+  <!--
   <table class='table table-bordered'>
     <tr>      
       <td align='right' width='50'>
@@ -19,6 +20,7 @@
       </td>
     </tr>
   </table> 
+  -->
   <?php
     $thn = date('Y');
     $cjmlinboxskpd = $this->mcuti->getjmlprosesbystatuscuti('1',$thn);
@@ -273,7 +275,7 @@
     </tr>
     <tr class='info'>
       <td width='1000' colspan='4'>
-        <table class='table table-hover table-bordered'>
+        <table class='table table-hover table-bordered' style='font-size:10px; width:80%; align: center'>
           <tr>
             <td width='30'><center><b>TAHUN</b></center></td>
             <!--<td width='30' title=''><center><b>CUTI TUNDA</b></center></td>-->
@@ -288,7 +290,7 @@
           </tr>
           <?php
             $no = 1;
-            foreach($thncuti as $v):        
+            foreach($thncuti as $v):
             $thn =  $v['thn_cuti'];
             //$jmltunda = $this->mcuti->getjmlrwytunda($thn);
             $jmltahunan = $this->mcuti->getjmlrwybythnstatus($thn, '1');

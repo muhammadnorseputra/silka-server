@@ -57,7 +57,7 @@
           echo "<option value=''>- Pilih Unit Kerja -</option>";
           foreach($unker as $uk)
           {
-              echo "<option value='".$uk['id_unit_kerja']."'>".$uk['nama_unit_kerja']."</option>";
+              echo "<option value='".$uk['id_unit_kerja']."'>".$uk['id_unit_kerja']." | ".$uk['nama_unit_kerja']."</option>";
           }
       ?>
       </select>

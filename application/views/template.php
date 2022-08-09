@@ -14,6 +14,16 @@
     <link href="<?php echo base_url('assets/css/bootstrap.min.css') ?>" rel="stylesheet" />    
     <link rel="stylesheet" href="<?php echo base_url('assets/css/bootstrap-datepicker.css'); ?>" rel="stylesheet"/>
 
+	<!-- ANALITIC -->
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-230315730-2"></script>
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+	
+	  gtag('config', 'UA-230315730-2');
+	</script>
 
 
     <!-- for dashboard using SB Admin 2 -->
@@ -30,7 +40,7 @@
       <script type="text/javascript" src="<?php echo base_url('assets/js/sb-admin.js'); ?>"></script>
 
 
-      <link href="<?php echo base_url('assets/css/highcharts.css'); ?>" rel="stylesheet" type="text/css">
+      <link href="<?php echo base_url('assets/css/highcharts-gridlight.css'); ?>" rel="stylesheet" type="text/css">
 
       <!-- akhir dashboard -->
 

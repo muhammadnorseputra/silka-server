@@ -13,6 +13,8 @@ class Home extends CI_Controller {
       $this->load->helper('fungsitanggal');
       $this->load->helper('fungsipegawai');
       $this->load->model('munker');
+      $this->load->model('mpensiun');
+      $this->load->model('mpip');
       $this->load->model('mkinerja');
       $this->load->model('mlogin');
       $this->load->model('mgraph');
@@ -320,6 +322,7 @@ class Home extends CI_Controller {
         <?php
         }
         ?>
+	<!--
         <td align='center' width='30'>
           <?php
           echo "<form method='POST' action='../pip/tampilhasilukur' target='_blank'>";
@@ -332,6 +335,7 @@ class Home extends CI_Controller {
             echo "</form>";
           ?>
         </td>
+	-->
         <td align='center' width='30'>
           <?php
           echo "<form method='POST' action='../pegawai/detail'>";          
@@ -420,7 +424,181 @@ class Home extends CI_Controller {
     $this->load->view('template', $data);
   }
 
+  public function kamusjabatan()
+  {
+    $data['pesan'] = '';
+    $data['jnspesan'] = '';
+    $data['content'] = 'kamusjabatan';
+    $this->load->view('template', $data);
+  }
+
+  public function showkamusjabatan()
+  {
+	$nmjab = $this->input->get('nmjab');
+	$jns = $this->input->get('jns');
+	//echo $nmjab," ",$jns;
+
+	if (($nmjab) AND ($jns == 'jfu')) {
+	    $datajab = $this->mpegawai->carikamusjab($nmjab,$jns)->result_array();
+	    $no = 1;
+	    echo "<div style='width:80%;margin:30px;'>";
+	    if ($datajab){
+        	foreach($datajab as $v){
+		?>
+		<div class='panel-group' id="accordion">
+                	<div class="panel panel-default">
+                        	<div class="panel-heading">
+                                	<h4 class="panel-title text-left">
+                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse<?php echo $v['id'];?>" aria-expanded="false" class="collapsed">
+						<?php echo strtoupper($v['nama_jfu']);?></a>
+                                        </h4>
+				</div>
+                                <div id="collapse<?php echo $v['id'];?>" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
+                                        <div class="panel-body text-left">
+						<dl class="dl-horizontal">
+                                			<dt>Urusan</dt><dd><span class='text-info'><?php echo $v['urusan']; ?></span></dd>
+                                                        <dt>Nama Jabatan</dt><dd><span class='text-info'><?php echo $v['nama_jfu']; ?></span></dd>
+							<dt>Pendidikan</dt><dd><?php echo $v['pendidikan']; ?></dd>
+							<dt>Tugas</dt><dd><?php echo $v['tugas']; ?></dd>
+							<dt>Pendidikan Minimal</dt><dd><span class='text-danger'><b><?php echo $v['pendidikan_minimal']; ?></b></span></dd>
+							<dt>Kelas Jabatan</dt><dd><span class='text-primary'><b><?php echo $v['kelas']; ?></b></span></dd>
+							<dt>Nilai Jabatan</dt><dd><b><span class='text-success'><?php echo $v['nilai']; ?></b></span></dd>
+							<dt>Faktor Jabatan</dt>
+							<dd><small>Faktor 1 : Pengetahuan Yang Dibutuhan, Faktor 2 : Pengawasan Penyelia, Faktor 3 : Pedoman, 
+								Faktor 4 : Kompleksitas, Faktor 5 : Ruang Lingkuo dan Dampak, Faktor 6 : Sifat Hubungan, 
+								Faktor 7 : Tujuan Hubungan, Faktor 8 : Tuntutan Fisik, Faktor 9 : lingkungan pekerja.
+							</small>
+							</dd>
+							<dd>
+								<div class='row show-grid'>
+								<div class='col-md-1' align='center'>Faktor 1<br/>
+									<h5><span class='text-danger'><?php echo $v['f1']." | ".$v['f1n'];?></span></h5>
+								</div>
+								<div class='col-md-1' align='center'>Faktor 2<br/>
+                                                                        <h5><span class='text-danger'><?php echo $v['f2']." | ".$v['f2n'];?></span></h5>
+								</div>
+                                                                <div class='col-md-1' align='center'>Faktor 3<br/>
+                                                                        <h5><span class='text-danger'><?php echo $v['f3']." | ".$v['f3n'];?></span></h5>
+								</div>
+                                                                <div class='col-md-1' align='center'>Faktor 4<br/>
+                                                                        <h5><span class='text-danger'><?php echo $v['f4']." | ".$v['f4n'];?></span></h5>
+								</div>
+                                                                <div class='col-md-1' align='center'>Faktor 5<br/>
+                                                                        <h5><span class='text-danger'><?php echo $v['f5']." | ".$v['f5n'];?></span></h5>
+								</div>
+                                                                <div class='col-md-1' align='center'>Faktor 6<br/>
+                                                                        <h5><span class='text-danger'><?php echo $v['f6']." | ".$v['f6n'];?></span></h5>
+								</div>
+                                                                <div class='col-md-1' align='center'>Faktor 7<br/>
+                                                                        <h5><span class='text-danger'><?php echo $v['f7']." | ".$v['f7n'];?></span></h5>
+								</div>
+                                                                <div class='col-md-1' align='center'>Faktor 8<br/>
+                                                                        <h5><span class='text-danger'><?php echo $v['f8']." | ".$v['f8n'];?></span></h5>
+								</div>
+                                                                <div class='col-md-1' align='center'>Faktor 9<br/>
+                                                                        <h5><span class='text-danger'><?php echo $v['f9']." | ".$v['f9n'];?></span></h5>
+								</div>
+								</div>
+
+							<?php
+
+							?>
+							</dd>
+                            			</dl>
+
+                                	</div>
+                        	</div>
+	                </div>
+		<?php
+			$no++;
+		} // End Foreach
+	    } else {
+		echo "<div class='alert alert-info'>JFU <b>".$nmjab."</b> tidak ditemukan.</div>";
+	    }
+	    echo "</div>";		
+	} else if (($nmjab) AND ($jns == 'jft')) {
+            $datajab = $this->mpegawai->carikamusjab($nmjab,$jns)->result_array();
+            $no = 1;
+            echo "<div style='width:80%;margin:30px;'>";
+	    if ($datajab) {
+                foreach($datajab as $v){
+                ?>
+                <div class='panel-group' id="accordion">
+                        <div class="panel panel-default">
+                                <div class="panel-heading">
+                                        <h4 class="panel-title text-left">
+                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse<?php echo $v['id'];?>" aria-expanded="false" class="collapsed">
+                                                <?php echo strtoupper($v['nama_jft']."-".$v['jenjang']);?></a>
+                                        </h4>
+                                </div>
+                                <div id="collapse<?php echo $v['id'];?>" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
+                                        <div class="panel-body text-left">
+                                                <dl class="dl-horizontal">
+                                                        <dt>Rumpun</dt><dd><span class='text-info'><?php echo $v['rumpun']; ?></span></dd>
+                                                        <dt>Nama Jabatan</dt><dd><span class='text-info'><?php echo $v['nama_jft']; ?></span></dd>
+                                                        <dt>Jenjang</dt><dd><b><span class='text-danger'><?php echo $v['jenjang']; ?></b></span></dd>
+							<dt>Dasar Hukum</dt><dd><?php echo $v['dasar_hukum']; ?></dd>
+                                                        <dt>Instansi Pembina</dt><dd><span class='text-warning'><?php echo $v['instansi_pembina']; ?></span></dd>
+                                                        <dt>Tugas</dt><dd><?php echo $v['tugas']; ?></dd>
+                                                        <dt>Kelas Jabatan</dt><dd><span class='text-primary'><b><?php echo $v['kelas']; ?></b></span></dd>
+                                                        <dt>Nilai Jabatan</dt><dd><b><span class='text-success'><?php echo $v['nilai']; ?></b></span></dd>
+                                                        <dt>Faktor Jabatan</dt>
+                                                        <dd><small>Faktor 1 : Pengetahuan Yang Dibutuhan, Faktor 2 : Pengawasan Penyelia, Faktor 3 : Pedoman,
+                                                                Faktor 4 : Kompleksitas, Faktor 5 : Ruang Lingkuo dan Dampak, Faktor 6 : Sifat Hubungan,
+                                                                Faktor 7 : Tujuan Hubungan, Faktor 8 : Tuntutan Fisik, Faktor 9 : lingkungan pekerja.
+                                                        </small>
+                                                        </dd>
+                                                        <dd>
+								<div class='row show-grid'>
+                                                                <div class='col-md-1' align='center'>Faktor 1<br/>
+                                                                        <h5><span class='text-danger'><?php echo $v['f1']." | ".$v['f1n'];?></span></h5>
+                                                                </div>
+                                                                <div class='col-md-1' align='center'>Faktor 2<br/>
+                                                                        <h5><span class='text-danger'><?php echo $v['f2']." | ".$v['f2n'];?></span></h5>
+                                                                </div>
+                                                                <div class='col-md-1' align='center'>Faktor 3<br/>
+                                                                        <h5><span class='text-danger'><?php echo $v['f3']." | ".$v['f3n'];?></span></h5>
+                                                                </div>
+                                                                <div class='col-md-1' align='center'>Faktor 4<br/>
+                                                                        <h5><span class='text-danger'><?php echo $v['f4']." | ".$v['f4n'];?></span></h5>
+                                                                </div>
+                                                                <div class='col-md-1' align='center'>Faktor 5<br/>
+                                                                        <h5><span class='text-danger'><?php echo $v['f5']." | ".$v['f5n'];?></span></h5>
+                                                                </div>
+                                                                <div class='col-md-1' align='center'>Faktor 6<br/>
+                                                                        <h5><span class='text-danger'><?php echo $v['f6']." | ".$v['f6n'];?></span></h5>
+                                                                </div>
+                                                                <div class='col-md-1' align='center'>Faktor 7<br/>
+                                                                        <h5><span class='text-danger'><?php echo $v['f7']." | ".$v['f7n'];?></span></h5>
+                                                                </div>
+                                                                <div class='col-md-1' align='center'>Faktor 8<br/>
+									<h5><span class='text-danger'><?php echo $v['f8']." | ".$v['f8n'];?></span></h5>
+                                                                </div>
+                                                                <div class='col-md-1' align='center'>Faktor 9<br/>
+                                                                        <h5><span class='text-danger'><?php echo $v['f9']." | ".$v['f9n'];?></span></h5>
+                                                                </div>
+                                                                </div>
+
+                                                        <?php
+
+                                                        ?>
+                                                        </dd>
+                                                </dl>
+
+                                        </div>
+                                </div>
+                        </div>
+                <?php
+                        $no++;
+                } // End Foreach
+	    }  else {
+                echo "<div class='alert alert-info'>JFT <b>".$nmjab."</b> tidak ditemukan.</div>";
+            }
+	    echo "</div>";
+        }
+  }
 }
+
 
 /* End of file home.php */
 /* Location: ./application/controllers/home.php */

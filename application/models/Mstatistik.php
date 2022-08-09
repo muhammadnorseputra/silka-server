@@ -110,7 +110,8 @@ class Mstatistik extends CI_Model {
   function unker_kelusia($id, $batasa, $batasb)
   {
     $q = $this->db->query("select count(nip) as jml from pegawai
-where fid_unit_kerja = '$id' and (((DateDiff(current_date(),tgl_lahir)/365) >= '$batasa') AND ((DateDiff(current_date(),tgl_lahir)/365) <= '$batasb'))");
+		where fid_unit_kerja = '$id' and (((DateDiff(current_date(),tgl_lahir)/365) >= '$batasa') 
+		AND ((DateDiff(current_date(),tgl_lahir)/365) <= '$batasb'))");
     if ($q->num_rows()>0)
   	{
   		$row=$q->row();

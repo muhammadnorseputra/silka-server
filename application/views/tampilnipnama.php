@@ -148,6 +148,7 @@
 	}
 	?>	
         </td>
+	<!--
 	 <td align='center' width='30'>
           <?php
           echo "<form method='POST' action='../pip/tampilhasilukur' target='_blank'>";
@@ -159,7 +160,8 @@
           <?php
             echo "</form>";
           ?>
-        </td> 
+        </td>
+	--> 
 	<td align='center' width='30'>
           <?php
           echo "<form method='POST' action='../pegawai/detail'>";

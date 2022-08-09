@@ -12,6 +12,7 @@ class Pegawai extends CI_Controller {
       $this->load->helper('fungsiwsbkn');  
       $this->load->helper('fungsiftp');
       $this->load->helper('blob');	
+      $this->load->helper('fungsiterbilang');	
       $this->load->model('mpegawai');
       $this->load->model('mstatistik');
       $this->load->model('mkinerja');
@@ -803,11 +804,11 @@ class Pegawai extends CI_Controller {
     $data['usia5660'] = $this->mstatistik->unker_kelusia($id, 56, 60.99);
 
     // untuk tahun BUP
-    $data['bup2017'] = $this->mstatistik->unker_thnbup($id, 2017);
-    $data['bup2018'] = $this->mstatistik->unker_thnbup($id, 2018);
-    $data['bup2019'] = $this->mstatistik->unker_thnbup($id, 2019);
-    $data['bup2020'] = $this->mstatistik->unker_thnbup($id, 2020);
-    $data['bup2021'] = $this->mstatistik->unker_thnbup($id, 2021);
+    $data['bup2017'] = $this->mstatistik->unker_thnbup($id, 2022);
+    $data['bup2018'] = $this->mstatistik->unker_thnbup($id, 2023);
+    $data['bup2019'] = $this->mstatistik->unker_thnbup($id, 2024);
+    $data['bup2020'] = $this->mstatistik->unker_thnbup($id, 2025);
+    $data['bup2021'] = $this->mstatistik->unker_thnbup($id, 2026);
 
     // untuk kelompok tugas
     $data['keltupendidikan'] = $this->mstatistik->unker_keltu($id, 'PENDIDIKAN');
@@ -1526,6 +1527,7 @@ class Pegawai extends CI_Controller {
         {
         a.value = a.value.substring(0,a.value.length-1000);
         }
+        console.log(a);
       }
       
     </script>
@@ -1579,7 +1581,7 @@ class Pegawai extends CI_Controller {
 	          	<input type="radio" name="jns_jab" value="JFT" onChange="pilih_jns_jab(this.value)" required> JFT
 	          </td>
 	        </tr>
-	       
+	        
 	        <tr>
 	          <td align='right'>Jabatan :</td>
 	          <td>
@@ -1588,7 +1590,14 @@ class Pegawai extends CI_Controller {
 	          	</select>
 	          </td>
 	        </tr>
-	        
+	        <tr id="angka_kredit_rows" class="hidden" style="width: 100%">
+	        	<td align='right'>Angka Kredit :</td>
+	        	<td>
+	        		<input type="text" name="angka_kredit" size='5' maxlength='10'/>
+	        		<span style="margin:0 10px; border-right: 1px solid #ccc"></span> Tunjangan Jabatan :
+	        		<input type="text" name="tunjangan" size='20' maxlength='100' onkeyup="isRupiah(this)" onchange="isRupiah(this)"/> / <span id="toRupiah"></span>
+	        	</td>
+	        </tr>
 	        <tr>
 	          <td align='right'>Eselon :</td>
 	          <td>
@@ -1607,12 +1616,12 @@ class Pegawai extends CI_Controller {
 	        
 	        <tr>
           		<td align='right'>TMT Jabatan :</td>
-          		<td><input type="date" class="tanggal" name="tmt_jabatan" size='15' maxlength='10' value='2022-06-02' required /></td>
+          		<td><input type="date" class="tanggal" name="tmt_jabatan" size='15' maxlength='10' value='2022-06-22' required /></td>
         	  </tr>
         	  <tr>
           		<td align='right'>Tanggal Pelantikan :</td>
           		<td>
-          			<input type="date" class="tanggal" name="tgl_pelantikan" size='15' value='2022-06-02' maxlength='10'/>
+          			<input type="date" class="tanggal" name="tgl_pelantikan" size='15' value='2022-06-22' maxlength='10'/>
           			<p class="help-block text-danger">*(Boleh dikosongi bila kadida.) <br></p>
           		</td>
         	  </tr>
@@ -1629,7 +1638,7 @@ class Pegawai extends CI_Controller {
         	</tr>
         	<tr class='warning'>
 	          <td align='right'>Nomor SK :</td>
-	          <td><input type="text" name="nosk" size='50' maxlength='200' value='821/114/BKPSDM-BLG/2022' required /></td>
+	          <td><input type="text" name="nosk" size='50' maxlength='200' value='821/133/BKPSDM-BLG/2022' required /></td>
 	        </tr>
 	        
 	        <tr class='warning'>
@@ -1639,7 +1648,7 @@ class Pegawai extends CI_Controller {
 	        
 	        <tr class='warning'>
           		<td align='right'>Tgl. SK :</td>
-          		<td><input type="date" name="tglsk" class="tanggal" size='15' maxlength='10'  value='2022-06-02' required /></td>
+          		<td><input type="date" name="tglsk" class="tanggal" size='15' maxlength='10'  value='2022-06-22' required /></td>
         	</tr>
                 <tr class='danger'>
                   <td align='right'>Jenis Prosedur</td>
@@ -1662,6 +1671,18 @@ class Pegawai extends CI_Controller {
                                 <?php
                                         echo "<option value='YA' selected>YA</option>";
                                         echo "<option value='TIDAK'>TIDAK</option>";
+                                ?>
+                        </select>
+                  </td>
+		</tr>
+		<tr class='danger'>
+                  <td align='right'>Save To Table </td>
+                  <td>
+                        <select name="aksi_table" required>
+                                <option value="0">-- Change Table --</option>
+                                <?php
+                                        echo "<option value='0' selected>Riwayat & Update Profile</option>";
+                                        echo "<option value='1'>Only Riwayat</option>";
                                 ?>
                         </select>
                   </td>
@@ -1758,6 +1779,13 @@ class Pegawai extends CI_Controller {
   		$eselon_id = $pecah_eselon[0];
   		$eselon_name = $pecah_eselon[1];
   		
+  		/* 
+  		jika aksi ?
+  		0 : simpan ke table riwayat dan update profile
+  		1 : hanya simpan ke table riwayat
+  		*/
+  		$aksi_table = $p['aksi_table'];
+  		
   		if($p['jns_jab'] == 'JST'){
   			$jenis_jabatan = 'STRUKTURAL';
   			$data_pegawai = [
@@ -1786,7 +1814,7 @@ class Pegawai extends CI_Controller {
   				'fid_unit_kerja' => $unitkerja_id,
   				'fid_jabft' => $jabatan_id,
 				'fid_jabatan' => null,
-            'fid_jabfu' => null,
+				'fid_jabfu' => null,
   				'fid_eselon' => $eselon_id,
   				'tmt_jabatan' => $p['tmt_jabatan'],
   				'fid_jnsjab' => '3'
@@ -1797,7 +1825,9 @@ class Pegawai extends CI_Controller {
 			'nip' => $p['nip'],
 			'unit_kerja' => $unitkerja_name,
 			'jabatan' => $jabatan_name,
-			'jns_jab' => $jenis_jabatan,
+			'angka_kredit' => !empty($p['angka_kredit']) ? $p['angka_kredit'] : null,
+			'tunjangan' => !empty($p['tunjangan']) ? $p['tunjangan'] : null,
+        	'jns_jab' => $jenis_jabatan,
 			'eselon' => $eselon_name,
 			'tmt_jabatan' => $p['tmt_jabatan'],
 			'no_sk_baperjakat' => $p['no_beperjakat'],
@@ -1805,17 +1835,19 @@ class Pegawai extends CI_Controller {
 			'pejabat_sk' => $p['pejabatsk'],	
 			'no_sk' => $p['nosk'],
 			'tgl_sk' => $p['tglsk'],
-                        'prosedur' => $p['prosedur'],
+         'prosedur' => $p['prosedur'],
 			'created_at' => date('Y-m-d H:i:s'),
 			'created_by' => $this->session->userdata('nip')
 		];
 		
 		$nama = $this->mpegawai->getnama($nip);
-		//var_dump($data_pegawai);die();
+		//var_dump($aksi_table);die();
 		
 		$db_riwayat = $this->mpegawai->insert_rwyjab('riwayat_jabatan', $data_riwayat);
 		if($db_riwayat) {
-		   $this->mpegawai->update_jabatan_rywtjab('pegawai', $data_pegawai, ['nip' => $nip]);
+			if($aksi_table == "0") {
+		   	$this->mpegawai->update_jabatan_rywtjab('pegawai', $data_pegawai, ['nip' => $nip]);
+		   }
 		   // START jika Integrasi SAPK
                    if ($p['integrasi'] == "YA") {
 				$data = $this->mwsbkn->forupjabsapk($nip)->result_array();

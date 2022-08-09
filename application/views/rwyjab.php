@@ -17,6 +17,14 @@
     });
 </script>
 <script>
+function formatNumber(num) {
+  return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+}
+
+function isRupiah(e) {
+	let num = e.value;
+	$('span#toRupiah').html(`Rp. ${formatNumber(num)}`);
+}
 function pilih_jns_jab(jns)
 {
 	var unker = $('select[name="unitkerja"]').val();
@@ -38,6 +46,8 @@ function pilih_jns_jab(jns)
 
 function pilih_jabatan(jns, unkerId='null') {
 	
+	$("tr#angka_kredit_rows").attr("class", "hidden");
+	
 	$("[name='eselon']").val('0');
 	if(jns == 'JST') {
 		$.getJSON('<?= base_url("pegawai/getJst/") ?>', {unkerId: unkerId}, function(result) {
@@ -53,6 +63,7 @@ function pilih_jabatan(jns, unkerId='null') {
 		$.getJSON('<?= base_url("pegawai/getJft/") ?>', function(result) {
 			$("select[name='pilih_jabatan_skr']").html(result);
 		});
+		$("tr#angka_kredit_rows").attr("class", "");
 	}
 }
 
@@ -300,12 +311,14 @@ function showtambahpltplh(nip)
                 </tr>
                 <?php
                 $no=1;
-                foreach($pegrwyjab as $v):                    
-                  ?>
+                foreach($pegrwyjab as $v):        
+                $angka_kredit = ($v['eselon'] === 'JFT') && ($v['angka_kredit'] !== NULL && $v['angka_kredit'] !== 0) ? "<span class='label label-default'>Ak: ".$v['angka_kredit']."</span>" : '';             
+                $tunjangan = ($v['eselon'] === 'JFT') && ($v['tunjangan'] !== NULL && $v['tunjangan'] !== 0) ? "<span class='label label-success'> Rp. ".nominal($v['tunjangan'])."</span>" : '';
+                     ?>
                 <tr>
                   <td align='center'><?php echo $no;?></td>
                   <td><?php echo '<u>'.$v['jabatan'].'</u><br />'.$v['unit_kerja']; ?></td>
-                  <td><?php echo $v['eselon']; ?></td>                    
+                  <td><?php echo $v['eselon']; ?><br> <?= $angka_kredit ?> <br> <?= $tunjangan ?> </td>                    
                   <td><?php echo "<u>".tgl_indo($v['tmt_jabatan'])."</u><br/><span class='label label-info'>".$v['prosedur']."</span>"; ?></td>
                   <td width='300'><?php echo $v['pejabat_sk'].'<br />Nomor : '.$v['no_sk'].'<br />Tanggal : '.tgl_indo($v['tgl_sk']); ?></td>
                 

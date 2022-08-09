@@ -1,9 +1,9 @@
 <!-- Default panel contents -->
   <center>
-  <div class="panel panel-default" style="width:99%;height:540px;border:0px solid white">
+  <div class="panel panel-default" style="width:99%;height:640px;border:0px solid white">
   <div class="panel-body">
 
-  <div class="panel panel-info"   style="padding:3px;overflow:auto;width:98%;height:510px;">
+  <div class="panel panel-info"   style="padding:3px;overflow:auto;width:98%;height:610px;">
         <div class='panel-heading' align='left'><span class="glyphicon glyphicon-file" aria-hidden="true"></span>
         <b>STATISTIK DATA KGB</b>
         </div>

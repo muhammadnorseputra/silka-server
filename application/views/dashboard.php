@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-lg-2 col-md-6">
-        <div class="panel panel-default">
+        <div class="panel panel-danger">
             <div class="panel-heading">
                 <div class="row">
                     <div class="col-xs-3">
@@ -29,7 +29,7 @@
         </div>
     </div>
     <div class="col-lg-2 col-md-6">
-        <div class="panel panel-primary">
+        <div class="panel panel-info">
             <div class="panel-heading">
                 <div class="row">
                     <div class="col-xs-3">
@@ -86,7 +86,7 @@
         </div>
     </div>
     <div class="col-lg-2 col-md-6">
-        <div class="panel panel-green">
+        <div class="panel panel-success">
             <div class="panel-heading">
                 <div class="row">
                     <div class="col-xs-3">
@@ -95,10 +95,10 @@
                     <div class="col-xs-9 text-right">
                         <div class="huge">
                         <?php
-                        	//$tgl = getdate();
-				//$thn = $tgl["year"];
+                        	$tgl = getdate();
+				$thn = $tgl["year"];
 
-                        	$thn = 2021;
+                        	//$thn = 2022;
 				//$thn = date('Y');
                         	//echo $this->mgraph->jmlpensiun('2017');
 				echo $this->mgraph->jmlpensiun($thn);
@@ -127,8 +127,8 @@
                     <div class="col-xs-9 text-right">
                         <div class="huge">
                         <?php
-                        	$thn = '2021';
-				//$thn = date('Y');
+                        	//$thn = '2021';
+				$thn = date('Y');
                         	echo $this->mgraph->jmlusulkgb($thn);
                         ?>	
                         </div>
@@ -146,7 +146,7 @@
         </div>
     </div>
     <div class="col-lg-2 col-md-6">
-        <div class="panel panel-yellow">
+        <div class="panel panel-warning">
             <div class="panel-heading">
                 <div class="row">
                     <div class="col-xs-3">
@@ -155,8 +155,8 @@
                     <div class="col-xs-9 text-right">
                         <div class="huge">
                         <?php
-                        	//$thn = date('Y');
-                        	echo $this->mgraph->jmlusulcutisetuju('2021');
+                        	$thn = date('Y');
+                        	echo $this->mgraph->jmlusulcutisetuju($thn);
                         ?>
                         </div>
                         <div>Usul Cuti Tahun Ini</div>
@@ -232,7 +232,7 @@
                 </div>
             </div>
             <div class="panel-body">
-            	<div id="golru" style="height: 600px; width: 400px"></div>
+            	<div id="golru" style="height: 600px; width: 100%"></div>
             </div>
             <!-- /.panel-body -->
         </div>
@@ -245,7 +245,7 @@
                 <i class="fa fa-bar-chart-o fa-fw"></i> Jumlah PNS Berdasarkan Jenis Kelamin
             </div>
             <div class="panel-body">
-                <div id="jenkel" style="height: 250px; width: 400px"></div>
+                <div id="jenkel" style="height: 250px; width: 100%"></div>
 
                 <!--<a href="#" class="btn btn-default btn-block">View Details</a>-->
             </div>
@@ -261,7 +261,7 @@
                 <i class="fa fa-bar-chart-o fa-fw"></i> Jumlah PNS Berdasarkan Eselonering
             </div>
             <div class="panel-body">
-                <div id="eselon" style="height: 250px; width: 400px"></div>
+                <div id="eselon" style="height: 250px; width: 100%"></div>
 
                 <!--<a href="#" class="btn btn-default btn-block">View Details</a>-->
             </div>
@@ -277,7 +277,7 @@
                 <i class="fa fa-bar-chart-o fa-fw"></i> Jumlah PNS Berdasarkan Tingkat Pendidikan
             </div>
             <div class="panel-body">
-                <div id="tingpen" style="height: 250px; width: 400px"></div>
+                <div id="tingpen" style="height: 250px; width: 100%"></div>
 
                 <!--<a href="#" class="btn btn-default btn-block">View Details</a>-->
             </div>
@@ -293,17 +293,399 @@
                 <i class="fa fa-bar-chart-o fa-fw"></i> Jumlah PNS Berdasarkan Jenis Jabatan
             </div>
             <div class="panel-body">
-                <div id="jenjab" style="height: 250px; width: 400px"></div>
+                <div id="jenjab" style="height: 250px; width: 100%"></div>
 
                 <!--<a href="#" class="btn btn-default btn-block">View Details</a>-->
             </div>
             <!-- /.panel-body -->
         </div>
         <!-- /.panel -->
-	</div>
+	</div> <!-- /.Column -->
+</div> <!-- End Row -->
+
+<div class="row"> <!-- Row 3 -->
+    <div class="col-lg-4"> <!-- Baris 3 Kolom 1 -->
+   	<div class="panel panel-info">
+            <div class="panel-heading">
+                <i class="fa fa-bar-chart-o fa-fw"></i> Jumlah PNS Berdasarkan Status Pegawai
+            </div>
+            <div class="panel-body">
+                <div id="statpeg" style="height: 250px; width: 100%"></div>
+
+                <!--<a href="#" class="btn btn-default btn-block">View Details</a>-->
+            </div>
+            <!-- /.panel-body -->
+        </div>
+    </div> <!-- End baris 3 Kolom 1 -->
+
+    <div class="col-lg-4"> <!-- Baris 3 Kolom 2 -->
+        <div class="panel panel-warning">
+            <div class="panel-heading">
+                <i class="fa fa-bar-chart-o fa-fw"></i> Jumlah PNS Berdasarkan Agama
+            </div>
+            <div class="panel-body">
+                <div id="agama" style="height: 250px; width: 100%"></div>
+
+                <!--<a href="#" class="btn btn-default btn-block">View Details</a>-->
+            </div>
+            <!-- /.panel-body -->
+        </div>
+    </div> <!-- End baris 3 Kolom 2 -->
+
+    <div class="col-lg-4"> <!-- Baris 3 Kolom 3 -->
+        <div class="panel panel-danger">
+            <div class="panel-heading">
+                <i class="fa fa-bar-chart-o fa-fw"></i> Jumlah PNS Berdasarkan Status Kawin
+            </div>
+            <div class="panel-body">
+                <div id="statkaw" style="height: 250px; width: 100%"></div>
+
+                <!--<a href="#" class="btn btn-default btn-block">View Details</a>-->
+            </div>
+            <!-- /.panel-body -->
+        </div>
+    </div> <!-- End baris 3 Kolom 3 -->
+</div> <!-- End Row 3 -->
+
+<div class="row"> <!-- Row 4 -->
+    <div class="col-lg-4"> <!-- Baris 4 Kolom 1 -->
+        <div class="panel panel-success">
+            <div class="panel-heading">
+                <i class="fa fa-bar-chart-o fa-fw"></i> Jumlah PNS Berdasarkan Kelompok Usia
+            </div>
+            <div class="panel-body">
+                <div id="kelusia" style="height: 250px; width: 100%"></div>
+
+                <!--<a href="#" class="btn btn-default btn-block">View Details</a>-->
+            </div>
+            <!-- /.panel-body -->
+        </div>
+    </div> <!-- End baris 4 Kolom 1 -->
+
+    <div class="col-lg-8"> <!-- Baris 4 Kolom 2 -->
+        <div class="panel panel-red">
+            <div class="panel-heading">
+                <i class="fa fa-bar-chart-o fa-fw"></i> Jumlah PNS Berdasarkan Tahun BUP
+            </div>
+            <div class="panel-body">
+                <div id="thnbup" style="height: 250px; width: 100%"></div>
+
+                <!--<a href="#" class="btn btn-default btn-block">View Details</a>-->
+            </div>
+            <!-- /.panel-body -->
+        </div>
+    </div> <!-- End baris 4 Kolom 2 -->
+</div> <!-- End Row 4 -->
 
 
+<!-- untuk pemanggilan Tahun BUP Chart -->
+<script type="text/javascript">
+	Highcharts.chart('thnbup', {
+              chart: {
+                  type: 'Combination chart'
+              },
+              title: {
+                  text: ''
+              },
+              subtitle: {
+                  //text: ''
+              },
+	      legend: {
+        	layout: 'horizontal',
+        	align: 'center',
+        	verticalAlign: 'top',
+        	x: 30,
+        	y: 0,
+        	floating: false,
+        	borderWidth: 1,
+        	backgroundColor:
+            		Highcharts.defaultOptions.legend.backgroundColor || '#FFFFFF',
+        	shadow: true
+    	      },
 
+              xAxis: {
+                  min : 0,
+                  categories: ['2022','2023','2024','2025','2026'],
+		  title: {
+            		text: 'Tahun BUP'
+        	  }
+              },
+              yAxis: {
+                min: 0,
+                title: {
+                        text: 'JUMLAH (PNS)'
+                }
+              },
+	      tooltip: {
+                headerFormat: '<span style="font-size:12px"><b>{point.key}</b></span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name} </td>' +
+                        '<td style="padding:0"><b>{point.y:.0f} PNS</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+              },
+
+              plotOptions: {
+                column: {
+                        dataLabels: {
+                          enabled: true
+                        },
+                        pointPadding: 0,
+                        borderWidth: 0,
+                        showInLegend: true
+                },
+                spline: {
+                        dataLabels: {
+                          enabled: true,
+                        },
+                },
+  		pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        dataLabels: {
+                          enabled: true,
+                          format: '{point.y:f} [{point.percentage:.1f} %]',
+                        },
+                        showInLegend: false
+                    }
+              },
+	      credits: {
+                  enabled: false
+              },
+	      	<?php
+			$sqlcari = $this->mpensiun->proyeksi()->result_array();
+                        $tahun = '2022';
+			$jpt2022 = 0;
+			$adm2022 = 0;
+			$peng2022 = 0;
+			$jfu2022 = 0;
+			$jft2022 = 0;
+                        foreach($sqlcari as $v):
+                                $thn_lahir = substr($v['tgl_lahir'],0,4);
+                                $bln_lahir = substr($v['tgl_lahir'],5,2);
+                                $thn_bup = $thn_lahir + $v['usia_pensiun'];
+                                $nip = $v['nip'];
+
+                                if (($bln_lahir == 12) AND ($thn_bup == $tahun)) {$thn_bup++;}
+                                if (($bln_lahir == 12) AND ($thn_bup == $tahun-1)) {$thn_bup;}
+
+                                if (($thn_bup == $tahun) OR (($thn_bup == $tahun-1) AND ($bln_lahir == 12))) {
+                                        $jnsjab = $this->mpip->getnamajnsjab($v['nip']);
+                                        switch ($jnsjab) {
+                                                case "JPT-PRATAMA" : {$jpt2022++;break;}
+                                                case "ADMINISTRASI-ADMINISTRATOR" : {$adm2022++;break;}
+                                                case "ADMINISTRASI-PENGAWAS" : {$peng2022++;break;}
+                                                case "PELAKSANA" : {$jfu2022++;break;}
+                                                case "FUNGSIONAL" : {$jft2022++;break;}
+                                        }
+                                }
+                        endforeach;
+
+			$tahun ='2023';
+			$jpt2023 = 0;
+                        $adm2023 = 0;
+                        $peng2023 = 0;
+                        $jfu2023 = 0;
+                        $jft2023 = 0;
+                        foreach($sqlcari as $v):
+                                $thn_lahir = substr($v['tgl_lahir'],0,4);
+                                $bln_lahir = substr($v['tgl_lahir'],5,2);
+                                $thn_bup = $thn_lahir + $v['usia_pensiun'];
+                                $nip = $v['nip'];
+
+                                if (($bln_lahir == 12) AND ($thn_bup == $tahun)) {$thn_bup++;}
+                                if (($bln_lahir == 12) AND ($thn_bup == $tahun-1)) {$thn_bup;}
+
+                                if (($thn_bup == $tahun) OR (($thn_bup == $tahun-1) AND ($bln_lahir == 12))) {
+                                        $jnsjab = $this->mpip->getnamajnsjab($v['nip']);
+                                        switch ($jnsjab) {
+                                                case "JPT-PRATAMA" : {$jpt2023++;break;}
+                                                case "ADMINISTRASI-ADMINISTRATOR" : {$adm2023++;break;}
+                                                case "ADMINISTRASI-PENGAWAS" : {$peng2023++;break;}
+                                                case "PELAKSANA" : {$jfu2023++;break;}
+                                                case "FUNGSIONAL" : {$jft2023++;break;}
+                                        }
+                                }
+                        endforeach;
+
+			$tahun = '2024';
+			$jpt2024 = 0;
+                        $adm2024 = 0;
+                        $peng2024 = 0;
+                        $jfu2024 = 0;
+                        $jft2024 = 0;
+                        foreach($sqlcari as $v):
+                                $thn_lahir = substr($v['tgl_lahir'],0,4);
+                                $bln_lahir = substr($v['tgl_lahir'],5,2);
+                                $thn_bup = $thn_lahir + $v['usia_pensiun'];
+                                $nip = $v['nip'];
+
+                                if (($bln_lahir == 12) AND ($thn_bup == $tahun)) {$thn_bup++;}
+                                if (($bln_lahir == 12) AND ($thn_bup == $tahun-1)) {$thn_bup;}
+
+                                if (($thn_bup == $tahun) OR (($thn_bup == $tahun-1) AND ($bln_lahir == 12))) {
+                                        $jnsjab = $this->mpip->getnamajnsjab($v['nip']);
+                                        switch ($jnsjab) {
+                                                case "JPT-PRATAMA" : {$jpt2024++;break;}
+                                                case "ADMINISTRASI-ADMINISTRATOR" : {$adm2024++;break;}
+                                                case "ADMINISTRASI-PENGAWAS" : {$peng2024++;break;}
+                                                case "PELAKSANA" : {$jfu2024++;break;}
+                                                case "FUNGSIONAL" : {$jft2024++;break;}
+                                        }
+                                }
+                        endforeach;
+
+			$tahun = '2025';
+                        $jpt2025 = 0;
+                        $adm2025 = 0;
+                        $peng2025 = 0;
+                        $jfu2025 = 0;
+                        $jft2025 = 0;
+                        foreach($sqlcari as $v):
+                                $thn_lahir = substr($v['tgl_lahir'],0,4);
+                                $bln_lahir = substr($v['tgl_lahir'],5,2);
+                                $thn_bup = $thn_lahir + $v['usia_pensiun'];
+                                $nip = $v['nip'];
+
+                                if (($bln_lahir == 12) AND ($thn_bup == $tahun)) {$thn_bup++;}
+                                if (($bln_lahir == 12) AND ($thn_bup == $tahun-1)) {$thn_bup;}
+
+                                if (($thn_bup == $tahun) OR (($thn_bup == $tahun-1) AND ($bln_lahir == 12))) {
+                                        $jnsjab = $this->mpip->getnamajnsjab($v['nip']);
+                                        switch ($jnsjab) {
+                                                case "JPT-PRATAMA" : {$jpt2025++;break;}
+                                                case "ADMINISTRASI-ADMINISTRATOR" : {$adm2025++;break;}
+                                                case "ADMINISTRASI-PENGAWAS" : {$peng2025++;break;}
+                                                case "PELAKSANA" : {$jfu2025++;break;}
+                                                case "FUNGSIONAL" : {$jft2025++;break;}
+                                        }
+                                }
+                        endforeach;
+
+			$tahun = '2026';
+                        $jpt2026 = 0;
+                        $adm2026 = 0;
+                        $peng2026 = 0;
+                        $jfu2026 = 0;
+                        $jft2026 = 0;
+                        foreach($sqlcari as $v):
+                                $thn_lahir = substr($v['tgl_lahir'],0,4);
+                                $bln_lahir = substr($v['tgl_lahir'],5,2);
+                                $thn_bup = $thn_lahir + $v['usia_pensiun'];
+                                $nip = $v['nip'];
+
+                                if (($bln_lahir == 12) AND ($thn_bup == $tahun)) {$thn_bup++;}
+                                if (($bln_lahir == 12) AND ($thn_bup == $tahun-1)) {$thn_bup;}
+
+                                if (($thn_bup == $tahun) OR (($thn_bup == $tahun-1) AND ($bln_lahir == 12))) {
+                                        $jnsjab = $this->mpip->getnamajnsjab($v['nip']);
+                                        switch ($jnsjab) {
+                                                case "JPT-PRATAMA" : {$jpt2026++;break;}
+                                                case "ADMINISTRASI-ADMINISTRATOR" : {$adm2026++;break;}
+                                                case "ADMINISTRASI-PENGAWAS" : {$peng2026++;break;}
+                                                case "PELAKSANA" : {$jfu2026++;break;}
+                                                case "FUNGSIONAL" : {$jft2026++;break;}
+                                        }
+                                }
+                        endforeach;
+		?>
+              series: [{
+                type: 'column',
+                name : 'JPT',
+                data :
+                        <?php
+			echo "[".$jpt2022.",".$jpt2023.",".$jpt2024.",".$jpt2025.",".$jpt2026."]";
+                        ?>
+                },{
+                type: 'column',
+                name : 'Administrator',
+                data :
+                        <?php
+			echo "[".$adm2022.",".$adm2023.",".$adm2024.",".$adm2025.",".$adm2026."]";
+                        ?>
+                },{
+		type: 'column',
+                name : 'Pengawas',
+                data :
+                        <?php
+			echo "[".$peng2022.",".$peng2023.",".$peng2024.",".$peng2025.",".$peng2026."]";
+                        ?>
+		},{
+                type: 'column',
+                name : 'JFU',
+                data :
+                        <?php
+                        echo "[".$jfu2022.",".$jfu2023.",".$jfu2024.",".$jfu2025.",".$jfu2026."]";
+                        ?>
+		},{
+                type: 'column',
+                name : 'JFT',
+                data :
+                        <?php
+                        echo "[".$jft2022.",".$jft2023.",".$jft2024.",".$jft2025.",".$jft2026."]";
+                        ?>
+                },{
+		type: 'spline',
+                name: 'TOTAL',
+                data:
+                <?php
+			$tot2022 = $jpt2022 + $adm2022 + $peng2022 + $jfu2022 + $jft2022;
+			$tot2023 = $jpt2023 + $adm2023 + $peng2023 + $jfu2023 + $jft2023;
+			$tot2024 = $jpt2024 + $adm2024 + $peng2024 + $jfu2024 + $jft2024;
+			$tot2025 = $jpt2025 + $adm2025 + $peng2025 + $jfu2025 + $jft2025;
+			$tot2026 = $jpt2026 + $adm2026 + $peng2026 + $jfu2026 + $jft2026;
+			echo "[".$tot2022.",".$tot2023.",".$tot2024.",".$tot2025.",".$tot2026."]";
+                ?>,
+                marker: {
+                        lineWidth: 2,
+                        fillColor: 'white'
+                        }
+                },{
+		type: 'pie',
+                name: 'Total :',
+                data: [{
+				 name: 'JPT',
+                                y:
+                                <?php
+                                        $totjpt = $jpt2022 + $jpt2023 + $jpt2024 + $jpt2025 + $jpt2026;
+                                        echo $totjpt.",";
+                                ?>
+			}, {
+                                name: 'Administrator',
+                                y:
+                                <?php
+					$totadm = $adm2022 + $adm2023 + $adm2024 + $adm2025 + $adm2026;
+                                        echo $totadm.",";
+                                ?>
+                        }, {
+                                name: 'Pengawas',
+                                y:
+                                <?php
+					$totpeng = $peng2022 + $peng2023 + $peng2024 + $peng2025 + $peng2026;
+                                        echo $totpeng.",";
+                                ?>
+			}, {
+                                name: 'JFU',
+                                y:
+                                <?php
+					$totjfu = $jfu2022 + $jfu2023 + $jfu2024 + $jfu2025 + $jfu2026;
+                                        echo $totjfu.",";
+                                ?>
+			}, {
+                                name: 'JFT',
+                                y:
+                                <?php
+					$totjft = $jft2022 + $jft2023 + $jft2024 + $jft2025 + $jft2026;
+                                        echo $totjft.",";
+                                ?>
+                        }],
+                center: [70, 30],
+		size: 60,
+                }
+              ]
+          });
+</script>
+<!-- akhir Tahun BUP chart -->
 
 <!-- untuk pemanggilan Pie Chart -->
 <script type="text/javascript">
@@ -311,11 +693,14 @@ Highcharts.chart('jenkel', {
     chart: {
         plotBackgroundColor: null,
         plotBorderWidth: null,
-        plotShadow: false,
+        plotShadow: true,
         type: 'pie'
     },
     title: {
         text: ''
+    },
+    credits: {
+        enabled: false
     },
     tooltip: {
         pointFormat: 'Jumlah : <b>{point.y:f}</b><br />{series.name}: <b>{point.percentage:.1f}%</b>'
@@ -323,7 +708,7 @@ Highcharts.chart('jenkel', {
     },
     plotOptions: {
     	pie: {
-                allowPointSelect: false,
+                allowPointSelect: true,
                 cursor: 'pointer',
                 dataLabels: {
                     enabled: true,
@@ -363,6 +748,258 @@ Highcharts.chart('jenkel', {
 </script>
 <!-- akhir pie chart -->
 
+<!-- untuk pemanggilan Pie Chart -->
+<script type="text/javascript">
+Highcharts.chart('kelusia', {
+    chart: {
+	type: 'column'
+    },
+    title: {
+        text: ''
+    },
+    credits: {
+        enabled: false
+    },
+    xAxis: {
+        categories: ['18-25', '26-30', '31-35', '36-40', '41-45', '46-50', '51-55', '56-60'],
+        title: {
+            text: 'Kelompok Usia'
+        }
+    },
+    yAxis: {
+    	min: 0,
+        title: {
+        	text: 'Jumlah (PNS)'
+        },
+        stackLabels: {
+        	enabled: false,
+                style: {
+                	fontWeight: 'bold',
+                        color: ( // theme
+                        	Highcharts.defaultOptions.title.style &&
+                                Highcharts.defaultOptions.title.style.color
+                        ) || 'grey'
+                }
+    	}
+    },
+    legend: {
+	enabled: false
+    },
+
+    tooltip: {
+    	headerFormat: 'Kelompok Usia <b>{point.x}</b><br/>',
+        pointFormat: 'Jumlah: {point.y}'
+    },
+    plotOptions: {
+        column: {
+        	//stacking: 'normal',
+                dataLabels: {
+                	enabled: true,
+             	},
+    	}
+    },
+    series: [{
+	//name: 'Jumlah',
+        colorByPoint: true,
+	data: [
+        	<?php
+                $j1825 = $this->mgraph->jmlkelusia(18, 25.99);
+               	echo "['18-25',".$j1825."],\n";
+
+		$j2630 = $this->mgraph->jmlkelusia(26, 30.99);
+		echo "['26-30',".$j2630."],\n";
+
+		$j3135 = $this->mgraph->jmlkelusia(31, 35.99);
+		echo "['31-35',".$j3135."],\n";
+
+		$j3640 = $this->mgraph->jmlkelusia(36, 40.99);
+		echo "['36-40',".$j3640."],\n";
+
+		$j4145 = $this->mgraph->jmlkelusia(41, 45.99);
+		echo "['41-45',".$j4145."],\n";
+
+		$j4650 = $this->mgraph->jmlkelusia(46, 50.99);
+		echo "['46-50',".$j4650."],\n";
+
+		$j5155 = $this->mgraph->jmlkelusia(51, 55.99);
+		echo "['51-55',".$j5155."],\n";
+
+		$j5660 = $this->mgraph->jmlkelusia(56, 60.99);
+		echo "['56-60',".$j5660."],\n";
+        	?>
+    ]
+    }]
+});
+</script>
+<!-- akhir kelompok usia -->
+
+</script>
+<!-- akhir pie chart -->
+
+
+<!-- untuk pemanggilan Pie Chart -->
+<script type="text/javascript">
+Highcharts.chart('statkaw', {
+    chart: {
+        type: 'pie',
+        options3d: {
+            enabled: true,
+            alpha: 30
+        }
+    },
+    title: {
+        text: ''
+    },
+    credits: {
+        enabled: false
+    },
+    tooltip: {
+        pointFormat: 'Jumlah : <b>{point.y:f}</b><br />{series.name}: <b>{point.percentage:.1f}%</b>'
+        //pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+    },
+    subtitle: {
+        text: ''
+    },
+    plotOptions: {
+        pie: {
+            innerSize: 0,
+            depth: 30,
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+               enabled: true,
+               format: '{point.name}<br/>{point.y:f} [{point.percentage:.1f} %]',
+               style: {
+                  color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+               }
+            },
+            showInLegend: true
+        },
+    },
+    series: [{
+        name: 'Persentase',
+        data: [
+                <?php
+                $gsp = $this->mgraph->jmlstatkaw();
+                foreach ($gsp as $data) {
+                    echo "['".$data->nama_status_kawin."',".$data->jumlah ."],\n";
+                }
+                ?>
+        ],
+        size: 150,
+    }]
+});
+</script>
+<!-- akhir pie chart -->
+
+<!-- untuk pemanggilan Pie Chart -->
+<script type="text/javascript">
+Highcharts.chart('statpeg', {
+    chart: {
+        type: 'pie',
+        options3d: {
+            enabled: true,
+            alpha: 30
+        }
+    },
+    title: {
+        text: ''
+    },
+    credits: {
+        enabled: false
+    },
+    tooltip: {
+        pointFormat: 'Jumlah : <b>{point.y:f}</b><br />{series.name}: <b>{point.percentage:.1f}%</b>'
+        //pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+    },
+    subtitle: {
+        text: ''
+    },
+    plotOptions: {
+        pie: {
+            innerSize: 50,
+            depth: 30,
+	    allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+               enabled: true,
+               format: '{point.name}<br/>{point.y:f} [{point.percentage:.1f} %]',
+               style: {
+                  color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+               }
+            },
+            showInLegend: true
+        },
+    },
+    series: [{
+        name: 'Persentase',
+        data: [
+		<?php
+		$gsp = $this->mgraph->jmlstatpeg();
+		foreach ($gsp as $data) {
+                    echo "['".$data->nama_status_pegawai."',".$data->jumlah ."],\n";
+                }
+		?>
+        ],
+        size: 150,
+    }]
+});
+
+</script>
+<!-- akhir pie chart -->
+
+<!-- untuk pemanggilan Pie Chart -->
+<script type="text/javascript">
+Highcharts.chart('agama', {
+    chart: {
+        type: 'pie',
+    },
+    title: {
+        text: ''
+    },
+    tooltip: {
+        pointFormat: 'Jumlah : <b>{point.y:f}</b><br />{series.name}: <b>{point.percentage:.1f}%</b>'
+        //pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+    },
+    subtitle: {
+        text: ''
+    },
+    credits: {
+        enabled: false
+    },
+    plotOptions: {
+        pie: {
+            innerSize: 50,
+            //depth: 30,
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+               enabled: true,
+               format: '{point.name} : {point.y:f} [{point.percentage:.1f} %]',
+               style: {
+                  color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+               }
+            },
+            showInLegend: true
+        },
+    },
+    series: [{
+        name: 'Persentase',
+        data: [
+                <?php
+                $gsp = $this->mgraph->agama();
+                foreach ($gsp as $data) {
+                    echo "['".$data->nama_agama."',".$data->jumlah ."],\n";
+                }
+                ?>
+        ],
+        size: 150,
+    }]
+});
+
+</script>
+<!-- akhir pie chart -->
+
 <!-- awal bar chart golru -->
 <script type="text/javascript">
 Highcharts.chart('golru', {
@@ -370,7 +1007,7 @@ Highcharts.chart('golru', {
         type: 'bar'
     },
     title: {
-        text: 'Jumlah PNS berdasarkan Golongan Ruang'
+        text: ''
     },
     subtitle: {
         //text: 'Source: <a href="https://en.wikipedia.org/wiki/World_population">Wikipedia.org</a>'
@@ -418,6 +1055,7 @@ Highcharts.chart('golru', {
         enabled: false
     },
     series: [{
+	colorByPoint: true,
     	data :
     	<?php 
 			// data yang diambil dari database
@@ -495,6 +1133,7 @@ Highcharts.chart('eselon', {
         enabled: false
     },
     series: [{
+	colorByPoint: true,
     	data :
     	<?php 
 			// data yang diambil dari database
@@ -525,6 +1164,9 @@ Highcharts.chart('jenjab', {
     },
     title: {
         text: ''
+    },
+    credits: {
+        enabled: false
     },
     tooltip: {
         pointFormat: 'Jumlah : <b>{point.y:f}</b><br />{series.name}: <b>{point.percentage:.1f}%</b>'
@@ -624,6 +1266,7 @@ Highcharts.chart('tingpen', {
         enabled: false
     },
     series: [{
+	colorByPoint: true,
     	data :
     	<?php 
 			// data yang diambil dari database

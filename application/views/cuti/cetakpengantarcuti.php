@@ -86,7 +86,7 @@ class PDF extends FPDF
             $this->setXY(122,$y+25);
             $this->cell(60,5,"Yth. Bupati Balangan",0,1,'L',1); 
             $this->setXY(130,$y+30);
-            $this->cell(60,5,"U.p. Kepala BKPPD",0,1,'L',1); 
+            $this->cell(60,5,"U.p. Kepala BKPSDM",0,1,'L',1); 
             $this->setXY(130,$y+35);
             $this->cell(60,5,"Kabupaten Balangan",0,1,'L',1); 
             $this->setXY(130,$y+40);
@@ -174,7 +174,7 @@ class PDF extends FPDF
 		$this->Line(10,$this->GetY(),200,$this->GetY());
 		//Arial italic 9
 		$this->SetFont('Arial','I',9);
-        $this->Cell(0,10,'SILKa Online ::: copyright BKPPD Kabupaten Balangan ' . date('Y'),0,0,'L');		
+        $this->Cell(0,10,'SILKa Online ::: copyright BKPSDM Kabupaten Balangan ' . date('Y'),0,0,'L');		
 	}
 }
  

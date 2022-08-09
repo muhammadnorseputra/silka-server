@@ -295,13 +295,13 @@ class Mkgb extends CI_Model {
 
   public function gettahunrwykgb()
   {
-    $q = $this->db->query("select substring(tmt,1,4) as 'tahun' from riwayat_kgb WHERE substring(tmt,1,4) >= '2014' GROUP BY substring(tmt,1,4)");
+    $q = $this->db->query("select substring(tmt,1,4) as 'tahun' from riwayat_kgb WHERE substring(tmt,1,4) >= '2018' GROUP BY substring(tmt,1,4)");
     return $q;    
   }
 
   public function getjmlrwyperbulan()
   {
-    $query = $this->db->query("select MONTH(tmt), count(nip) as 'jumlah', count(nip) as 'jumlah1' from riwayat_kgb where tmt like '2020%' group by MONTH(tmt) order by MONTH(tmt)");
+    $query = $this->db->query("select MONTH(tmt), count(nip) as 'jumlah', count(nip) as 'jumlah1' from riwayat_kgb where tmt like '2022%' group by MONTH(tmt) order by MONTH(tmt)");
          
         if($query->num_rows() > 0){
             foreach($query->result() as $data){

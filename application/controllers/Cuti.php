@@ -421,6 +421,7 @@ class Cuti extends CI_Controller {
 	echo "<br/><div align='center'><span class='text-danger'><b>MASA KERJA KURANG DARI 5 TAHUN</b></span></div>";
       }
     } else {
+      echo "<input type='text' name='nipsimpan' size='20' value='$nip' />";
       echo "<br /><div align='center'>
             <button type='submit' class='btn btn-success btn-sm'>
             <span class='glyphicon glyphicon-floppy-disk' aria-hidden='true'></span>&nbspSimpan Usul

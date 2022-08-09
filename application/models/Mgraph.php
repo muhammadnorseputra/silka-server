@@ -12,7 +12,7 @@ class Mgraph extends CI_Model {
   {
     $data = $this->db->query("select a.nama_agama, count(p.fid_agama) as jumlah from ref_agama as a, pegawai as p
                               where p.fid_agama = a.id_agama
-                              group by a.id_agama");
+                              group by a.id_agama order by a.nama_agama asc");
     return $data->result();
   }
 
@@ -125,6 +125,36 @@ class Mgraph extends CI_Model {
     $q = $this->db->query("select nip from pegawai where fid_status_pegawai = '0401'");
     return $q->num_rows();
   }  
+
+  public function jmlstatpeg()
+  {
+    $data = $this->db->query("select sp.nama_status_pegawai, count(p.fid_status_pegawai) as jumlah
+			from ref_status_pegawai as sp, pegawai as p
+                              where p.fid_status_pegawai = sp.id_status_pegawai
+                              group by sp.id_status_pegawai");
+    return $data->result();
+  }
+
+  public function jmlstatkaw()
+  {
+    $data = $this->db->query("select sk.nama_status_kawin, count(p.fid_status_kawin) as jumlah
+				from ref_status_kawin as sk, pegawai as p
+                              where p.fid_status_kawin = sk.id_status_kawin
+                              group by sk.id_status_kawin order by sk.nama_status_kawin asc");
+    return $data->result();
+  }
+
+  function jmlkelusia($batasa, $batasb)
+  {
+    $q = $this->db->query("select count(nip) as jumlah from pegawai
+                where (((DateDiff(current_date(),tgl_lahir)/365) >= '$batasa')
+                AND ((DateDiff(current_date(),tgl_lahir)/365) <= '$batasb'))");
+    if ($q->num_rows()>0)
+        {
+                $row=$q->row();
+                return $row->jumlah;
+        }
+  }
 }
 /* End of file mstatistik.php */
 /* Location: ./application/models/mstatistik.php */
