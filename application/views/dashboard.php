@@ -10,9 +10,9 @@
                         <div class="huge">
                         <?php
 				$jmlpns =  $this->mgraph->jmlpns();
-				$jmlnonpns =  $this->mgraph->jmlnonpns();
+				$jmlpppk =  $this->mgraph->jmlpppk();
 			
-                        	echo $jmlpns+$jmlnonpns;
+                        	echo $jmlpns+$jmlpppk;
                         ?>                        	
                         </div>
                         <div>Jumlah ASN</div>
@@ -21,7 +21,7 @@
             </div>
             <a href="">
                 <div class="panel-footer">
-                    <span class="pull-left">PNS + CPNS + Non PNS</span>
+                    <span class="pull-left">PNS + CPNS + PPPK</span>
                     <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
                     <div class="clearfix"></div>
                 </div>
@@ -69,14 +69,14 @@
                     <div class="col-xs-9 text-right">
                         <div class="huge">
                         <?php
-                            echo $this->mgraph->jmlnonpns();
+                            echo $this->mgraph->jmlpppk();
                         ?>
                         </div>
-                        <div>Jumlah Non PNS</div>
+                        <div>Jumlah PPPK</div>
                     </div>
                 </div>
             </div>
-            <a href="<?php echo base_url('nonpns/statistik') ?>">
+            <!--<a href="<?php echo base_url('nonpns/statistik') ?>">-->
                 <div class="panel-footer">
                     <span class="pull-left">seluruh kategori</span>
                     <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>

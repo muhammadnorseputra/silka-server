@@ -92,7 +92,7 @@
         <td>
         <select class='form-control' name="thn" id="thn" required>
         <?php
-            echo "<option value='0'>- Pilih Tahun -</option>";
+            //echo "<option value='0'>- Pilih Tahun -</option>";
             echo "<option value='2021'>2021</option>";          
 	    echo "<option value='2022' selected>2022</option>";
         ?>
@@ -101,12 +101,12 @@
         <td>
         <select class='form-control'  name="bln" id="bln" required>
         <?php
-            echo "<option value='0'>- Pilih Bulan -</option>";
+            echo "<option value='0' selected>- Pilih Bulan -</option>";
             echo "<option value='1'>Januari</option>";
             echo "<option value='2'>Februari</option>";
             echo "<option value='3'>Maret</option>";
             echo "<option value='4'>April</option>";
-            echo "<option value='5' selected>Mei</option>";
+            echo "<option value='5'>Mei</option>";
             echo "<option value='6'>Juni</option>";
             echo "<option value='7'>Juli</option>";
             echo "<option value='8'>Agustus</option>";
@@ -134,8 +134,16 @@
       
 
   <!-- untuk ajax -->
-  
+	  
   </center>
+  <?php
+	$blnini = date('n');
+	$thnini = date('Y');
+	echo "<span class='text-success'>
+		Data Absensi bulan ".strtoupper(bulan($blnini-1))." ".$thnini." haja nang kawa di-impor.
+	      </span>";
+  ?>
+
   <div id='tampilkan'></div>
   </div>
 </div>

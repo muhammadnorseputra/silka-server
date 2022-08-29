@@ -648,7 +648,11 @@ class Pegawai extends CI_Controller {
   }
 	
 
-
+  public function show_autocomplete() {
+  $query = $this->input->post('q');
+  $data = $this->mpegawai->getnipnama($query)->result_array();
+  echo json_encode(["items" => $data, "inputPhrase"=> "eac"]);
+  }
   function tampilnipnama()
   {
     //cek priviledge session user -- profil_priv

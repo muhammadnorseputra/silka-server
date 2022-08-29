@@ -241,6 +241,7 @@ class Home extends CI_Controller {
 	  $jnsjab = $this->mkinerja->get_jnsjab($v['nip']);
           if ($jnsjab == "STRUKTURAL") {
 	    if (($namaeselon == 'IV/A') OR ($namaeselon == 'IV/B')) {
+	      /*
               $id_jabstruk = $this->mkinerja->getfidjabstruk($v['nip']);
               $cektidakadajfu = $this->mkinerja->cektidakadajfu($id_jabstruk);
 	      
@@ -256,7 +257,8 @@ class Home extends CI_Controller {
               } else {
                 $kelasjabatan = 9;
               }
-
+	      */
+              $kelasjabatan = $this->mkinerja->get_kelasjabstruk($v['nip']);
             } else {
               $kelasjabatan = $this->mkinerja->get_kelasjabstruk($v['nip']);
             }
@@ -449,7 +451,8 @@ class Home extends CI_Controller {
                 	<div class="panel panel-default">
                         	<div class="panel-heading">
                                 	<h4 class="panel-title text-left">
-                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse<?php echo $v['id'];?>" aria-expanded="false" class="collapsed">
+                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse<?php echo $v['id'];?>" 
+						aria-expanded="false" class="collapsed">
 						<?php echo strtoupper($v['nama_jfu']);?></a>
                                         </h4>
 				</div>
@@ -597,7 +600,224 @@ class Home extends CI_Controller {
 	    echo "</div>";
         }
   }
+
+  public function ref_jabfu_bkn()
+  {
+    $data['pesan'] = '';
+    $data['jnspesan'] = '';
+    $data['content'] = 'ref_jabfu_bkn';
+    $this->load->view('template', $data);
+  }
+  
+  public function show_autocomplete($type) {
+  $query = $this->input->post('q');
+  	if($type === 'jabatan') {
+  		$data = $this->mpegawai->cari_refjfubkn($query)->result_array();	
+  	}
+  	elseif($type === 'pendidikan') {
+  		$data = $this->mpegawai->cari_refjurpenbkn($query)->result_array();	
+  	}
+  	elseif($type === 'lokasi') {
+  		$data = $this->mpegawai->cari_reflokasibkn($query)->result_array();	
+  	}
+  	elseif($type === 'unor') {
+  		$data = $this->mpegawai->cari_refunorbkn($query)->result_array();	
+  	}
+  	echo json_encode(["items" => $data]);
+  }
+  
+  public function show_refjabfubkn()
+  {
+        $nmjab = $this->input->get('nmjab');
+
+        //echo $nmjab," ",$jns;
+	$datajab = $this->mpegawai->cari_refjfubkn($nmjab)->result_array();
+        $no = 1;
+        echo "<div style='width:80%;margin:30px;'>";
+	
+	?>
+	<table width="100%" class="table table-striped table-bordered table-hover" style="width: 80%;">
+                <thead>
+                	<tr role="row">
+				<th style="width: 5%;" class='info'><center>NO</center></th>
+				<th style="width: 10%;" class='info'><center>KODE</center></th>
+				<th style="width: 60%;" class='info'><center>NAMA JABATAN</center></th>
+			</tr>
+		</thead>
+                <tbody>
+	<?php
+        if ($datajab){
+                foreach($datajab as $v){
+                ?>
+			<tr class="gradeA odd" role="row">
+				<td align='center'><?php echo $no; ?></td>
+                        	<td align='center'><?php echo $v['id']; ?>
+				</td>
+                                <td><?php echo $v['nama']; ?></td>
+                        </tr>
+                <?php
+                $no++;
+                } // End Foreach
+	}		
+	?>
+	</tbody>
+       	</table>
+	<?php
+  }
+
+  public function ref_jurpen_bkn()
+  {
+    $data['pesan'] = '';
+    $data['jnspesan'] = '';
+    $data['content'] = 'ref_jurpen_bkn';
+    $this->load->view('template', $data);
+  }
+
+  public function show_refjurpenbkn()
+  {
+        $nmjp = $this->input->get('nmjp');
+
+        $datajp = $this->mpegawai->cari_refjurpenbkn($nmjp)->result_array();
+        $no = 1;
+        echo "<div style='width:80%;margin:30px;'>";
+
+        ?>
+        <table width="100%" class="table table-striped table-bordered table-hover" style="width: 80%;">
+                <thead>
+                        <tr role="row">
+                                <th style="width: 5%;" class='info'><center>NO</center></th>
+                                <th style="width: 10%;" class='info'><center>KODE</center></th>
+                                <th style="width: 50%;" class='info'><center>NAMA</center></th>
+                                <th style="width: 15%;" class='info'><center>TINGKAT</center></th>
+                        </tr>
+                </thead>
+                <tbody>
+        <?php
+
+        if ($datajp){
+                foreach($datajp as $v){
+                ?>
+                        <tr role="row">
+                                <td align='center'><?php echo $no; ?></td>
+                                <td align='center'><?php echo $v['id']; ?></td>
+                                <td><?php echo $v['nama']; ?></td>
+                                <td><?php echo $v['grup_pendidikan']; ?></td>
+                        </tr>
+                <?php
+                $no++;
+                } // End Foreach
+        }
+        ?>
+        </tbody>
+        </table>
+        <?php
+  }
+ 
+  public function ref_lokasi_bkn()
+  {
+    $data['pesan'] = '';
+    $data['jnspesan'] = '';
+    $data['content'] = 'ref_lokasi_bkn';
+    $this->load->view('template', $data);
+  }
+
+  public function show_reflokasibkn()
+  {
+        $nmlok = $this->input->get('nmlok');
+
+        //echo $nmjab," ",$jns;
+        $datajp = $this->mpegawai->cari_reflokasibkn($nmlok)->result_array();
+        $no = 1;
+        echo "<div style='width:80%;margin:30px;'>";
+
+        ?>
+        <table width="100%" class="table table-striped table-bordered table-hover" style="width: 80%;">
+                <thead>
+                        <tr role="row">
+                                <th style="width: 5%;" class='info'><center>NO</center></th>
+                                <th style="width: 30%;" class='info'><center>KODE</center></th>
+                                <th style="width: 50%;" class='info'><center>KABUPATEN / KOTA</center></th>
+                        </tr>
+                </thead>
+                <tbody>
+        <?php
+
+        if ($datajp){
+                foreach($datajp as $v){
+                ?>
+                        <tr role="row">
+                                <td align='center'><?php echo $no; ?></td>
+                                <td class="sorting_1"><?php echo $v['id']; ?></td>
+                                <td><?php echo $v['nama']; ?></td>
+                        </tr>
+                <?php
+                $no++;
+                } // End Foreach
+        }
+        ?>
+        </tbody>
+        </table>
+        <?php
+  }
+
+  public function ref_unor_bkn()
+  {
+    $data['pesan'] = '';
+    $data['jnspesan'] = '';
+    $data['content'] = 'ref_unor_bkn';
+    $this->load->view('template', $data);
+  }
+
+  public function show_refunorbkn()
+  {
+        $nmunor = $this->input->get('nmunor');
+	
+
+        //echo $nmjab," ",$jns;
+        $dataun = $this->mpegawai->cari_refunorbkn($nmunor)->result_array();
+        $no = 1;
+        echo "<div style='width:80%;margin:30px;'>";
+
+        ?>
+        <table width="100%" class="table table-striped table-bordered table-hover" style="width: 80%;">
+                <thead>
+                        <tr role="row">
+                                <th style="width: 5%;" class='info'><center>NO</center></th>
+                                <th style="width: 30%;" class='info'><center>KODE</center></th>
+                                <th style="width: 50%;" class='info'><center>UNIT KERJA</center></th>
+                        </tr>
+                </thead>
+                <tbody>
+        <?php
+
+        if ($dataun){
+                foreach($dataun as $v){
+                ?>
+                        <tr role="row">
+                                <td align='center'><?php echo $no; ?></td>
+                                <td class="sorting_1"><?php echo $v['id']; ?></td>
+                                <td><?php echo $v['nama']; ?></td>
+                        </tr>
+                <?php
+                $no++;
+                } // End Foreach
+        }
+        ?>
+        </tbody>
+        </table>
+        <?php
+  }
+
+  public function ref_jenisttd_bkn()
+  {
+    $data['pesan'] = '';
+    $data['jnspesan'] = '';
+    $data['content'] = 'ref_jenisttd_bkn';
+    $this->load->view('template', $data);
+  }
+
 }
+
 
 
 /* End of file home.php */

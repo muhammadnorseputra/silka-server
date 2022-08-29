@@ -5,11 +5,13 @@ RewriteCond $1 !^(index\.php|resources|robots\.txt)
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php/$1 [L,QSA]
+#RewriteRule ^(.*)$ index.php/$1 [L]
 
 #mencegah user browsing langsung ke folder
 Options All -Indexes
 
 #membatasi ukuran upload file 10MB, melindungi dari serangan DOS
-#LimitRequestBody 10240000
+LimitRequestBody 10240000
 
 #Php_value memory_limit 128MB;
+

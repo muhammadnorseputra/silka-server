@@ -27,8 +27,9 @@
 							  <span class="input-group-addon" id="basic-addon3">Filter Tahun</span>
 							  <select name="tahun" class="form-control">
 							  	<option value="0">-- Pilih Tahun --</option>
-							  	<option value="2020">2020</option>
-							  	<option value="2021">2021</option>
+							  	<?php foreach($f_tahun->result() as $ft): ?>
+							  		<option value="<?= $ft->tahun ?>"><?= $ft->tahun ?></option>
+							  	<?php endforeach ?>
 							  </select>
 							</div>
 							<div class="input-group">
@@ -76,11 +77,11 @@
       </div>
       <div class="modal-body">
         	<div class="form-group">
-		    <label for="exampleFormControlInput1">Nomor</label>
+		    <label for="exampleFormControlInput1">Nomor Sertificate</label>
 		    <input type="text" name="nomor_piagam" class="form-control" id="exampleFormControlInput1" placeholder="Contoh: 800/.../BKPPD-BLG/2021">
 		   </div>
 		   <div class="form-group">
-		    <label for="exampleFormControlInput2">Tanggal</label>
+		    <label for="exampleFormControlInput2">Tanggal Sertificate</label>
 		    <input type="text" name="tgl_piagam" class="form-control tanggal" id="exampleFormControlInput2" placeholder="dd-mm-yyyy">
 		   </div>
 		   

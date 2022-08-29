@@ -1638,6 +1638,48 @@ order by p.fid_eselon, p.nip, p.fid_golru_skr, p.tmt_golru_skr");
 
 	return $this->db->query($sql);
   }
+
+  public function cari_refjfubkn($nmjab=null)
+  {		
+  		if($nmjab!=null) {
+        	$sql = "SELECT * from ref_jabfu_bkn WHERE nama like '%$nmjab%' ORDER BY nama";
+		} else {
+			$sql = "SELECT * from ref_jabfu_bkn order by nama";
+		}
+        return $this->db->query($sql);
+  }
+
+  public function cari_refjurpenbkn($nmjp)
+  {
+        $sql = "SELECT * from ref_jurpen_bkn WHERE nama like '%$nmjp%' ORDER BY grup_pendidikan, nama";
+
+        return $this->db->query($sql);
+  }
+
+  public function cari_reflokasibkn($nmlok)
+  {
+        $sql = "SELECT * from ref_lokasi_bkn WHERE nama like '%$nmlok%' ORDER BY nama";
+
+        return $this->db->query($sql);
+  }
+
+  public function cari_refunorbkn($nmunor)
+  {
+        $sql = "SELECT * from ref_unor_bkn WHERE (nama like 'INSPEKTORAT%' OR nama like 'SEKRETARIAT DAERAH' OR nama like 'SEKRETARIAT DPRD' OR nama like 'DINAS%'
+		OR nama like 'BADAN%' OR nama like 'SMP%' OR nama like 'SD%' OR nama like 'TK%' OR nama like 'PUSKESMAS%'
+		OR nama like 'UPT%' OR nama like 'KECAMATAN%' OR nama like 'KELURAHAN%' OR nama like 'PAUD%' OR nama like 'RUMAH SAKIT%'
+		OR nama like 'SANGGAR KEGIATAN BELAJAR' OR nama like 'SATUAN POLISI%')
+		AND nama like '%$nmunor%' ORDER BY nama";
+
+        return $this->db->query($sql);
+  }
+
+  public function cari_refjenisttdbkn()
+  {
+        $sql = "SELECT * from ref_jenisttd_bkn ORDER BY nama";
+
+        return $this->db->query($sql);
+  }
 }
 /* End of file mpegawai.php */
 /* Location: ./application/models/mpegawai.php */

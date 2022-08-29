@@ -8,13 +8,16 @@ class Pensiun extends CI_Controller {
         // Load Helper 
         $this->load->helper(array('url','form','fungsitanggal','fungsipegawai','file','storage','number'));
         // Load Model
-        $this->load->model(array('mpegawai','mpensiun','munker','mpip', 'msantunan_korpri' => 'korpri'));
+        $this->load->model(array('mpegawai','mpensiun','munker','mpip', 'datacetak', 'msantunan_korpri' => 'korpri'));
 		
 				// Cek Session
 		    if (!$this->session->userdata('nama'))
 		    {
 		      redirect('login');
 		    }
+
+	// untuk fpdf
+        $this->load->library('fpdf');
     }
 
     /*=============================================
@@ -290,7 +293,7 @@ class Pensiun extends CI_Controller {
         echo "<small>
               <table class='table table-hover table-bordered'>";
         echo "<tr>
-          <td align='center'><b>NO1</b></td>
+          <td align='center'><b>NO</b></td>
           <td align='center'><b>NAMA/NIP</b></td>
           <td align='center'><b>JABATAN</b></td>
           <td align='center' width=80'><b>USIA BUP</b></td>
@@ -490,6 +493,11 @@ class Pensiun extends CI_Controller {
           <?php echo "Status MPP : ".$jmlmpp; ?>
         </div>
         </b>
+	        <form method="POST" action="../pensiun/cetakproyeksi" target='_blank'>
+                	<input type="hidden" name="tahun" id="tahun" maxlength="4" value="<?= $tahun ?>">
+        	       	<button type="submit" class="btn btn-info btn-xs btn-block">
+                        <i class="fa fa-print fa-2x"></i><br/>Cetak Proyeksi BUP <?php echo $tahun; ?></button>
+                </form>
       <?php
       echo "</div>"; // div col terakhir
 
@@ -875,6 +883,13 @@ class Pensiun extends CI_Controller {
 	}
 	// -------------------------- end-norsptr ---------------------------//
 	
-	
+  public function cetakproyeksi()
+  {
+    $thn = $this->input->post('tahun');
+    $res['thn'] = $thn;
+    $res['data'] = $this->mpensiun->cetakproyeksi($thn);
+    
+    $this->load->view('pensiun/cetakproyeksi',$res);
+  }
 	
 }

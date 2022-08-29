@@ -1511,17 +1511,18 @@ class Mkinerja extends CI_Model
     public function getjmlwajibekin($thn, $bln)
     {
         // YANG TIDAK WAJIB EKINERJA HANYA LAH TENAGA JFT KESEHATAN DAN PENDIDIKAN, dan AJUDAN
-        $qjmljft = $this->db->query("SELECT ut.nip, ut.jabatan FROM usul_tpp as ut, ref_jabft as jt WHERE ut.jabatan = jt.nama_jabft and tahun = '".$thn."' and bulan = '".$bln."' and jt.kelompok_tugas in ('KESEHATAN','PENDIDIKAN')");
+        $qjmljft = $this->db->query("SELECT ut.nip, ut.jabatan FROM usul_tpp as ut, ref_jabft as jt 
+	WHERE ut.jabatan = jt.nama_jabft and tahun = '".$thn."' and bulan = '".$bln."' and jt.kelompok_tugas in ('KESEHATAN','PENDIDIKAN')");
              
             if($qjmljft->num_rows() > 0) {
                 $jmljft = $qjmljft->num_rows();     
             }
 
-        //$qjmlajudan = $this->db->query("SELECT ut.nip, ut.jabatan FROM usul_tpp as ut WHERE ut.jabatan = 'AJUDAN' and tahun = '".$thn."' and bulan = '".$bln."'");
+        $qjmlajudan = $this->db->query("SELECT ut.nip, ut.jabatan FROM usul_tpp as ut WHERE ut.jabatan = 'AJUDAN' and tahun = '".$thn."' and bulan = '".$bln."'");
             
-        //    if($qjmlajudan->num_rows() > 0) {
-        //        $jmlajudan = $qjmlajudan->num_rows();     
-        //    }
+            if($qjmlajudan->num_rows() > 0) {
+                $jmlajudan = $qjmlajudan->num_rows();     
+            }
 
         // Jumlah Wajib ekinerja
         $jmlusul = $this->getjumlahusul_perperiode($thn, $bln);
@@ -1549,18 +1550,25 @@ class Mkinerja extends CI_Model
 
     public function getjmlekinnol($thn, $bln)
     {
-        $query = $this->db->query("SELECT ut.nip, ut.jabatan FROM usul_tpp as ut, ref_status_pegawai as s, pegawai as p WHERE nilai_kinerja = 0 and jabatan != 'AJUDAN' and cuti_sakit = 'TIDAK' and cuti_besar = 'TIDAK' and tahun = '".$thn."' and bulan = '".$bln."' and p.nip = ut.nip and s.id_status_pegawai = p.fid_status_pegawai and s.nama_status_pegawai != 'PEGAWAI MENINGGAL BERHAK TPP'");
+        $query = $this->db->query("SELECT ut.nip, ut.jabatan FROM usul_tpp as ut, ref_status_pegawai as s, pegawai as p 
+	WHERE nilai_kinerja = 0 and jabatan != 'AJUDAN' and cuti_sakit = 'TIDAK' 
+	and cuti_besar = 'TIDAK' and tahun = '".$thn."' and bulan = '".$bln."' and p.nip = ut.nip 
+	and s.id_status_pegawai = p.fid_status_pegawai and s.nama_status_pegawai != 'PEGAWAI MENINGGAL BERHAK TPP'");
              
-            if($query->num_rows() > 0) {
-                $jmlnol = $query->num_rows();     
-            }
+        if($query->num_rows() > 0) {
+            $jmlnol = $query->num_rows();     
+        }
 
         // Jumlah Wajib ekinerja
         $jmlusul = $this->getjumlahusul_perperiode($thn, $bln);
         $jmlwajibekin = $this->getjmlwajibekin($thn, $bln);
         $jmltdkwajibekin = $jmlusul - $jmlwajibekin;
-
-        return $jmlnol - $jmltdkwajibekin;           
+	
+	if ($jmlnol >= $jmltdkwajibekin) {
+        	return $jmlnol - $jmltdkwajibekin;
+	} else {
+		return 0;
+	}     
     }
 
     public function getjmlekinmin60($thn, $bln)

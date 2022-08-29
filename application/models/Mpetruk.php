@@ -160,4 +160,10 @@ class Mpetruk extends CI_Model {
 		$this->db->where($whr);
 		return $this->db->update($tbl, $data);
 	}
+	public function f_tahun() {
+		return $this->db->select('tahun')
+		->from('petruk')
+		->group_by('tahun')
+		->get();
+	}
 }

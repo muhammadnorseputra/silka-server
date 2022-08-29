@@ -33,7 +33,7 @@ class Petruk extends CI_Controller {
 	}
 	public function penilaian()
 	{
-		if ($this->session->userdata('profil_priv') == "Y") { 
+	if ($this->session->userdata('profil_priv') == "Y") { 
       $data['unker'] = $this->munker->dd_unker()->result_array();      
       $data['content'] = 'petruk/pegawai';
       $this->load->view('template',$data);
@@ -211,7 +211,8 @@ class Petruk extends CI_Controller {
 	
 	public function rekapitulasi()
 	{
-		if ($this->session->userdata('profil_priv') == "Y") {      
+		if ($this->session->userdata('profil_priv') == "Y") { 
+	  $data['f_tahun'] = $this->mpetruk->f_tahun();     
       $data['content'] = 'petruk/rekapitulasi';
       $this->load->view('template',$data);
     }

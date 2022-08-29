@@ -120,6 +120,12 @@ class Mgraph extends CI_Model {
     return $q->num_rows();
   }
 
+  public function jmlpppk()
+  {
+    $q = $this->db->query("select nipppk from pppk");
+    return $q->num_rows();
+  }
+
   public function jmlcpns()
   {
     $q = $this->db->query("select nip from pegawai where fid_status_pegawai = '0401'");

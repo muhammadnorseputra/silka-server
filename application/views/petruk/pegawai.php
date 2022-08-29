@@ -45,9 +45,9 @@
   } 
 </script>
 <?php
-	$get_bulan_open = 05;
+	$get_bulan_open = "08";
 	$get_bulan = date("m");
-	if($get_bulan == $get_bulan_open):
+	if($get_bulan === $get_bulan_open):
 ?>
 <center>
     
@@ -93,7 +93,7 @@
 				
 				<div class="jumbotron">
 				  <h2><i class="glyphicon glyphicon-info-sign"></i><br><br>Penilaian Instrumen Kinerja Ditutup Sementara.</h2>
-				  <p>Akan dibuka kembali pada bulan Mei, terimakasih.</p>
+				  <p>Akan dibuka kembali setelah pemberitahuan dari kami, terimakasih.</p>
 				</div>
 			</div>
 		</div>

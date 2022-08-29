@@ -3142,6 +3142,7 @@ class Kinerja extends CI_Controller {
         <td align='center' rowspan='2' width='10'><b>NO</b></td>      
         <td align='center' rowspan='2' width='150'><b>NIP</b></td>
         <td align='center' colspan='4'><b>DATA PADA APLIKASI E-KINERJA</b></td>
+	<td align='center' rowspan='2' width=80'><b>STATUS TPP</b></td>
       </tr>
       <tr class='info'>
         <td align='center' width='300'><b>JABATAN | UNIT KERJA</b></td>
@@ -3156,13 +3157,16 @@ class Kinerja extends CI_Controller {
     } else if ($jns == "pppk") {
       $data = $this->munker->pppkperunker($idunker)->result_array();
     }
+
     $berhasil = 0;
     $tidakditemukan = 0;
     $tidaktpp = 0;
+    $telahusultpp = 0;
 
     $nmunker = $this->munker->getnamaunker($idunker);
 
     $no = 1;
+    $jml = 1;
     foreach($data as $dp) :      
       $nip = $dp['nip'];    
       // untuk pengecekan
@@ -3172,10 +3176,15 @@ class Kinerja extends CI_Controller {
       if ($jns == "pns") {
         $berhaktpp = $this->mkinerja->get_haktpp($nip);
         $nama = $this->mpegawai->getnama($dp['nip']);
+	$cekusultpp =  $this->mkinerja->cektelahusul($nip, $thn, $bln);
+	$jml++;
       } else if ($jns == "pppk") {
         $berhaktpp = $this->mkinerja_pppk->get_haktpp_pppk($nip);
         $nama = $this->mpppk->getnama_lengkap($dp['nip']);
+	$cekusultpp =  $this->mkinerja_pppk->cektelahusul($nip, $thn, $bln);
+	$jml++;
       }
+
       echo "<tr>";
       echo "<td align='center'>".$no."</td>";                           
       echo "<td>NIP. ".$dp['nip']."<br/>".$nama."</td>";            
@@ -3210,6 +3219,14 @@ class Kinerja extends CI_Controller {
         echo "<td colspan='4' align='center' class='success'><span class='text-info'>TIDAK BERHAK TPP</span></td>";
         $tidaktpp++;
       }
+
+      if ($cekusultpp) {
+	echo "<td align='center'><small><span class='text-danger'><b>TIDAK BISA IMPORT<br/>TPP TELAH DIHITUNG</b></span></small></td>";
+	$telahusultpp++;
+      } else {
+	echo "<td align='center'><small><span class='text-success'><b>BISA IMPORT</b></span></small></td>";
+      }
+
       echo "</tr>";
       $no++;
     endforeach;    
@@ -3243,6 +3260,8 @@ class Kinerja extends CI_Controller {
       //    OR (($bln == '12') AND ($blnini == '12') AND ($thn == $thnini)) // 2.
       //    OR (($bln == '12') AND ($blnini == '1') AND ($thn == $thnini-1)) // 3.
       //    ) {         
+
+  	if ($jml >= $telahusultpp) {
           echo "<form method='POST' action='../kinerja/import'>                
                 <input type='hidden' name='idunker' id='idunker' maxlength='10' value='".$idunker."'>
                 <input type='hidden' name='thn' id='thn' maxlength='4' value='".$thn."'>
@@ -3252,6 +3271,7 @@ class Kinerja extends CI_Controller {
                   <span class='glyphicon glyphicon-import' aria-hidden='false'></span>&nbspImport Data Nilai SKP ke SILKa
                 </button>
               </form>";
+	}
       //}
 
     echo "</div>";
@@ -3273,7 +3293,7 @@ class Kinerja extends CI_Controller {
     } else if ($jns == "pppk") {
       $data = $this->munker->pppkperunker($idunker)->result_array();
     }
-    
+
     $berhasil = 0;
     $gagal = 0;
     $nmunker = $this->munker->getnamaunker($idunker);
@@ -3287,13 +3307,25 @@ class Kinerja extends CI_Controller {
       if ($jns == "pns") {
         $berhaktpp = $this->mkinerja->get_haktpp($nip);
         $nama = $this->mpegawai->getnama($dp['nip']);
+	$cekusultpp =  $this->mkinerja->cektelahusul($nip, $thn, $bln);
+        if (!$cekusultpp) {
+          $bisaimport = "YA";
+        } else {
+	  $bisaimport = "TIDAK";
+	}
       } else if ($jns == "pppk") {
         $berhaktpp = $this->mkinerja_pppk->get_haktpp_pppk($nip);
         $nama = $this->mpppk->getnama_lengkap($dp['nip']);
+	$cekusultpp =  $this->mkinerja_pppk->cektelahusul($nip, $thn, $bln);
+        if (!$cekusultpp) {
+          $bisaimport = "YA";
+        } else {
+          $bisaimport = "TIDAK";
+        }
       }
 
       // Cek apakah PNS tersebut berhak atas TPP
-      if ($berhaktpp == 'YA') { 
+      if (($berhaktpp == 'YA') AND ($bisaimport == "YA")) { 
           //$url = 'http://localhost/expneo-baru/index.php/c_api/get_skp_blnnip_silka?thn='.$thn.'&bln='.$bln.'&nip='.$nip;
 	  //$url = 'https://ekinerja.bkppd-balangankab.info/c_api/get_skp_blnnip_silka?nip='.$nip.'&thn='.$thn.'&bln='.$bln;
           $url = 'http://ekinerja.bkppd.local/c_api/get_skp_blnnip_silka?nip='.$nip.'&thn='.$thn.'&bln='.$bln;
@@ -3349,7 +3381,7 @@ class Kinerja extends CI_Controller {
               	}
 	      } // END untuk PNS
 	      // UNTUK PPPK
-	      else if ($jns == "pppk") {
+	      else if (($jns == "pppk") AND ($bisaimport == "YA")) {
                 $data = array(
                 'nipppk'          => $nip,
                 'bulan'           => $bln,
@@ -3518,8 +3550,8 @@ class Kinerja extends CI_Controller {
             
       $ada = $this->mpegawai->getnipnama($nip)->result_array(); 
       if ($ada) {
-        $berhaktpp = $this->mkinerja->get_haktpp($nip); 
-        if ($berhaktpp == 'YA') { 
+        $berhaktpp = $this->mkinerja->get_haktpp($nip);
+	if ($berhaktpp == 'YA') { 
             ?>
             <br/>
             <small>
@@ -3564,10 +3596,14 @@ class Kinerja extends CI_Controller {
 
               echo "</table>";   
               echo "</small>";
-
-              echo "<div class='row'>";        
-              echo "<div class='col-md-12'>";
-              echo "<form method='POST' action='../kinerja/importperorangan'>                
+	      
+              $cekusultpp =  $this->mkinerja->cektelahusul($nip, $thn, $bln);
+              if ($cekusultpp){
+            	echo "<h5><span class='text-danger'>Kada kawa di-Impor karena TPP bulan ".bulan($bln)." ".$thn." sudah tuntung dihitung.</span></h5>";
+              } else {	
+              	echo "<div class='row'>";        
+              	echo "<div class='col-md-12'>";
+              	echo "<form method='POST' action='../kinerja/importperorangan'>                
                       <input type='hidden' name='nip' id='nip' maxlength='10' value='".$nip."'>
                       <input type='hidden' name='thn' id='thn' maxlength='4' value='".$thn."'>
                       <input type='hidden' name='bln' id='bln' maxlength='4' value='".$bln."'>
@@ -3575,9 +3611,10 @@ class Kinerja extends CI_Controller {
                         <span class='glyphicon glyphicon-import' aria-hidden='false'></span>&nbspImport Data Kinerja
                       </button>
                     </form>";
-              echo "</div>";
-              echo "<div class='col-md-2'></div>";
-              echo "</div>"; // tutup row
+              	echo "</div>";
+              	echo "<div class='col-md-2'></div>";
+              	echo "</div>"; // tutup row
+	      }
             } else {
               echo "<br/><h4><span class='text-warning'>DATA KINERJA TIDAK DITEMUKAN</span></h4>"; 
             }

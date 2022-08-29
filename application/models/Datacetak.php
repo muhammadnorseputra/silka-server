@@ -298,4 +298,11 @@ class Datacetak extends CI_Model {
 
       return $query->result();
     }
+
+    //function datacetakproyeksipensiun() {
+    //  $tahun = $this->input->post('tahun');
+    //  $query = $this->mpensiun->proyeksi();	
+
+    //  return $query->result();
+    //}
 }

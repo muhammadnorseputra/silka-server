@@ -4,7 +4,7 @@ if ($this->session->userdata('level') == "PNS") {
 ?>
 <nav class="navbar navbar-default">
   <div class="container-fluid ">
-    <!-- Brand and toggle get grouped for better mobile display -->
+    <!-- Brand and toggle get grouped for better mobile display oke -->
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
         <span class="sr-only">Toggle navigation</span>
@@ -105,7 +105,9 @@ if ($this->session->userdata('level') == "PNS") {
       <ul class="nav navbar-nav">
         <!--<li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>-->
         <?php
-        echo "<li><a href='".base_url('home/dashboard')."'>Dashboard</a></li>";        
+	if ($this->session->userdata('level') == "ADMIN") {
+        	echo "<li><a href='".base_url('home/dashboard')."'>Dashboard</a></li>";
+	}        
         ?>
 
         <li class="dropdown">
@@ -114,13 +116,14 @@ if ($this->session->userdata('level') == "PNS") {
             <?php
             if ($this->session->userdata('profil_priv') == "Y") {
           		if ($this->session->userdata('level') == "TAMU") {
-          	           echo "<li><a href='".base_url('pegawai/carinipnama')."'>Cari PNS</a></li>";  
+          	           echo "<li><a href='".base_url('pegawai/carinipnama')."'><span>Cari PNS</span> <span>Alt + ?</span></a> </li>";  
           		} else {	           
-          		   echo "<li><a href='".base_url('pegawai/carinipnama')."'>Cari PNS</a></li>";  
-          		   echo "<li><a href='".base_url('home/tampilunker')."'>Tampil per Unker</a></li>";	
+          		   echo "<li><a href='".base_url('pegawai/carinipnama')."' style='display: flex; justify-content: space-between; align-items: center'><span>Cari PNS</span> <span style='font-size: 10px; background: #eee; border-radius: 50px;padding-left:5px; padding-right:5px; position: relative; right: -16px;'>Ctrl + ?</span></a></li>";  
+          		   echo "<li><a href='".base_url('home/tampilunker')."' style='display: flex; justify-content: space-between; align-items: center'><span>Tampil per Unker </span> <span style='font-size: 10px; background: #eee; border-radius: 50px;padding-left:5px; padding-right:5px; position: relative; right: -16px;'>Alt + /</span></a></li>";	
           		}
             }
-            if ($this->session->userdata('profil_priv') == "Y") {
+            //if ($this->session->userdata('profil_priv') == "Y") {
+	    if ($this->session->userdata('level') == "ADMIN") {
               echo "<li role='separator' class='divider'></li>";
               echo "<li><a href='".base_url('nonpns/tampilunker')."'>Non PNS</a></li>";  
             }
@@ -292,7 +295,7 @@ if ($this->session->userdata('level') == "PNS") {
 
         <?php
         }
-        // akhir layanan kgb
+        // akhir layanan kgb	
         ?>
 
 	<?php
@@ -305,19 +308,14 @@ if ($this->session->userdata('level') == "PNS") {
             <ul class="dropdown-menu">
 
 	    <?php
-            if ($this->session->userdata('tpp_priv') == "Y") {
-	    //if ($this->session->userdata('level') == "ADMIN") {
+            //if ($this->session->userdata('tpp_priv') == "Y") {
+	    if ($this->session->userdata('level') == "ADMIN") {
                 echo "<li><a tabindex='-1' href='".base_url('absensi/tampilimport')."'>Import Absensi<sup></sup></a></li>";
-            }
-
-	    if ($this->session->userdata('tpp_priv') == "Y") {
-	    //if ($this->session->userdata('level') == "ADMIN") {
-            	echo "<li><a tabindex='-1' href='".base_url('absensi/tampilimportepresensi')."'>Import e-Presensi<sup></sup></a></li>";
+            	echo "<li><a tabindex='-1' href='".base_url('absensi/tampilimportepresensi')."'>Import e-Presensi<sup><code>Kolektif</code></sup></a></li>";
 	    }
-            ?>
 
-	    <?php
             if ($this->session->userdata('tpp_priv') == "Y") {
+	      echo "<li><a tabindex='-1' href='".base_url('absensi/tampilimportperorangan')."'>Import e-Presensi<sup><code>Perorangan</code></sup></a></li>";
               echo "<li><a tabindex='-1' href='".base_url('absensi/tampilabsensi')."'>Tampil e-Presensi<sup></sup></a></li>";
             }
             ?>
@@ -407,9 +405,22 @@ if ($this->session->userdata('level') == "PNS") {
 	      </li>
 	      
 	      <?php
-                if (($this->session->userdata('level') == "ADMIN") OR ($this->session->userdata('nip') == "198309042007011001") ) {
-                        echo "<li><a href='".base_url('home/kamusjabatan')."'>Kamus Kelas Jabatan</a></li>";
-                }
+                //if (($this->session->userdata('level') == "ADMIN") OR ($this->session->userdata('nip') == "198309042007011001") ) {
+                //        echo "<li><a href='".base_url('home/kamusjabatan')."'>Kamus Kelas Jabatan</a></li>";
+			?>
+			<li class="dropdown-submenu">
+                      		<a href="#">Data Referensi Pendataan Non PNS 2022</a>
+                      		<ul class="dropdown-menu">
+                        		<li><a href='<?php echo base_url()."home/ref_jabfu_bkn"; ?>' target=''>Jabatan</a></li>
+                        		<li><a href='<?php echo base_url()."home/ref_jurpen_bkn"; ?>' target=''>Pendidikan</a></li>
+					<li><a href='<?php echo base_url()."home/ref_lokasi_bkn"; ?>' target=''>Tempat Lahir</a></li>
+        				<li><a href='<?php echo base_url()."home/ref_unor_bkn"; ?>' target=''>Unit Kerja</a></li>
+					<li><a href='<?php echo base_url()."home/ref_jenisttd_bkn"; ?>' target=''>Pejabat Tandatangan SK</a></li>
+				</ul>
+              		</li>
+
+			<?php
+                //}
              ?>	
 	    </ul>
 	</li>
@@ -682,7 +693,7 @@ if ($this->session->userdata('level') == "PNS") {
               echo "<li><a href='".base_url('login/gantipassword')."'><i class='fa fa-key fa-fw'></i> Ganti Password</a>";
               echo "</li>";
               echo "<li class='divider'></li>";
-              echo "<li><a href='#' onclick='logout()'><i class='fa fa-sign-out fa-fw'></i> Logout</a>";
+              echo "<li><a href='#' onclick='logout()' style='display: flex; justify-content: space-between; align-items: center'><span><i class='fa fa-sign-out fa-fw'></i> Logout<span> <span style='font-size: 10px; background: #eee; border-radius: 50px;padding-left:5px; padding-right:5px; position: relative; right: -16px;'>Ctrl + q</span></a>";
               
               if($this->session->userdata('level') == 'ADMIN'):
               echo "<li class='divider'></li>";
@@ -697,7 +708,7 @@ if ($this->session->userdata('level') == "PNS") {
               
               echo "</li>";
             } else if ($this->session->userdata('level') == "TAMU") {
-              echo "<li><a href='".base_url('login/keluar')."'><i class='fa fa-sign-out fa-fw'></i> Logout</a>";
+              echo "<li><a href='".base_url('login/keluar')."'><span><i class='fa fa-sign-out fa-fw'></i> Logout</span></a>";
               echo "</li>";
             }
           ?>
@@ -768,6 +779,17 @@ if ($this->session->userdata('level') == "PNS") {
 <script type="text/javascript" src="<?php echo base_url('assets/sweetalert/sweetalert.js') ?>"></script>
 
 <script type="text/javascript">
+window.addEventListener("keydown", function (event) {
+	if(event.altKey && event.keyCode === 191) {
+		window.location.replace(`<?= base_url('home/tampilunker') ?>`)
+	} else if(event.ctrlKey && event.keyCode === 191) {
+		window.location.replace(`<?= base_url('pegawai/carinipnama') ?>`)
+	} else if(event.ctrlKey && event.keyCode === 81) {
+		return logout();
+	}
+	//console.log(event.keyCode)
+});
+
 function menuLink(link) {
   $.ajax({
     url: '<?php echo base_url() ?>'+link,

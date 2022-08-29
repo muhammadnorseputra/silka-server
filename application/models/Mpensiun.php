@@ -111,19 +111,36 @@ class Mpensiun extends CI_Model {
   function proyeksi()
   {
     $sess_nip = $this->session->userdata('nip');
-    $q = $this->db->query("select p.nip, p.tgl_lahir, p.fid_unit_kerja, p.tmp_lahir, p.tgl_lahir, p.alamat, p.fid_jnsjab, p.fid_jabft, p.fid_jabfu, p.fid_jabatan,
+    $q = $this->db->query("select p.nip, p.tgl_lahir, p.alamat, p.fid_unit_kerja, p.tmp_lahir, p.tgl_lahir,
+            p.fid_jnsjab, p.fid_jabft, p.fid_jabfu, p.fid_jabatan,
+            CASE
+              WHEN p.fid_jnsjab = '1' THEN (select usia_pensiun from ref_jabstruk where id_jabatan = p.fid_jabatan)
+              WHEN p.fid_jnsjab = '2' THEN (select usia_pensiun from ref_jabfu where id_jabfu = p.fid_jabfu)
+               WHEN p.fid_jnsjab = '3' THEN (select usia_pensiun from ref_jabft where id_jabft = p.fid_jabft)
+            ELSE 0
+            END AS usia_pensiun
+          from pegawai as p, ref_unit_kerjav2 as u, ref_instansi_userportal as i
+          where p.fid_unit_kerja=u.id_unit_kerja
+	  and u.fid_instansi_userportal = i.id_instansi
+          and i.nip_user like '%$sess_nip%'
+          order by p.tgl_lahir");
+    return $q;
+  }
+
+  function cetakproyeksi($tahun)
+  {
+    $q = $this->db->query("select $tahun as 'tahun', p.nip, p.tgl_lahir, p.fid_golru_skr, p.fid_unit_kerja, p.tmp_lahir, p.tgl_lahir, 
+	    p.fid_jnsjab, p.fid_jabft, p.fid_jabfu, p.fid_jabatan,
             CASE
               WHEN p.fid_jnsjab = '1' THEN (select usia_pensiun from ref_jabstruk where id_jabatan = p.fid_jabatan)
               WHEN p.fid_jnsjab = '2' THEN (select usia_pensiun from ref_jabfu where id_jabfu = p.fid_jabfu)
                WHEN p.fid_jnsjab = '3' THEN (select usia_pensiun from ref_jabft where id_jabft = p.fid_jabft)
             ELSE 0 
             END AS usia_pensiun
-          from pegawai as p, ref_unit_kerjav2 as u, ref_instansi_userportal as i
+          from pegawai as p, ref_unit_kerjav2 as u
           where p.fid_unit_kerja=u.id_unit_kerja
-	  and u.fid_instansi_userportal = i.id_instansi
-          and i.nip_user like '%$sess_nip%'
 	  order by p.tgl_lahir");
-    return $q;
+    return $q->result_array();
   }
 
   function getstatpeg($nip)
