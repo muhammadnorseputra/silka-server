@@ -2,7 +2,7 @@
   <form class="navbar-form navbar-center" role="search" method="POST" action="../pegawai/tampilnipnama">
     <div class="form-group" style="border-bottom: 1px solid #ccc; padding-bottom:50px; display: flex; align-items: center; justify-content:center">    	
       <input autofocus style="border:2px solid #ccc; border-right:0px; border-radius:0px; outline: none;font-size: 1.3em;height: 50px!important;" type="text" name="data" id="data" class="form-control" placeholder="Ketik NIP atau Nama" size='60' maxlength='18'>
-      <button type="submit" class="btn btn-success" style="height: 50px!important; border-radius:0px;">
+      <button type="submit" class="btn btn-primary" style="height: 50px!important; border-radius:0px;">
         <span class="glyphicon glyphicon-search" aria-hidden="false"></span> Cari Pegawai</button>
     </div>
   </form>  
@@ -30,7 +30,6 @@ var options = {
 	template: {
         type: "custom",
         method: function(value, item) {
-        
 			return `
 			<div style="display: flex; justify-content:start;">
 				<div>
