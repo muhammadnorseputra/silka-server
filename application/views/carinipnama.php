@@ -1,6 +1,6 @@
 <center style="margin-top:30px;">
   <form class="navbar-form navbar-center" role="search" method="POST" action="../pegawai/tampilnipnama">
-    <div class="form-group" style="border-bottom: 1px solid #ccc; padding-bottom:50px; display: flex; align-items: center; justify-content:center">    	
+    <div class="form-group" style="display: flex; align-items: center; justify-content:center">    	
       <input autofocus style="border:2px solid #ccc; border-right:0px; border-radius:0px; outline: none;font-size: 1.3em;height: 50px!important;" type="text" name="data" id="data" class="form-control" placeholder="Ketik NIP atau Nama" size='60' maxlength='18'>
       <button type="submit" class="btn btn-primary" style="height: 50px!important; border-radius:0px;">
         <span class="glyphicon glyphicon-search" aria-hidden="false"></span> Cari Pegawai</button>
@@ -17,8 +17,8 @@
 var options = {
 	url: "<?= base_url('pegawai/show_autocomplete') ?>",
 	getValue: function(element) {
-	    return `${element.nama}`;
-	  },
+		return `${element.nama}`;
+	},
 	listLocation: "items",
 	ajaxSettings: {
 	    dataType: "json",
@@ -58,7 +58,7 @@ var options = {
 			time: 200,
 			callback: function() {}
 		},
-		onSelectItemEvent: function() {
+		onChooseEvent: function() {
 			var itemData = $("#data").getSelectedItemData();
 			var value = `${itemData.nip}`;
 

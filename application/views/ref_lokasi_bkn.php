@@ -116,6 +116,10 @@ var options = {
 			type: "fade", //normal|slide|fade
 			time: 200,
 			callback: function() {}
+		},
+    onChooseEvent: function() {
+      var row = $("#nmlok").getSelectedItemData();
+			showData(row.nama)
 		}
 	},
 	preparePostData: function(data) {

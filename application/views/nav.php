@@ -514,8 +514,7 @@ if ($this->session->userdata('level') == "PNS") {
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Pensiun <span class="caret"></span></a>
             <ul class="dropdown-menu">
 					<li><a href="<?php echo base_url('pensiun/proyeksi') ?>">Proyeksi BUP 5 Tahun</a></li>
-			          	<?php if($this->session->userdata('nama') == "uda" || $this->session->userdata('nama') == "putra" || $this->session->userdata('nama') == "fitriani" 
-			          	|| $this->session->userdata('nama') == "kholik"): ?>
+			          	<?php if($this->session->userdata('nama') == "uda" || $this->session->userdata('nama') == "putra" || $this->session->userdata('nama') == "fitriani"): ?>
 					<li><a href="<?php echo base_url('pensiun/rekap') ?>">Rekapitulasi Pensiun</a></li>
                                         <li><a href='<?php echo base_url('pensiun/statistik') ?>'>Statistik</a></li>
 					<li role='separator' class='divider'></li>

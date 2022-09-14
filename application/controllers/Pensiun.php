@@ -493,11 +493,18 @@ class Pensiun extends CI_Controller {
           <?php echo "Status MPP : ".$jmlmpp; ?>
         </div>
         </b>
+	<?php
+          if ($this->session->userdata('level') == "ADMIN") {
+        ?>
 	        <form method="POST" action="../pensiun/cetakproyeksi" target='_blank'>
                 	<input type="hidden" name="tahun" id="tahun" maxlength="4" value="<?= $tahun ?>">
         	       	<button type="submit" class="btn btn-info btn-xs btn-block">
                         <i class="fa fa-print fa-2x"></i><br/>Cetak Proyeksi BUP <?php echo $tahun; ?></button>
                 </form>
+	<?php
+	  }
+	?>
+
       <?php
       echo "</div>"; // div col terakhir
 

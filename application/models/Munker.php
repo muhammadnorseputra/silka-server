@@ -24,6 +24,7 @@ class Munker extends CI_Model
                 u.fid_instansi_userportal = i.id_instansi
                 and up.nip = '$nip'
                 and i.nip_user like '%$nip%'
+                and u.nama_unit_kerja NOT LIKE '-%'
                 order by u.id_unit_kerja";
 	} else {
         	$sql = "select u.nama_unit_kerja, u.id_unit_kerja
@@ -32,6 +33,7 @@ class Munker extends CI_Model
                 u.fid_instansi_userportal = i.id_instansi
                 and up.nip = '$nip'
                 and i.nip_user like '%$nip%'
+                and u.nama_unit_kerja NOT LIKE '-%'
 		and nama_unit_kerja not like '-%'
 		order by u.id_unit_kerja";
 		//and nama_unit_kerja not like '-%'

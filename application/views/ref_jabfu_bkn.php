@@ -114,7 +114,7 @@ var options = {
 		},
 		showAnimation: {
 			type: "fade", //normal|slide|fade
-			time: 400,
+			time: 200,
 			callback: function() {}
 		},
 
@@ -122,6 +122,10 @@ var options = {
 			type: "fade", //normal|slide|fade
 			time: 200,
 			callback: function() {}
+		},
+    onChooseEvent: function(e) {
+      var row = $("#nmjab").getSelectedItemData();
+			showData(row.nama)
 		}
 	},
 	preparePostData: function(data) {

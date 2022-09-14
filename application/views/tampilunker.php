@@ -52,7 +52,7 @@
 <center>
 <form class="navbar-form navbar-center">
   <div class="form-group">
-      <select name="id_unker" id="id_unker" onChange="showData(this.value)">
+      <select name="id_unker" class="form-control" id="id_unker" onChange="showData(this.value)">
       <?php
           echo "<option value=''>- Pilih Unit Kerja -</option>";
           foreach($unker as $uk)
@@ -70,6 +70,8 @@
 </center>
 <script type="text/javascript">
 $("#id_unker").select2({
-   width: '800px' 
+   width: '600px',
+   theme: "classic",
+   delay: 250 
 });   
 </script>
