@@ -37,7 +37,9 @@ class PDF extends FPDF
         $this->setXY($x+10,$y);
         $this->MULTICELL(50,5,'NIP','LRT','L',1);
         $this->setXY($x+10,$y+5);
+	$this->SetTextColor(65,105,255);
         $this->MULTICELL(50,5,'NAMA','LR','L',1);
+	$this->SetTextColor(0,0,0);
         $this->setXY($x+10,$y+10);
         $this->MULTICELL(50,5,'GOLRU','LR','L',1);    
         $this->setXY($x+10,$y+15);
@@ -51,24 +53,30 @@ class PDF extends FPDF
         $this->setXY($x+140,$y+10);
         $this->MULTICELL(25,5,'STATUS','LR','L',1);    
         $this->setXY($x+140,$y+15);
+	$this->SetTextColor(65,105,255);
         $this->MULTICELL(25,5,'TPP BASIC','LR','R',1);
+	$this->SetTextColor(0, 0, 0);
 
         $this->setXY($x+165,$y);
-        $this->MULTICELL(25,5,'REAL KINERJA','LRT','R',1);
+        $this->MULTICELL(25,5,'NILAI KINERJA','LRT','R',1);
         $this->setXY($x+165,$y+5);
-        $this->MULTICELL(25,5,'60 % KINERJA','LR','R',1);
+        $this->MULTICELL(25,5,'','LR','R',1);
         $this->setXY($x+165,$y+10);
-        $this->MULTICELL(25,5,'TPP KINERJA','LR','R',1);    
+	$this->SetTextColor(50,205,50);
+        $this->MULTICELL(25,5,'TPP KINERJA','LR','R',1);
+	$this->SetTextColor(0,0,0);    
         $this->setXY($x+165,$y+15);
         $this->MULTICELL(25,5,'','LR','C',1);
 
         $this->setXY($x+190,$y);
-        $this->MULTICELL(25,5,'REAL ABSENSI','LRT','R',1);
+        $this->MULTICELL(25,5,'NILAI ABSENSI','LRT','R',1);
         $this->setXY($x+190,$y+5);
         $this->MULTICELL(25,5,'40 % ABSENSI','LR','R',1);
         $this->setXY($x+190,$y+10);
-        $this->MULTICELL(25,5,'TPP ABSENSI','LR','R',1);    
-        $this->setXY($x+190,$y+15);
+	$this->SetTextColor(50,205,50);
+        $this->MULTICELL(25,5,'TPP ABSENSI','LR','R',1);
+	$this->SetTextColor(0,0,0);    
+	$this->setXY($x+190,$y+15);
         $this->MULTICELL(25,5,'','LR','C',1);
 
         $this->setXY($x+215,$y);
@@ -83,15 +91,21 @@ class PDF extends FPDF
         //$this->MULTICELL(25,5,'TOTAL','LR','R',1);
 
         $this->setXY($x+240,$y);
-        $this->MULTICELL(30,4,'TPP REAL','LRT','R',1);
+	$this->SetTextColor(50,205,50);
+        $this->MULTICELL(30,4,'TPP REALISASI','LRT','R',1);
+	$this->SetTextColor(0,0,0);
         $this->setXY($x+240,$y+4);
         $this->MULTICELL(30,4,'+ TAMBAHAN','LR','R',1);
         $this->setXY($x+240,$y+8);
+	$this->SetTextColor(255,99,71);
         $this->MULTICELL(30,4,'- PPh 21','LR','R',1);    
         $this->setXY($x+240,$y+12);
         $this->MULTICELL(30,4,'- IWP 1%','LR','R',1);
+	$this->SetTextColor(0,0,0);
         $this->setXY($x+240,$y+16);
+	$this->SetTextColor(65,105,255);
         $this->MULTICELL(30,4,'TPP DITERIMA','LR','R',1);
+	$this->SetTextColor(0,0,0);
 
         $this->setXY($x+270,$y);
         $this->MULTICELL(30,20,'TANDA TANGAN','LRT','C',1);
@@ -155,7 +169,9 @@ class PDF extends FPDF
                 $this->setXY($x+10,$y1);
                 $this->MULTICELL(50,5,'NIP','LRT','L',1);
                 $this->setXY($x+10,$y1+5);
+		$this->SetTextColor(65,105,255);
                 $this->MULTICELL(50,5,'NAMA','LR','L',1);
+		$this->SetTextColor(0,0,0);
                 $this->setXY($x+10,$y1+10);
                 $this->MULTICELL(50,5,'GOLRU','LR','L',1);    
                 $this->setXY($x+10,$y1+15);
@@ -172,16 +188,20 @@ class PDF extends FPDF
                 $this->MULTICELL(25,5,'TPP BASIC','LR','R',1);
 
                 $this->setXY($x+165,$y1);
-                $this->MULTICELL(25,5,'REAL KINERJA','LRT','R',1);
+		$this->SetTextColor(50,205,50);
+                $this->MULTICELL(25,5,'NILAI KINERJA','LRT','R',1);
+		$this->SetTextColor(0,0,0);
                 $this->setXY($x+165,$y1+5);
-                $this->MULTICELL(25,5,'60 % KINERJA','LR','R',1);
+                $this->MULTICELL(25,5,'','LR','R',1);
                 $this->setXY($x+165,$y1+10);
                 $this->MULTICELL(25,5,'TPP KINERJA','LR','R',1);    
                 $this->setXY($x+165,$y1+15);
                 $this->MULTICELL(25,5,'','LR','C',1);
 
                 $this->setXY($x+190,$y1);
-                $this->MULTICELL(25,5,'REAL ABSENSI','LRT','R',1);
+		$this->SetTextColor(50,205,50);
+                $this->MULTICELL(25,5,'NILAI ABSENSI','LRT','R',1);
+		$this->SetTextColor(0,0,0);
                 $this->setXY($x+190,$y1+5);
                 $this->MULTICELL(25,5,'40 % ABSENSI','LR','R',1);
                 $this->setXY($x+190,$y1+10);
@@ -206,18 +226,24 @@ class PDF extends FPDF
                 */
 
                 $this->setXY($x+240,$y1);
-                $this->MULTICELL(30,4,'TPP REAL','LRT','R',1);
+		$this->SetTextColor(50,205,50);
+                $this->MULTICELL(30,4,'TPP REALISASI','LRT','R',1);
+		$this->SetTextColor(0,0,0);
                 $this->setXY($x+240,$y1+4);
                 $this->MULTICELL(30,4,'+ TAMBAHAN','LR','R',1);
                 $this->setXY($x+240,$y1+8);
+		$this->SetTextColor(255,99,71);
                 $this->MULTICELL(30,4,'- PPh 21','LR','R',1);    
                 $this->setXY($x+240,$y1+12);
                 $this->MULTICELL(30,4,'- IWP 1%','LR','R',1);
+		$this->SetTextColor(0,0,0);
                 $this->setXY($x+240,$y1+16);
                 $this->MULTICELL(30,4,'TPP DITERIMA','LR','R',1);
 
                 $this->setXY($x+270,$y1);
+		$this->SetTextColor(65,105,255);
                 $this->MULTICELL(30,20,'TANDA TANGAN','LRT','L',1);
+		$this->SetTextColor(0,0,0);
                 $maxline=$maxline+1;
             }
            
@@ -230,7 +256,9 @@ class PDF extends FPDF
 
 	    if ($mpeg->mpegawai->getnama($k->nip)) {
                 $this->setXY($x+10,$y+5);
-                $this->MULTICELL(50,5,$mpeg->mpegawai->getnama($k->nip),'','L',1);            
+		$this->SetTextColor(65,105,255);
+                $this->MULTICELL(50,5,$mpeg->mpegawai->getnama($k->nip),'','L',1); 
+		$this->SetTextColor(0,0,0);           
                 $this->setXY($x+10,$y+10);
                 $this->MULTICELL(50,5,$mpeg->mpegawai->getnamapangkat($k->fid_golru).' ('.$mpeg->mpegawai->getnamagolru($k->fid_golru).')','','L',1);
                 $this->setXY($x+60,$y);
@@ -304,7 +332,9 @@ class PDF extends FPDF
             $this->setFont('arial','',8);
 
             $this->setXY($x+140,$y+16);
+	    $this->SetTextColor(65,105,255);
             $this->MULTICELL(25,3,"Rp. ".number_format($k->tpp_basic,0,",","."),'','R',1);
+	    $this->SetTextColor(0,0,0);
 
             // KINERJA
             if ($k->nilai_kinerja <= 50) {
@@ -337,7 +367,9 @@ class PDF extends FPDF
             	$this->MULTICELL(25,5,$kat_skp,'','R',1);
 		$this->setFont('arial','',8);
 		$this->setXY($x+165,$y+10);
+		$this->SetTextColor(50,205,50);
             	$this->MULTICELL(25,5,"Rp. ".number_format($k->tpp_kinerja,0,",","."),'','R',1);
+		$this->SetTextColor(0,0,0);
 	    //}
 
             // ABSENSI
@@ -347,7 +379,9 @@ class PDF extends FPDF
             $this->setXY($x+190,$y+5);
             $this->MULTICELL(25,5,number_format($absensi40p,2),'','R',1);
             $this->setXY($x+190,$y+10);
+	    $this->SetTextColor(50,205,50);
             $this->MULTICELL(25,5,"Rp. ".number_format($k->tpp_absensi,0,",","."),'','R',1);
+	    $this->SetTextColor(0,0,0);
 
             // TAMBAHAN
             $this->setFont('arial','',7);
@@ -429,16 +463,37 @@ class PDF extends FPDF
 
             // kalkulasi
             $this->setXY($x+240,$y);
-            $this->MULTICELL(30,4,number_format($k->jml_tpp_kotor,0,",","."),'','R',1);
-            $this->setXY($x+240,$y+4);
+	    $this->SetTextColor(50,205,50);
+            $this->MULTICELL(30,4,"Rp. ".number_format($k->jml_tpp_kotor,0,",","."),'','R',1);
+            $this->SetTextColor(0,0,0);
+	    $this->setXY($x+240,$y+4);
             $this->MULTICELL(30,4,"".number_format($k->jml_penambahan,0,",","."),'','R',1);
 
 	    $this->setXY($x+240,$y+8);
-            $this->MULTICELL(30,4,"(".number_format($k->jml_pajak,0,",",".").")",'','R',1);
-            $this->setXY($x+240,$y+12);
+	    $this->setFont('arial','',5);
+	    $jnsptkp =  $mkin->mkinerja->get_jnsptkp($k->nip);
+            $npwp =  $mkin->mkinerja->get_npwp($k->nip);
+	    if ($npwp == '') {
+            	$ketnpwp = "<s>NPWP</s>";
+            } else {
+            	$ketnpwp = "NPWP";
+            }	
+
+            $this->MULTICELL(13,4,$jnsptkp."; ".$ketnpwp,'','L',1);
+	    $this->setFont('arial','',8);
+	    $this->SetTextColor(255,99,71);
+  	    $this->setXY($x+253,$y+8);
+            $this->MULTICELL(17,4,"(".number_format($k->jml_pajak,0,",",".").")",'','R',1);
+            //$this->MULTICELL(17,4,"(9.999.999)",'1','R',1);
+	    $this->setXY($x+240,$y+12);
             $this->MULTICELL(30,4,"(".number_format($k->jml_iuran_bpjs,0,",",".").")",'','R',1);
             $this->setXY($x+240,$y+16);
+	    $this->SetTextColor(0,0,0);
+	    $this->setFont('arial','B',8);
+	    $this->SetTextColor(65,105,255);
             $this->MULTICELL(30,3,"Rp. ".number_format($k->tpp_diterima,0,",","."),'','R',1);
+	    $this->SetTextColor(0,0,0);
+	    $this->setFont('arial','',8);
 
             // tanda tangan
             $this->setFont('arial','',7);
@@ -446,8 +501,8 @@ class PDF extends FPDF
             $this->MULTICELL(5,5,$no.".",'','L',1);
 
             $this->setXY($x+275,$y);
-            $this->MULTICELL(25,5,"Rp. ".number_format($k->tpp_diterima,0,",","."),'','R',1);
-            $this->setFont('arial','',5);
+            //$this->MULTICELL(25,5,"Rp. ".number_format($k->tpp_diterima,0,",","."),'','R',1);
+	    $this->setFont('arial','',5);
             $this->setXY($x+270,$y+15);
             $this->MULTICELL(30,2,$mpeg->mpegawai->getnama($k->nip),'','C',1);
             $this->setFont('arial','',8);
@@ -524,15 +579,23 @@ class PDF extends FPDF
         $totiwp = $mkin->mkinerja->totiwp_perpengantarperiode($k->fid_pengantar, $k->tahun, $k->bulan);
         $tottppditerima = $mkin->mkinerja->tottppditerima_perpengantarperiode($k->fid_pengantar, $k->tahun, $k->bulan);
         
+	$this->SetTextColor(50,205,50);
 	$this->setXY($x+75,$y+10);$this->MULTICELL(50,5,"Total TPP sesuai Realisasi",'TL','L',1);
-        $this->setXY($x+125,$y+10);$this->MULTICELL(25,5,"Rp. ".number_format($tottppkotor,0,",","."),'TR','R',1);
-        $this->setXY($x+75,$y+15);$this->MULTICELL(50,5,"Total TPP Bruto (Sebelum Pajak)",'L','L',1);
-        $this->setXY($x+125,$y+15);$this->MULTICELL(25,5,"Rp. ".number_format($tottppmurni,0,",","."),'R','R',1);        
+        $this->SetTextColor(0,0,0);
+	$this->setXY($x+125,$y+10);$this->MULTICELL(25,5,"Rp. ".number_format($tottppkotor,0,",","."),'TR','R',1);
+        $this->setXY($x+75,$y+15);$this->MULTICELL(50,5,"Total TPP Bruto (Sebelum Potongan)",'L','L',1);
+        $this->setXY($x+125,$y+15);$this->MULTICELL(25,5,"Rp. ".number_format($tottppmurni,0,",","."),'R','R',1);
+        $this->SetTextColor(255,99,71);
         $this->setXY($x+75,$y+20);$this->MULTICELL(50,5,"Total PPh 21",'L','L',1);
+        $this->SetTextColor(0,0,0);
         $this->setXY($x+125,$y+20);$this->MULTICELL(25,5,"Rp. ".number_format($totpajak,0,",","."),'R','R',1);
+        $this->SetTextColor(255,99,71);
         $this->setXY($x+75,$y+25);$this->MULTICELL(50,5,"Total IWP 1%",'L','L',1);
+        $this->SetTextColor(0,0,0);
         $this->setXY($x+125,$y+25);$this->MULTICELL(25,5,"Rp. ".number_format($totiwp,0,",","."),'R','R',1);
-	$this->setXY($x+75,$y+30);$this->MULTICELL(50,5,"Total TPP yang dibayarkan",'BL','L',1);
+        $this->SetTextColor(65,105,255);
+	$this->setXY($x+75,$y+30);$this->MULTICELL(50,5,"Total TPP diterima (Take Home Pay)",'BL','L',1);
+        $this->SetTextColor(0,0,0);
         $this->setXY($x+125,$y+30);$this->MULTICELL(25,5,"Rp. ".number_format($tottppditerima,0,",","."),'BR','R',1);
         
 	//$this->setXY($x+75,$y+35);$this->MULTICELL(75,5,"",'L','L',1);
@@ -582,8 +645,9 @@ class PDF extends FPDF
         $this->setFont('arial','',8);
         //$this->setXY($x+5,$y+36); $this->MULTICELL(55,4,"Diproses pada tanggal ".tglwaktu_indo($tglproses),'','C',1);
 	$this->setXY($x+5,$y+36); $this->MULTICELL(55,4,"OPERATOR DAN VERIFIKATOR SKPD",'','C',1);
-	$this->setXY($x+5,$y+59); $this->MULTICELL(55,4,$mpeg->mpegawai->getnama($nippetugas),'','C',1);
-        $this->setXY($x+5,$y+63); $this->MULTICELL(55,4,"NIP. ".$nippetugas,'T','C',1);
+	//$this->setXY($x+5,$y+59); $this->MULTICELL(55,4,$mpeg->mpegawai->getnama($nippetugas),'','C',1);
+        //$this->setXY($x+5,$y+63); $this->MULTICELL(55,4,"NIP. ".$nippetugas,'T','C',1);
+	$this->setXY($x+5,$y+63); $this->MULTICELL(55,4,"NIP. ",'T','L',1);
 
 	//$this->setXY($x+75,$y+36); $this->MULTICELL(55,4,"VERIFIKATOR BKPPD,",'','C',1);        
         //$this->setXY($x+75,$y+59); $this->MULTICELL(55,4,"ARSWENDI ARRISDHIRA, S.Kom",'','C',1);       

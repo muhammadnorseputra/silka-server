@@ -9,9 +9,11 @@ class Mkgb extends CI_Model {
 
   public function tampilpengantar()
   {
-  	$sess_nip = $this->session->userdata('nip');
+    $sess_nip = $this->session->userdata('nip');
     // tampilkan pengantar kgb dengan id_status 1:SKPD atau 2:CETAK 
-    $q = $this->db->query("select kp.* from kgb_pengantar as kp, ref_unit_kerjav2 as u, ref_instansi_userportal as i where kp.fid_unit_kerja = u.id_unit_kerja and u.fid_instansi_userportal = i.id_instansi and i.nip_user like '%$sess_nip%' and kp.fid_status in ('1','2') order by kp.tgl_pengantar desc");
+    $q = $this->db->query("select kp.* from kgb_pengantar as kp, ref_unit_kerjav2 as u, ref_instansi_userportal as i 
+		where kp.fid_unit_kerja = u.id_unit_kerja and u.fid_instansi_userportal = i.id_instansi 
+		and i.nip_user like '%$sess_nip%' and kp.fid_status in ('1','2') order by kp.tgl_pengantar desc");
     return $q;
   }  
 
@@ -176,7 +178,11 @@ class Mkgb extends CI_Model {
 
   public function tampilproses()
   {
-    $q = $this->db->query("select kp.* from kgb_pengantar as kp where fid_status='3' order by kp.tgl_pengantar desc");
+    $sess_nip = $this->session->userdata('nip');
+    //$q = $this->db->query("select kp.* from kgb_pengantar as kp where fid_status='3' order by kp.tgl_pengantar desc");
+    $q = $this->db->query("select kp.* from kgb_pengantar as kp, ref_unit_kerjav2 as u, ref_instansi_userportal as i
+                where kp.fid_unit_kerja = u.id_unit_kerja and u.fid_instansi_userportal = i.id_instansi
+                and i.nip_user like '%$sess_nip%' and kp.fid_status in ('3') order by kp.tgl_pengantar desc");
     return $q;
   }
 

@@ -6,7 +6,7 @@ class Api extends CI_Controller {
 		
         parent::__construct();
         header("Access-Control-Allow-Origin: *");
-    		header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+    	header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
         //load model web
         $this->load->model('Mapi');
 	$this->load->model('Mpegawai');	

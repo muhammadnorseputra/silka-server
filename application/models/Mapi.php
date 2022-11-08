@@ -3,6 +3,24 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Mapi extends CI_Model {
 
+    /* SERVICES API WITH AUTH */
+    public function services_pegawai($nip) {
+    return $this->db->select("p.*, g.nama_golru, g.nama_pangkat, CONCAT_WS(' ', jst.nama_jabatan, jfu.nama_jabfu, jft.nama_jabft) AS nama_jabatan, 
+    CONCAT_WS(' ', jst.id_jabatan, jfu.id_jabfu, jft.id_jabft) AS kode_jabatan", false)
+    ->from('pegawai AS p')
+    ->join('ref_golru AS g', 'p.fid_golru_skr=g.id_golru')
+    ->join('ref_jabstruk AS jst', 'p.fid_jabatan=jst.id_jabatan', 'left')
+    ->join('ref_jabfu AS jfu', 'p.fid_jabfu=jfu.id_jabfu', 'left')
+    ->join('ref_jabft AS jft', 'p.fid_jabft=jft.id_jabft', 'left')
+    ->where('p.nip', $nip)
+    ->get();
+    // return $this->db->get_where('pegawai', ['nip' => $nip]);
+    }
+
+    public function services_unkerid($id) {
+        return $this->db->get_where('ref_unit_kerjav2', ['id_unit_kerja' => $id]);
+    }
+    /* END SERVICES API WITH AUTH */
 
 	public function get_agama()
     {

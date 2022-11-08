@@ -38,7 +38,7 @@ class PDF extends FPDF
                 //$this->cell(105,6,'Nama Lengkap',1,0,'C',1);
                 //$this->cell(30,6,'No. HP',1,0,'C',1);
                 //$this->cell(50,6,'Jenis Kelamin',1,1,'C',1);
-                
+                //$this->cell(50,6,$this->template,1,1,'C',1);
 	}
  
 	function Content($data)
@@ -65,9 +65,20 @@ class PDF extends FPDF
             }else if ($key->fid_jnsjab == 2) { $idjab = $key->fid_jabfu;
             }else if ($key->fid_jnsjab == 3) { $idjab = $key->fid_jabft;
             }
-            
-            $nmjab = $opeg->mpegawai->namajab($key->fid_jnsjab, $idjab);
-             if ($key->nama_eselon == 'II/A') {
+
+	  $nmjab = $opeg->mpegawai->namajab($key->fid_jnsjab, $idjab);
+	  $idins = $opeg->munker->get_idinstansi($key->fid_unit_kerja);
+	  if ($key->pejabat_sk == "KEPALA DINAS PENDIDIKAN DAN KEBUDAYAAN") {
+	    $this->Image('assets/logo.jpg', 22, 12,'20','25','jpeg');
+            $this->setFont('Arial','',14);
+            $this->setXY(55,14);$this->MULTICELL(130,5,'PEMERINTAH KABUPATEN BALANGAN','','C',1);
+            $this->setFont('Arial','B',22);
+            $this->setXY(42,20);
+            $this->MULTICELL(160,7,'DINAS PENDIDIKAN DAN KEBUDAYAAN','','C',1);
+            $this->setFont('Arial','',10);
+            $this->setXY(50,28);$this->MULTICELL(140,5,'Jln. A. Yani Km. 2,5 Telp/Fax. (0526) 2029521 Kel. Batu Piring Kec. Paringin Selatan Kab. Balangan, Kode Pos 71662','','C',1);
+	  } else {	
+            if ($key->nama_eselon == 'II/A') {
 		$this->Image('assets/garudahp.jpg', 95, 3,'25','27','jpeg');
                 $this->setFont('Arial','B',20);
                 $this->setXY(40,32);$this->MULTICELL(140,7,'BUPATI BALANGAN','','C',1);
@@ -94,10 +105,9 @@ class PDF extends FPDF
 		$this->MULTICELL(160,7,'BADAN KEPEGAWAIAN DAN PENGEMBANGAN SUMBER DAYA MANUSIA','','C',1);
                 $this->setFont('Arial','',10);
                 $this->setXY(50,32);$this->MULTICELL(140,5,'Jln. A. Yani Km. 4,5 Telp/Fax. (0526) 2028060 Kel. Batu Piring Kec. Paringin Selatan Kab. Balangan, Kode Pos 71462','','C',1);
-
-                
             }                      
-            
+	} // end if tempalte            
+
             //buat garis horizontal
             $this->Line(20,42,200,42);
 
@@ -180,7 +190,7 @@ class PDF extends FPDF
 	    $this->cell(3,4,": ",0,1,'L',1);            
             $this->setFont('Arial','',9);
             $this->setXY(113,$y+93); // 93 => 90 (default)
-	    		$this->MULTICELL(90,4,$ounker->munker->getnamaunker($key->fid_unit_kerja),'','L',1); 
+	    $this->MULTICELL(90,4,$ounker->munker->getnamaunker($key->fid_unit_kerja),'','L',1); 
             $lenunker = strlen($ounker->munker->getnamaunker($key->fid_unit_kerja));
             if ($lenunker <= 38) {
                 $y = $y+4; 
@@ -348,8 +358,17 @@ class PDF extends FPDF
             $this->MULTICELL(165,5,'2. Demikian surat izin '.strtolower($mcuti->mcuti->getnamajeniscuti($key->fid_jns_cuti)).' ini dibuat untuk dipergunakan sebagaimana mestinya.','','J',1);
             */
 
-            $this->setXY(110,$y+200);
-	    	if ($key->nama_eselon == 'II/A') {
+        $this->setXY(110,$y+200);
+	if ($key->pejabat_sk == "KEPALA DINAS PENDIDIKAN DAN KEBUDAYAAN") {
+            $this->setXY(90,$y+205);
+            $this->MULTICELL(110,5,' '.$key->pejabat_sk.',','','C',1);
+            $this->setFont('Arial','U',11);
+            $this->setXY(110,$y+230); $this->cell(70,5,'RIBOWO, S.Pd, M.AP',0,1,'C',1);
+            $this->setFont('Arial','',11);
+            $this->setXY(110,$y+235); $this->cell(70,5,'Pembina Utama Muda (IV/c)',0,1,'C',1);
+            $this->setXY(110,$y+240); $this->cell(70,5,'NIP. 19661002 199001 1 002',0,1,'C',1);		
+	} else {     	    
+	    if ($key->nama_eselon == 'II/A') {
                 $this->setXY(100,$y+205);
 			$this->setFont('Arial','',12);
                 $this->MULTICELL(90,5,'BUPATI BALANGAN,','','C',1);
@@ -374,6 +393,7 @@ class PDF extends FPDF
                 $this->setXY(110,$y+240); $this->cell(70,5,'Pembina Utama Muda (IV/c)',0,1,'C',1); 
                 $this->setXY(110,$y+245); $this->cell(70,5,'NIP. 19681012 198903 1 009',0,1,'C',1); 
             }
+	}
 
 	    // Tampilkan QR Code dalam bentuk file png, ukuran 35 x 35
             $this->Image('assets/qrcodekgb/'.$key->qrcode.'.png', 50, 260,'30','30','png');

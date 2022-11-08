@@ -11,6 +11,7 @@ class Absensi extends CI_Controller {
     $this->load->helper('form');
     $this->load->helper('fungsitanggal');
     $this->load->helper('fungsipegawai');
+    $this->load->helper('absensi');
     $this->load->model('mpegawai');
     $this->load->model('mpppk');
     $this->load->model('madmin');
@@ -484,14 +485,17 @@ class Absensi extends CI_Controller {
     $ch = curl_init(); 
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-    //curl_setopt($ch, CURLOPT_POST, 1);
+    // curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept:application/json', 'Content-Type:multipart/form-data', 'Authorization:Bearer bkpp'));
+    //curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept:application/json', 'Content-Type:multipart/form-data; boundary=---011000010111000001101001', 'Authorization:Bearer bkpp'));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept:application/json', 'Authorization:Bearer bkpp'));
     $output = curl_exec($ch); 
+    //var_dump($output);
     curl_close($ch);      
     return $output;
   }
+
 
   function showabsbulanannip() {
     $nip = $this->input->get('nip');
@@ -577,12 +581,16 @@ class Absensi extends CI_Controller {
             "month"       => $bln
           );
 
-          $data = array("pegawai_nip"=>$nip,"year"=>$thn,"month"=>$bln);
-          $send = $this->curl("https://e-office.balangankab.go.id/silka/report/pegawai",$data);
+          //$data = array("pegawai_nip"=>$nip,"year"=>$thn,"month"=>$bln);
+          //$send = $this->curl("https://e-office.balangankab.go.id/silka/report/pegawai",$data);
+          //$data = json_decode($send, true);
+	  //$jml = count($data);
 
-          $data = json_decode($send, true);
+	  $data = array("pegawai_nip"=>$nip,"year"=>$thn,"month"=>$bln);
+          $send = curlApi("https://e-office.balangankab.go.id/silka/report/pegawai",$data);
+      	  $data = json_decode($send, true);
+      	  $jml = count($data);
 	  //var_dump($data);
-          $jml = count($data);
           if ($jml != 0) {
             if ($data['message'] == "Too Many Attempts.") { // "Too Many Attempts." (ada titiknya)
               echo "<td colspan='13' align='center' class='warning'><span class='text-danger'>DATA GAGAL DIAMBIL</span></td>";
@@ -681,7 +689,7 @@ class Absensi extends CI_Controller {
     $thn = $this->input->get('thn');
     $bln = $this->input->get('bln');
     $jns = $this->input->get('jns');
-     
+
     $berhasil = 0;
     $tidakditemukan = 0;
     $tidaktpp = 0;
@@ -707,7 +715,7 @@ class Absensi extends CI_Controller {
         <small>
           <table class='table table-bordered' style='width: 85%'>
             <tr class='info'> 
-              <td align='center' width='250'><b><?php echo $id; ?>/ NAMA1</b></td>
+              <td align='center' width='250'><b><?php echo $id; ?>/ NAMA</b></td>
 	      <td align='center' width='100'><b>HARI KERJA</b></td>
               <td class='warning' align='center' width='100'><b>TERLAMBAT</b></td>
               <td align='center' width='100'><b>TEPAT WAKTU</b></td>
@@ -730,11 +738,10 @@ class Absensi extends CI_Controller {
               "month"       => $bln
             );
 	
-            $dataparm = array("pegawai_nip"=>$nip,"year"=>$thn,"month"=>$bln);
-	    $send = $this->curl("https://e-office.balangankab.go.id/silka/report/pegawai",$dataparm);
-	    //var_dump($send);
-            $data = json_decode($send, true);
-	    //var_dump($data);
+      $dataparm = array("pegawai_nip"=>$nip,"year"=> $thn,"month"=> $bln);
+	    $send = curlApi("https://e-office.balangankab.go.id/silka/report/pegawai", $dataparm);
+	    // var_dump($send);
+      $data = json_decode($send, true);
 	
 		/* API eOffice */
 		/*
@@ -746,7 +753,8 @@ class Absensi extends CI_Controller {
     		curl_setopt($ch, CURLOPT_POST, 1);
     		curl_setopt($ch, CURLOPT_POSTFIELDS, $dataparm);
     		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept:application/json', 'Content-Type:multipart/form-data', 'Authorization:Bearer bkpp'));
+    		//curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept:application/json', 'Content-Type:multipart/form-data', 'Authorization:Bearer bkpp'));
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept:application/json', 'Authorization:Bearer bkpp'));
     		$data = curl_exec($ch);
     		curl_close($ch);
 		var_dump($dataparm);
@@ -859,7 +867,7 @@ class Absensi extends CI_Controller {
 
     if ($berhaktpp == 'YA') { 
       $data = array("pegawai_nip"=>$nip,"year"=>$thn,"month"=>$bln);
-      $send = $this->curl("https://e-office.balangankab.go.id/silka/report/pegawai",$data);
+      $send = curlApi("https://e-office.balangankab.go.id/silka/report/pegawai",$data);
 
       $data = json_decode($send, true);
       $jml = count($data);
@@ -1000,11 +1008,16 @@ class Absensi extends CI_Controller {
       }
 
       if ($berhaktpp == 'YA') { 
-        $data = array("pegawai_nip"=>$nip,"year"=>$thn,"month"=>$bln);
-        $send = $this->curl("https://e-office.balangankab.go.id/silka/report/pegawai",$data);
+        //$data = array("pegawai_nip"=>$nip,"year"=>$thn,"month"=>$bln);
+        //$send = $this->curl("https://e-office.balangankab.go.id/silka/report/pegawai",$data);
+        //$data = json_decode($send, true);
+        //$jml = count($data);
 
-        $data = json_decode($send, true);
-        $jml = count($data);
+	$data = array("pegawai_nip"=>$nip,"year"=>$thn,"month"=>$bln);
+      	$send = curlApi("https://e-office.balangankab.go.id/silka/report/pegawai",$data);
+
+      	$data = json_decode($send, true);
+      	$jml = count($data);
 	//var_dump($jml);
         if ($jml != 0) {
           //if ($data['message'] != "Data tidak ditemukan") {             

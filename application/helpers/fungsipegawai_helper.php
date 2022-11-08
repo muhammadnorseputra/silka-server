@@ -82,6 +82,21 @@ if ( ! function_exists('hitungmkcpns'))
     }
 }
 
+if ( ! function_exists('getMkCpns'))
+{
+    function getMkCpns($nip)
+    {        
+        $sqlmkcpns = mysql_query("SELECT (((YEAR(NOW())-YEAR(tmt_cpns))*12)+(MONTH(NOW())-MONTH(tmt_cpns))) as maker_cpns FROM cpnspns where nip='$nip'");
+        $mkcpns = mysql_result($sqlmkcpns,0,'maker_cpns');
+
+        $mkcpns_bln = $mkcpns%12; // ambil sisa bagi
+        $mkcpns_thn = ($mkcpns-$mkcpns_bln)/12; // untuk menghindari hasil berkoma, kurangi dulu dgn bulannya
+        
+        $result = array('tahun' => $mkcpns_thn, 'bulan' => $mkcpns_bln);
+        return $result;
+    }
+}
+
 if ( ! function_exists('getmkcpns'))
 {
     function getmkcpns($nip,$pilihan)

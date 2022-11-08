@@ -1039,7 +1039,7 @@ class Kinerja extends CI_Controller {
         </td>
 	<td align='center' width='30'>
           <?php
-          if (($this->session->userdata('level') == "ADMIN")) {
+          //if (($this->session->userdata('level') == "ADMIN")) {
             if ($this->mkinerja->getstatuspengantar($v['fid_unker'], $thn, $bln) == "ENTRI") {
               echo "<form method='POST' action='../kinerja/hapus_pengantar'>";
               echo "<input type='hidden' name='idpengantar' id='idpengantar' value='$v[id]'>";
@@ -1050,7 +1050,7 @@ class Kinerja extends CI_Controller {
               echo "</button>";
               echo "</form>";
             }
-	  } 
+	  //} 
 	  ?>
         </td>
         <td align='center' width='30'>
@@ -1347,7 +1347,7 @@ class Kinerja extends CI_Controller {
     $data['jmlpeg'] = $this->munker->getjmlpeg($idunker);
     $data['usul_tpp'] = $this->mkinerja->tampil_usultpp($idunker, $thn, $bln)->result_array();
 
-    $data['content'] = 'kinerja/nomperunker';
+    $data['content'] = 'kinerja/nomperunker-baru';
     $this->load->view('template',$data);
   }
 
@@ -2250,6 +2250,7 @@ class Kinerja extends CI_Controller {
 
   function lanjutverifikasi() {
     $idunker = addslashes($this->input->post('fid_unker'));
+    $idpengantar = addslashes($this->input->post('idpengantar'));
     $thn = addslashes($this->input->post('thn'));
     $bln = addslashes($this->input->post('bln'));
 
@@ -2265,10 +2266,10 @@ class Kinerja extends CI_Controller {
 
     $namaunker = $this->munker->getnamaunker($idunker);
     if ($this->mkinerja->update_pengantartpp($where, $data)) {
-      $data['pesan'] = "<b>SUKSES</b>, Rekapitulasi TPP ".$namaunker." Bulan ".bulan($bln)." Tahun ".$thn." BERHASIL Diproses.";
+      $data['pesan'] = "<b>SUKSES</b>, Rekapitulasi TPP ".$namaunker." Bulan ".bulan($bln)." Tahun ".$thn." BERHASIL Diverifikasi SKPD.";
       $data['jnspesan'] = "alert alert-success";  
     } else {
-      $data['pesan'] = "<b>GAGAL</b>, Rekapitulasi TPP ".$namaunker." Bulan ".bulan($bln)." Tahun ".$thn." GAGAL Diproses.";
+      $data['pesan'] = "<b>GAGAL</b>, Rekapitulasi TPP ".$namaunker." Bulan ".bulan($bln)." Tahun ".$thn." GAGAL Verifikasi SKPD.";
       $data['jnspesan'] = "alert alert-warning";
     }              
    
@@ -2276,11 +2277,23 @@ class Kinerja extends CI_Controller {
     $data['bln'] = $bln;
     
     $data['idunker'] = $idunker;
-    $data['nmunker'] = $this->munker->getnamaunker($idunker);
-    $data['jmlpeg'] = $this->munker->getjmlpeg($idunker);
-    $data['usul_tpp'] = $this->mkinerja->tampil_usultpp($idunker, $thn, $bln)->result_array();
+    //$data['nmunker'] = $this->munker->getnamaunker($idunker);
+    //$data['jmlpeg'] = $this->munker->getjmlpeg($idunker);
+    //$data['usul_tpp'] = $this->mkinerja->tampil_usultpp($idunker, $thn, $bln)->result_array();
 
-    $data['content'] = 'kinerja/nomperunker';
+    $data['idpengantar'] = $idpengantar;
+    if (($idunker == '631101') OR ($idunker == '631102') OR ($idunker == '631103') OR ($idunker == '631104') OR
+        ($idunker == '631105') OR ($idunker == '631106') OR ($idunker == '631107') OR ($idunker == '631108')) {
+        $data['nmunker'] = "SEKOLAHAN ".$this->mpegawai->getnamakecamatan($idunker);
+    } else {
+        $data['nmunker'] = $this->munker->getnamaunker($idunker);
+    }
+
+    //$data['nmunker'] = $this->munker->getnamaunker($idunker);
+    $data['jmlpeg'] = $this->mkinerja->getjumlahusul_perpengantar($idpengantar, $thn, $bln);
+    $data['usul_tpp'] = $this->mkinerja->tampil_usultpp_perpengantar($idpengantar, $thn, $bln)->result_array();
+
+    $data['content'] = 'kinerja/nomperunker-baru';
     $this->load->view('template',$data);
   }
 
@@ -4176,7 +4189,7 @@ class Kinerja extends CI_Controller {
             'fid_unker'       => $idunker,
             'tahun'           => $tahun,
             'bulan'           => $bulan,
-            'status'          => "VERIFIKASI",
+            'status'          => "ENTRI",
             'entri_at'        => $time,
             'entri_by'        => $created,
             'qrcode'          => $params['data']
@@ -4398,9 +4411,9 @@ class Kinerja extends CI_Controller {
     $pkp_b = pembulatan_ribuan(round($pkp));
 
     $pph = 0;
-    if (($pkp_b >= 1) AND ($pkp_b <= 50000000)) {
+    if (($pkp_b >= 1) AND ($pkp_b <= 60000000)) {
       $pph = $pkp_b*0.05;
-    } else if (($pkp_b > 50000000) AND ($pkp_b <= 250000000)) {
+    } else if (($pkp_b > 60000000) AND ($pkp_b <= 250000000)) {
       $pph = $pph + 2500000 + (($pkp_b - 50000000) * 0.15);
     } else if (($pkp_b > 250000000) AND ($pkp_b <= 500000000)) {
       $pph = $pph + 32500000 + (($pkp_b-250000000) * 0.25);

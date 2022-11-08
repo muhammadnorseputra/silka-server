@@ -709,9 +709,10 @@ public function get_rekomendasi_diklat_teknis() {
       }     
       $tr .= '<tr>
                 <td>'.$no.'</td>
+                <td>'.$v->tahun.'</td>
                 <td>'.$v->nama_syarat_diklat.'</td>
                 <td>'.$status.'</td>
-                <td class="text-center"><input type="checkbox" class="cekStatus'.$v->id_syarat_diklat.'" onchange="update_status('.$v->id_syarat_diklat.')" '.$cek_status.'></td>
+                <td class="text-center"><input disabled type="checkbox" class="cekStatus'.$v->id_syarat_diklat.'" onchange="update_status('.$v->id_syarat_diklat.')" '.$cek_status.' title="Verifikasi hanya dapat dilakukan oleh admin BKPSDM"></td>
               </tr>';
     $no++;
     }

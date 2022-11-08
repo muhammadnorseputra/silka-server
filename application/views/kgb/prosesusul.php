@@ -108,6 +108,7 @@
         <b>PROSES USUL KGB</b>
         </div>
         <?php
+	  //var_dump($kgb);
           foreach($kgb as $v):
         ?>
         <table class="table">
@@ -226,7 +227,12 @@
                     <tr>
                       <td align='right' class='success'>Pejabat SK :</td> 
                       <td align='left' class='success' colspan='3'>
-                        <input type='text' name='pejabat_sk' id='pejabat_sk' value='KEPALA BADAN KEPEGAWAIAN DAN PENGEMBANGAN SUMBER DAYA MANUSIA' size='80' required>
+			<?php
+			echo "<select name='pejabat_sk' id='pejabat_sk'>";
+                        echo "<option value='KEPALA BADAN KEPEGAWAIAN DAN PENGEMBANGAN SUMBER DAYA MANUSIA' selected>KEPALA BADAN KEPEGAWAIAN DAN PENGEMBANGAN SUMBER DAYA MANUSIA</option>";
+			echo "<option value='KEPALA DINAS PENDIDIKAN DAN KEBUDAYAAN'>KEPALA DINAS PENDIDIKAN DAN KEBUDAYAAN</option>";
+			?>
+                        <!--<input type='text' name='pejabat_sk' id='pejabat_sk' value='KEPALA BADAN KEPEGAWAIAN DAN PENGEMBANGAN SUMBER DAYA MANUSIA' size='80' required>-->
                       </td> 
                       </form> <!-- end form formprosesusul -->
                     </tr>
@@ -791,19 +797,15 @@
 
       <!-- tuutup form jangan dihapus, untuk menghindari  ketika tombol Cetak SK diklik yang dieksekusi bukan '../kgb/prosesusulsetuju'  pada 'formprosesusul' -->
       </form>
-
-        
-      <?php
-        endforeach;
-      ?>  
+     
       </div>      
       <?php
+	//$status = $this->mkgb->getstatuskgb($v['fid_status']);
         if (($status == 'SETUJU') OR ($status == 'CETAKSK')) {
           ?>
           <form method='POST' name='formcetaksk' action='../kgb/cetaksk' target='_blank'>
           <input type='hidden' name='id_pengantar' id='id_pengantar' value='<?php echo $v['fid_pengantar']; ?>'>
           <input type='hidden' name='nip' id='nip' size='18' value='<?php echo $v['nip']; ?>'>
-          
           <p align="right">
             <button type="submit" class="btn btn-primary btn-sm">&nbsp
             <span class="glyphicon glyphicon-print" aria-hidden="true"></span>&nbspCetak SK&nbsp&nbsp&nbsp
@@ -812,6 +814,9 @@
           </form>
       <?php
         }
+      ?>
+      <?php
+        endforeach;
       ?>
     </div> <!-- end class="panel-body" -->    
 

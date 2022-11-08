@@ -133,6 +133,15 @@ class Munker extends CI_Model
         $q = $this->db->query("select p.nama from pegawai as p, ref_instansiv2 as i, ref_unit_kerjav2 as u where p.fid_unit_kerja=u.id_unit_kerja and u.fid_instansi = i.id_instansi and i.id_instansi = '$id'");
         return $q->num_rows();
     }
+
+    function get_idinstansi($idunker)
+    {
+    	$q = $this->db->query("select fid_instansi from ref_unit_kerjav2 where id_unit_kerja='$idunker'");
+    	if ($q->num_rows()>0) {
+      		$row=$q->row();
+      		return $row->fid_instansi;
+    	}
+     }
 }
  
 /* End of file unker.php */

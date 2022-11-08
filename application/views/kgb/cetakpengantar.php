@@ -83,10 +83,16 @@ class PDF extends FPDF
             $this->setXY(130,$y+20);
             $this->cell(60,5,"Kepada :",0,1,'L',1); 
             $this->setXY(122,$y+25);
-            $this->cell(60,5,"Yth. Bupati Balangan",0,1,'L',1); 
-            $this->setXY(130,$y+30);
-            $this->cell(60,5,"U.p. Kepala BKPPD",0,1,'L',1); 
-            $this->setXY(130,$y+35);
+            $this->cell(60,5,"Yth. BUPATI BALANGAN",0,1,'L',1);
+	    $idins = $ounker->get_idinstansi($key->fid_unit_kerja);
+            if (($idins == '152') OR ($idins == '152') OR ($idins == '152')) {
+		$this->setXY(130,$y+30);
+                $this->cell(60,5,"U.p. KEPALA DISDIKBUD",0,1,'L',1);
+	    } else {
+	    	$this->setXY(130,$y+30);
+            	$this->cell(60,5,"U.p. KEPALA BKPSDM",0,1,'L',1); 
+            }
+	    $this->setXY(130,$y+35);
             $this->cell(60,5,"Kabupaten Balangan",0,1,'L',1); 
             $this->setXY(130,$y+40);
             $this->cell(60,5,"di -",0,1,'L',1); 

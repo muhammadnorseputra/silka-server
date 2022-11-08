@@ -116,6 +116,18 @@ class Pensiun extends CI_Controller {
         <td><?php echo $v['nama_jenis_pensiun']; ?></td>
         <td><?php echo tgl_indo($v['tmt_pensiun']); ?></td>
         <td>
+        <?php
+        if($this->session->userdata('nama') == "uda" || $this->session->userdata('nama') == "putra"):
+        ?>
+        <form method="POST" action="../pensiun/rollback">
+	          <input type="hidden" name="nip" id="nip" maxlength="18" value="<?= $nip ?>">       
+	          <button type="submit" class="btn btn-danger btn-xs btn-block">
+	          	<i class="glyphicon glyphicon-user"></i><br>ROLL BACK
+	          </button>
+	        </form>
+        <?php
+          endif;
+        ?>
 	     <?php
 			if($this->session->userdata('nama') == "kholik" || $this->session->userdata('nama') == "uda" || $this->session->userdata('nama') == "putra"):
 				if($v['nama_jenis_pensiun'] == 'BUP'):
@@ -167,6 +179,111 @@ class Pensiun extends CI_Controller {
       echo "</div>"; // div scrolbar
       echo "</div>"; // div panel-info
     }
+  }
+
+  function rollback() {
+    $nip = $this->input->post('nip');
+    $data['peg_pensiun'] = $this->db->get_where('pegawai_pensiun', ['nip' => $nip])->row();
+    $data['peg_pensiun_detail'] = $this->db->get_where('pensiun_detail', ['nip' => $nip])->row();
+    $data['content'] = 'pensiun/rollback';
+    $this->load->view('template', $data);
+  }
+  function rollback_act() {
+    $nip = $this->input->post('nip');
+    $peg_pensiun = $this->db->get_where('pegawai_pensiun', ['nip' => $nip])->row();
+    $unker_id = $this->db->select('*')->from('ref_unit_kerjav2')->where('nama_unit_kerja', $peg_pensiun->nama_unit_kerja)->get()->row();
+    $rwy_jabatan = $this->db->select('id,jabatan,jns_jab,eselon')->from('riwayat_jabatan')->where('nip', $nip)->order_by('id','desc')->get()->row();
+    $rwy_plt = $this->db->select('id,nip')->from('riwayat_plt')->where('nip', $nip)->limit(1)->order_by('id','desc')->get()->num_rows();
+    $tpp = $this->db->select('id,nip')->from('usul_tpp')->where('nip', $nip)->limit(1)->order_by('id','desc')->get()->num_rows();
+    
+    $pegawai = [
+      'pns_id' => $peg_pensiun->pns_id,
+      // 'nip_lama'
+      'nip' => $nip,
+      'nama' => $peg_pensiun->nama,
+      'gelar_depan' => $peg_pensiun->gelar_depan,
+      'gelar_belakang' => $peg_pensiun->gelar_belakang,
+      'tmp_lahir' => $peg_pensiun->tmp_lahir,
+      'tgl_lahir' => $peg_pensiun->tgl_lahir,
+      'alamat' => $peg_pensiun->alamat,
+      'fid_alamat_kelurahan' => $peg_pensiun->fid_alamat_kelurahan,
+      'alamat_ktp' => $peg_pensiun->alamat,
+      'fid_kelurahan_ktp' => $peg_pensiun->fid_alamat_kelurahan,
+      'telepon' => $peg_pensiun->telepon,
+      'fid_agama' => $peg_pensiun->fid_agama,
+      'jenis_kelamin' => $peg_pensiun->jenis_kelamin,
+      'fid_status_kawin' => $peg_pensiun->fid_status_kawin,
+      'fid_status_ptkp' => $peg_pensiun->fid_status_ptkp,
+      'fid_tingkat_pendidikan' => $peg_pensiun->fid_tingkat_pendidikan,
+      'fid_jurusan_pendidikan' => $peg_pensiun->fid_jurusan_pendidikan,
+      'tahun_lulus' => $peg_pensiun->tahun_lulus,
+      'fid_status_pegawai' => $peg_pensiun->fid_status_pegawai,
+      'fid_golru_awal' => $peg_pensiun->fid_golru_awal,
+      'tmt_golru_awal' => $peg_pensiun->tmt_golru_awal,
+      'fid_golru_skr' => $peg_pensiun->fid_golru_skr,
+      'tmt_golru_skr' => $peg_pensiun->tmt_golru_skr,
+      'no_sk_cpns' => $peg_pensiun->no_sk_cpns,
+      'tgl_sk_cpns' => $peg_pensiun->tgl_sk_cpns,
+      'tmt_cpns' => $peg_pensiun->tmt_cpns,
+      'no_sk_pns' => $peg_pensiun->no_sk_pns,
+      'tgl_sk_pns' => $peg_pensiun->tgl_sk_pns,
+      'tmt_pns' => $peg_pensiun->tmt_pns,
+      'fid_jenis_pegawai' => $peg_pensiun->fid_jenis_pegawai,
+      'makertotal_tahun' => $peg_pensiun->makertotal_tahun,
+      'makertotal_bulan' => $peg_pensiun->makertotal_bulan,
+      'fid_unit_kerja' => $unker_id->id_unit_kerja,
+      'plt' => ($rwy_plt > 0) ? 'YA' : 'TIDAK',
+      'fid_eselon' => $peg_pensiun->fid_eselon,
+      'tmt_jabatan' => $peg_pensiun->tmt_jabatan,
+      'no_karpeg' => $peg_pensiun->no_karpeg,
+      'no_karis_karsu' => $peg_pensiun->no_karis_karsu,
+      'no_askes' => $peg_pensiun->no_askes,
+      'no_taspen' => $peg_pensiun->no_taspen,
+      'no_ktp' => $peg_pensiun->no_ktp,
+      'no_npwp' => $peg_pensiun->no_npwp,
+      'email' => $peg_pensiun->email,
+      'whatsapp' => $peg_pensiun->whatsapp,
+      'instagram' => $peg_pensiun->instagram,
+      'twitter' => $peg_pensiun->twitter,
+      'facebook' => $peg_pensiun->facebook,
+      'youtube' => $peg_pensiun->youtube,
+      'google' => $peg_pensiun->google,
+      'wajib_lhkpn' => $peg_pensiun->wajib_lhkpn,
+      'no_nhk' => $peg_pensiun->no_nhk,
+      'photo' => $peg_pensiun->photo,
+      'note' => $peg_pensiun->note,
+      'berkas' => !empty($peg_pensiun->no_berkas) ? 'YA' : 'TIDAK',
+      'no_berkas' => $peg_pensiun->no_berkas,
+      'koderegpupns' => $peg_pensiun->koderegpupns,
+      'fid_jabstrukatasan' => $peg_pensiun->fid_jabstrukatasan,
+      'tpp' => ($tpp > 0) ? 'YA' : 'TIDAK',
+      'created_at' => date('Y:m:d H:i:s'),
+      'created_by' => $this->session->userdata('nip')
+    ];
+
+    if($rwy_jabatan->eselon === 'JFU') {
+      $ref_jabfu = $this->db->select('id_jabfu')->from('ref_jabfu')->where('nama_jabfu', $peg_pensiun->nama_jabatan)->order_by('id_jabfu','desc')->get()->row();
+      $pegawai_new = array_merge($pegawai, ['fid_jabfu' => $ref_jabfu->id_jabfu, 'fid_jnsjab' => 2]);
+    } elseif ($rwy_jabatan->eselon === 'JFT' || $rwy_jabatan->eselon === 'JABFUNG' || $rwy_jabatan->jns_jab === 'FUNGSIONAL') {
+      $ref_jabft = $this->db->select('id_jabft')->from('ref_jabft')->where('nama_jabft', $peg_pensiun->nama_jabatan)->order_by('id_jabft','desc')->get()->row();
+      $pegawai_new = array_merge($pegawai, ['fid_jabft' => $ref_jabft->id_jabft, 'fid_jnsjab' => 3]);
+    } elseif($rwy_jabatan->eselon !== 'JFT' || $rwy_jabatan->eselon !== 'JFU') {
+      $ref_jabatan = $this->db->select('id_jabatan')->from('ref_jabstruk')->where('nama_jabatan', $peg_pensiun->nama_jabatan)->order_by('id_jabatan','desc')->get()->row();
+      $pegawai_new = array_merge($pegawai, ['fid_jabatan' => $ref_jabatan->id_jabatan, 'fid_jnsjab' => 1]);
+    }
+
+    $insert = $this->db->insert('pegawai', $pegawai_new);
+    if($insert) {
+      $this->db->delete('pensiun_detail', ['nip' => $nip]);
+      $this->db->delete('pegawai_pensiun', ['nip' => $nip]);
+      $msg = array('valid' => true, 'mode' => 'success', 'pesan' => '<center><h3>Berhasil <i class="glyphicon glyphicon-check"></i></h3> <br> DATA PEGAWAI <b>'.$peg_pensiun->nama.' <b> ( '.$nip.' ) TELAH DI ROLL BACK</center>');
+			$this->session->set_flashdata($msg);
+    } else {
+      $msg = array('valid' => false, 'mode' => 'danger', 'pesan' => 'DATA PEGAWAI '.$peg_pensiun->nama.' PENSIUNAN GAGAL DI ROLL BACK');
+			$this->session->set_flashdata($msg);
+    }
+
+    redirect(base_url('pensiun/status'));
   }
 
   function tampilperorangan() {
@@ -772,6 +889,7 @@ class Pensiun extends CI_Controller {
 		
 		// Insert ke table `pegawai pensiun`
 		$data_pensiun_pegawai = [
+      'pns_id' => $r->pns_id,
 			'nip' => $nip,
 			'nama' => $nama,
 			'gelar_depan' => $gelar_d,
@@ -784,6 +902,7 @@ class Pensiun extends CI_Controller {
 			'fid_agama' => $agama,
 			'jenis_kelamin' => $jk,
 			'fid_status_kawin' => $fid_kawin,
+      'fid_status_ptkp' => $r->fid_status_ptkp,
 			'fid_tingkat_pendidikan' => $fid_tingkat_p,
 			'fid_jurusan_pendidikan' => $fid_jurusan_p,
 			'tahun_lulus' => $th,
@@ -808,10 +927,25 @@ class Pensiun extends CI_Controller {
 			'tmt_jabatan' => $tmt_jabatan,
 			'no_karpeg' => $no_karpeg,
 			'no_karis_karsu' => $no_karis_karsu,
+      'no_askes' => $r->no_askes,
+      'no_taspen' => $r->no_taspen,
+      'no_ktp' => $r->no_ktp,
+      'no_npwp' => $r->no_npwp,
+      'email' => $r->email,
+      'whatsapp' => $r->whatsapp,
+      'instagram' => $r->instagram,
+      'twitter' => $r->twitter,
+      'facebook' => $r->facebook,
+      'youtube' => $r->youtube,
+      'google' => $r->google,
+      'wajib_lhkpn' => $r->wajib_lhkpn,
+      'no_nhk' => $r->no_nhk,
 			'photo' => $photo,
 			'note' => $note,
 			'no_berkas' => $no_berkas,
-				
+      'koderegpupns' => $r->koderegpupns,
+			'tpp' => $r->tpp,	
+			'fid_jabstrukatasan' => $r->fid_jabstrukatasan
 		];
 		
 		

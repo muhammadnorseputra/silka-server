@@ -512,8 +512,8 @@ class Mkinerja extends CI_Model
             $q = $this->db->query("select ut.* from usul_tpp_pengantar as ut
                 where ut.tahun = '".$thn."'
                 and ut.bulan = '".$bln."'
-                and ut.fid_unker in ('1104','50091','631101','631102','631103','631104','631105','631106','631107','631108')
-		and ut.status != 'ENTRI'");
+                and ut.fid_unker in ('1104','50091','631101','631102','631103','631104','631105','631106','631107','631108')");
+		//and ut.status != 'ENTRI'");
 	   /*
 		$q = $this->db->query("select ut.* from usul_tpp_pengantar as ut, ref_unit_kerjav2 as u, ref_instansi_userportal as i, userportal as up WHERE
                 ut.tahun = '".$thn."'
@@ -533,8 +533,8 @@ class Mkinerja extends CI_Model
                 and u.fid_instansi_userportal = i.id_instansi
                 and u.unker_ekinerja != ''
                 and up.nip = '".$nip."'
-                and i.nip_user like '%".$nip."%'
-		and ut.status != 'ENTRI'");
+                and i.nip_user like '%".$nip."%'");
+		//and ut.status != 'ENTRI'");
         }
         return $q;
     }

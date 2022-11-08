@@ -2,7 +2,7 @@
 // Jika yang login adalah PNS
 if ($this->session->userdata('level') == "PNS") {
 ?>
-<nav class="navbar navbar-default">
+<nav class="navbar navbar-default navbar-inverse">
   <div class="container-fluid ">
     <!-- Brand and toggle get grouped for better mobile display oke -->
     <div class="navbar-header">
@@ -262,7 +262,7 @@ if ($this->session->userdata('level') == "PNS") {
             <?php            
             if ($this->session->userdata('usulkgb_priv') == "Y") {
               echo "<li><a href='".base_url('kgb/tampilpengantar')."'>Buat Usul</a></li>";  
-              echo "<li><a href='".base_url('kgb/tampilinbox')."'>Inbox</a></li>";  
+              //echo "<li><a href='".base_url('kgb/tampilinbox')."'>Inbox</a></li>";  
               echo "<li><a href='".base_url('kgb/rekapitulasi')."'>Rekapitulasi</a></li>";
               echo "<li><a href='".base_url('kgb/bukujaga')."'>Buku Jaga</a></li>";
             }
@@ -301,7 +301,7 @@ if ($this->session->userdata('level') == "PNS") {
 	<?php
         // awal layanan tukin        
 	if ($this->session->userdata('tpp_priv') == "Y") {
-        //if (($this->session->userdata('nama') == "uda") OR ($this->session->userdata('nama') == "putra") OR ($this->session->userdata('level') == "ADMIN")) {
+        //if ($this->session->userdata('level') == "ADMIN") {
         ?>
           <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Tunjangan Kinerja<span class="caret"></span></a>
@@ -508,14 +508,14 @@ if ($this->session->userdata('level') == "PNS") {
         
         <?php
         // khusus untuk level admin
-        if (($this->session->userdata('level') == "ADMIN") || ($this->session->userdata('level') == "USER")) {
+        if (($this->session->userdata('level') == "ADMIN") || ($this->session->userdata('nama')=="kholik")) {
         ?>
           <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Pensiun <span class="caret"></span></a>
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Pensiun & Mutasi Keluar <span class="caret"></span></a>
             <ul class="dropdown-menu">
 					<li><a href="<?php echo base_url('pensiun/proyeksi') ?>">Proyeksi BUP 5 Tahun</a></li>
-			          	<?php if($this->session->userdata('nama') == "uda" || $this->session->userdata('nama') == "putra" || $this->session->userdata('nama') == "fitriani"): ?>
-					<li><a href="<?php echo base_url('pensiun/rekap') ?>">Rekapitulasi Pensiun</a></li>
+			          	<li><a href="<?php echo base_url('pensiun/rekap') ?>">Rekapitulasi Pensiun</a></li>
+					<?php if($this->session->userdata('nama') == "uda" || $this->session->userdata('nama') == "putra" || $this->session->userdata('nama') == "fitriani"): ?>
                                         <li><a href='<?php echo base_url('pensiun/statistik') ?>'>Statistik</a></li>
 					<li role='separator' class='divider'></li>
 			          	<li><a href="<?php echo base_url('pensiun/cari_pegawai') ?>">Entri Non BUP & Mutasi</a></li>
@@ -533,9 +533,9 @@ if ($this->session->userdata('level') == "PNS") {
 	if ($this->session->userdata('edit_profil_priv') == "Y") {
         ?>
 	<li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Fitur Lainnya<span class="caret"></span></a>
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="dropdownMenuButton" role="button" aria-haspopup="true" aria-expanded="false">Fitur Lainnya<span class="caret"></span></a>
             
-            <ul class="dropdown-menu">
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
        
               	<?php
 		        // khusus untuk level admin
@@ -563,11 +563,11 @@ if ($this->session->userdata('level') == "PNS") {
 		                // khusus untuk level admin
 		                if ($this->session->userdata('level')=="ADMIN" || $this->session->userdata('nama')=="tamu" || $this->session->userdata('level')=="USER") {
 		                ?>
-		                <?php if($this->session->userdata('level')=="ADMIN" || $this->session->userdata('nama')=="abdillah" || $this->session->userdata('nama')=="salasiah"){ ?> 
+		                <?php if($this->session->userdata('level')=="ADMIN" || $this->session->userdata('nama')=="197912292007011018"){ ?> 
 		                  <li><a onclick="menuLink('diklat/syarat_diklat')" href="javascript:void(0)">Syarat Diklat</a></li>
 		                <?php } ?>                
 		                <li><a onclick="menuLink('diklat/analisis_diklat')" href="javascript:void(0)">Analisa</a></li>
-		                <li role='separator' class='divider'></li>
+		                <!-- <li role='separator' class='divider'></li> -->
 		              <!--<li><a onclick="menuLink('diklat/laporan_diklat')" href="javascript:void(0)">Laporan</a></li>-->
 		              <?php } ?>
 		
@@ -640,9 +640,24 @@ if ($this->session->userdata('level') == "PNS") {
 		            </ul>
 		       </li>
 		              <?php } ?>
+
+            
+              <li class="dropdown-submenu" aria-haspopup="true">
+              <a href="#">Rancangan Pengembangan Karir</a>
+                  <ul class="dropdown-menu">
+                  <?php
+                          echo "<li><a tabindex='-1' href='".base_url('/rpk')."'>Profile</a></li>";            
+                          echo "<li><a tabindex='-1' href='".base_url('/rpk/petajabatan')."'>Pemetaan</a></li>";            
+                          echo "<li><a tabindex='-1' href='".base_url('/rpk/instansi')."'>Instansi</a></li>";            
+                          echo "<li><a tabindex='-1' href='".base_url('/rpk/kompetensi')."'>Penyelarasan Kompetensi</a></li>";    
+                          echo "<li role='separator' class='divider'></li>";        
+                          echo "<li><a tabindex='-1' href='".base_url('/rpk/rekap')."'>Rekapitulasi</a></li>";            
+                  ?>
+                  </ul>
+              </li>
+		        
 		    </ul>
 		</li>
-
 	<?php
 	}
 	?>

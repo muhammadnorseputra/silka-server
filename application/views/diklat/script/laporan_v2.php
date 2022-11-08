@@ -50,7 +50,7 @@ var dataTable = $("#tbl_rekap").DataTable({
             },
             {
                 "targets": [0],
-                "className": "dt-center",
+                "className": "dt-body-justify",
                 "orderable": false
             },
             {

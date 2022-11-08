@@ -584,9 +584,9 @@
     $pkp = $hasilnetto_tahun - $ptkp;
     $pkp_b = pembulatan_ribuan(round($pkp));
     $pph = 0;
-    if (($pkp_b >= 1) AND ($pkp_b <= 50000000)) {
+    if (($pkp_b >= 1) AND ($pkp_b <= 60000000)) {
       $pph = $pkp_b*0.05;
-    } else if (($pkp_b > 50000000) AND ($pkp_b <= 250000000)) {
+    } else if (($pkp_b > 60000000) AND ($pkp_b <= 250000000)) {
       $pph = $pph + 2500000 + (($pkp_b - 50000000) * 0.15);
     } else if (($pkp_b > 250000000) AND ($pkp_b <= 500000000)) {
       $pph = $pph + 32500000 + (($pkp_b-250000000) * 0.25);

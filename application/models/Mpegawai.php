@@ -366,7 +366,9 @@ if ($this->mpegawai->cekpernahkp($nip)) { // pernah KP
   {
     //$sess_nip = $this->session->userdata('nip');
     $q = $this->db->query("select * from pegawai where nip='$data'");
-    //$q = $this->db->query("select p.* from pegawai as p, ref_unit_kerja as u, ref_instansi as i where p.fid_unit_kerja = u.id_unit_kerja and u.fid_instansi_userportal = i.id_instansi and i.nip_user like '%$sess_nip%' and nip='$data' order by u.id_unit_kerja");
+    //$q = $this->db->query("select p.* from pegawai as p, ref_unit_kerja as u, ref_instansi as i 
+    //	where p.fid_unit_kerja = u.id_unit_kerja and u.fid_instansi_userportal = i.id_instansi 
+    //	and i.nip_user like '%$sess_nip%' and nip='$data' order by u.id_unit_kerja");
     return $q;
   }
 
@@ -416,8 +418,13 @@ if ($this->mpegawai->cekpernahkp($nip)) { // pernah KP
   public function getnama_session($nip)
   {
     $sess_nip = $this->session->userdata('nip');
-    $q = $this->db->query("select p.gelar_depan, p.nama, p.gelar_belakang from pegawai as p, ref_unit_kerjav2 as u, ref_instansi_userportal as i where nip='$nip' and p.fid_unit_kerja = u.id_unit_kerja and u.fid_instansi_userportal = i.id_instansi 
-        and i.nip_user like '%$sess_nip%'");
+    $q = $this->db->query("select p.gelar_depan, p.nama, p.gelar_belakang from pegawai as p, ref_unit_kerjav2 as u, ref_instansi_userportal as i 
+    				where nip='$nip' and p.fid_unit_kerja = u.id_unit_kerja and u.fid_instansi_userportal = i.id_instansi 
+        			and i.nip_user like '%$sess_nip%'");
+    //$q = $this->db->query("select p.* from pegawai as p, ref_unit_kerjav2 as u, ref_instansi_userportal as i
+    //    where p.fid_unit_kerja = u.id_unit_kerja and u.fid_instansi_userportal = i.id_instansi
+    //    and i.nip_user like '%$sess_nip%' and nip='$nip' order by u.id_unit_kerja");
+
     if ($q->num_rows()>0)
     {
       $row=$q->row();
@@ -1680,6 +1687,9 @@ order by p.fid_eselon, p.nip, p.fid_golru_skr, p.tmt_golru_skr");
 
         return $this->db->query($sql);
   }
+
+
+
 }
 /* End of file mpegawai.php */
 /* Location: ./application/models/mpegawai.php */

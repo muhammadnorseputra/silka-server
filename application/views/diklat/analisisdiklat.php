@@ -130,13 +130,17 @@
                       </table>
 
                       <b>B. PELAKSANAAN DIKLAT</b>
+                      <!-- <div class="alert alert-danger" role="alert">
+                      <strong>Pemberitahuan !</strong><p>Silahkan centang <b> Verifikator User</b> apabila diklat sudah dilaksanakan</p>
+                      </div> -->
                       <table class="table table-striped table-hover table-bordered" style="margin-top:10px;">
                         <thead>
                           <tr>
                             <th width="10">No</th>
+                            <th width="100">Tahun</th>
                             <th>Nama Diklat</th>
                             <th width="100">Status Diklat</th>
-                            <th width="120">Verifikator User</th>
+                            <th width="120" class="bg-danger">Verifikator User</th>
                           </tr>
                         </thead>
                         <tbody id="getRekomendasiDiklatTeknis"></tbody>

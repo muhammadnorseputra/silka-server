@@ -24,6 +24,15 @@ table.dataTable td.dt-nowrap {
   white-space: nowrap
 }
 
+table.dataTable tbody th.dt-body-middle,
+table.dataTable tbody td.dt-body-middle,
+table.dataTable thead th.dt-head-middle,
+table.dataTable thead td.dt-head-middle,
+table.dataTable tfoot th.dt-head-middle,
+table.dataTable tfoot td.dt-head-middle  {
+  vertical-align: middle !important
+}
+
 table.dataTable thead th.dt-head-left,
 table.dataTable thead td.dt-head-left,
 table.dataTable tfoot th.dt-head-left,

@@ -606,26 +606,31 @@ if (($nmunker == '') OR ($thn == 0) OR ($bln == 0)) {
 	//if (($bln == '12') AND ($bulanini == '1') AND ($tahunini-1 == $thn)) {// Khusus Hitung TPP Desember pada Januari tahun berikutnya
 	//var_dump($bln);
 	//if ((($bulanini-1 == $bln) OR ($bulanini == $bln)) AND ($tahunini == $thn)) {
-	  if (($this->session->userdata('level') == "ADMIN") AND ($this->mkinerja->getstatuspengantar($idunker, $thn, $bln) == "ENTRI")) {
+	  //if (($this->session->userdata('level') == "ADMIN") AND ($this->mkinerja->getstatuspengantar($idunker, $thn, $bln) == "ENTRI")) {
+	  if ($this->mkinerja->getstatuspengantar($idunker, $thn, $bln) == "ENTRI") {
             echo "<form method='POST' action='../kinerja/lanjutverifikasi'>";
             echo "<input type='hidden' name='idpengantar' id='idpengantar' value='$idpengantar'>";          
             echo "<input type='hidden' name='fid_unker' id='fid_unker' value='$idunker'>";
             echo "<input type='hidden' name='thn' id='thn' value='$thn'>";
             echo "<input type='hidden' name='bln' id='bln' value='$bln'>";
             echo "<button type='submit' class='btn btn-primary'>";
-            echo "<span class='glyphicon glyphicon-saved' aria-hidden='true'></span> Lanjutkan Verifikasi SKPD";
+            echo "<span class='glyphicon glyphicon-saved' aria-hidden='true'></span> SETUJU, Hasil Perhitungan telah sesuai, Lanjut Rekapitulasi BKPSDM >>";
             echo "</button>";
             echo "</form>";
-          } else if (($this->session->userdata('tpp_priv') == "Y") AND ($this->mkinerja->getstatuspengantar($idunker, $thn, $bln) == "VERIFIKASI")) { 
+	  } else if (($this->session->userdata('level') == "ADMIN") AND ($this->mkinerja->getstatuspengantar($idunker, $thn, $bln) == "VERIFIKASI")){
+          //} else if (($this->session->userdata('tpp_priv') == "Y") AND ($this->mkinerja->getstatuspengantar($idunker, $thn, $bln) == "VERIFIKASI")) { 
             echo "<form method='POST' action='../kinerja/simpankalkulasi'>";
             echo "<input type='hidden' name='idpengantar' id='idpengantar' value='$idpengantar'>";
             echo "<input type='hidden' name='fid_unker' id='fid_unker' value='$idunker'>";
             echo "<input type='hidden' name='thn' id='thn' value='$thn'>";
             echo "<input type='hidden' name='bln' id='bln' value='$bln'>";
             echo "<button type='submit' class='btn btn-danger'>";
-            echo "<span class='glyphicon glyphicon-saved' aria-hidden='true'></span> Setuju & Simpan";
+            echo "<span class='glyphicon glyphicon-saved' aria-hidden='true'></span> ACC, Rekapitulasi Selesai";
             echo "</button>";
             echo "</form>";
+	  } else if (($this->session->userdata('tpp_priv') == "Y") AND ($this->mkinerja->getstatuspengantar($idunker, $thn, $bln) == "VERIFIKASI")) {
+	    //echo "<H4><span class='label label-success'>Tunggu proses Sinkronisasi Hasil Perhitungan</span></H4>";
+	    echo "<H4><code>Tunggu proses Rekapitulasi BKPSDM</code></H4>";
           } //else if ($this->session->userdata('level') == "ADMIN") {
 	    else if (($this->session->userdata('tpp_priv') == "Y") AND (($this->mkinerja->getstatuspengantar($idunker, $thn, $bln) == "REKAP") OR ($this->mkinerja->getstatuspengantar($idunker, $thn, $bln) == "CETAK"))) { 
             echo "<form method='POST' action='../kinerja/cetakrekapunor_perperiode' target='_blank'>";          
@@ -634,7 +639,7 @@ if (($nmunker == '') OR ($thn == 0) OR ($bln == 0)) {
             echo "<input type='hidden' name='thn' id='thn' value='$thn'>";
             echo "<input type='hidden' name='bln' id='bln' value='$bln'>";
             echo "<button type='submit' class='btn btn-success'>";
-            echo "<span class='glyphicon glyphicon-print' aria-hidden='true'></span> Cetak Rekapitulasi";
+            echo "<span class='glyphicon glyphicon-print' aria-hidden='true'></span> Cetak Nominatif Tanda Terima";
             echo "</button>";
             echo "</form>";
           }
