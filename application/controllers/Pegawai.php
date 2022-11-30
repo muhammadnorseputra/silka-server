@@ -1620,12 +1620,12 @@ class Pegawai extends CI_Controller {
 	        
 	        <tr>
           		<td align='right'>TMT Jabatan :</td>
-          		<td><input type="date" class="tanggal" name="tmt_jabatan" size='15' maxlength='10' value='2022-10-10' required /></td>
+          		<td><input type="date" class="tanggal" name="tmt_jabatan" size='15' maxlength='10' value='2022-11-04' required /></td>
         	  </tr>
         	  <tr>
           		<td align='right'>Tanggal Pelantikan :</td>
           		<td>
-          			<input type="date" class="tanggal" name="tgl_pelantikan" size='15' value='2022-10-10' maxlength='10'/>
+          			<input type="date" class="tanggal" name="tgl_pelantikan" size='15' value='2022-11-04' maxlength='10'/>
           			<p class="help-block text-danger">*(Boleh dikosongi bila kadida.) <br></p>
           		</td>
         	  </tr>
@@ -1642,7 +1642,7 @@ class Pegawai extends CI_Controller {
         	</tr>
         	<tr class='warning'>
 	          <td align='right'>Nomor SK :</td>
-	          <td><input type="text" name="nosk" size='50' maxlength='200' value='821/218/BKPSDM-BLG/2022' required /></td>
+	          <td><input type="text" name="nosk" size='50' maxlength='200' value='821/251/BKPSDM-BLG/2022' required /></td>
 	        </tr>
 	        
 	        <tr class='warning'>
@@ -1652,7 +1652,7 @@ class Pegawai extends CI_Controller {
 	        
 	        <tr class='warning'>
           		<td align='right'>Tgl. SK :</td>
-          		<td><input type="date" name="tglsk" class="tanggal" size='15' maxlength='10'  value='2022-10-10' required /></td>
+          		<td><input type="date" name="tglsk" class="tanggal" size='15' maxlength='10'  value='2022-11-04' required /></td>
         	</tr>
                 <tr class='danger'>
                   <td align='right'>Jenis Prosedur</td>
@@ -1685,7 +1685,7 @@ class Pegawai extends CI_Controller {
                         <select name="aksi_table" required>
                                 <option value="0">-- Change Table --</option>
                                 <?php
-                                        echo "<option value='0' selected>Riwayat & Update Profile</option>";
+                                        echo "<option value='0' selected>Riwayat & Profile</option>";
                                         echo "<option value='1'>Only Riwayat</option>";
                                 ?>
                         </select>

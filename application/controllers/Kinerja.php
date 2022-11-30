@@ -4288,6 +4288,7 @@ class Kinerja extends CI_Controller {
           }
 	 
 	  // Hitung PPh
+	  $status_ptkp =  $this->mkinerja->get_jnsptkp($nip);
 	  $spesialis = $this->mkinerja->cekspesialis($nip);
           if ($spesialis == true) {
               $idgolru = $this->mpegawai->getidgolruterakhir($nip);
@@ -4347,6 +4348,7 @@ class Kinerja extends CI_Controller {
             'jml_penambahan'  => $tambahan,
             'jml_tpp_murni'   => $tpp_bruto,
 	    'cpns'	      => $cpns,
+	    'status_ptkp'     => $status_ptkp,	
             'jml_pajak'       => $pph,
             'jml_iuran_bpjs'  => round($iwp),
             'tpp_diterima'    => round($thp),

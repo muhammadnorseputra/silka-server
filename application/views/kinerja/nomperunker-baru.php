@@ -617,7 +617,7 @@ if (($nmunker == '') OR ($thn == 0) OR ($bln == 0)) {
             echo "<span class='glyphicon glyphicon-saved' aria-hidden='true'></span> SETUJU, Hasil Perhitungan telah sesuai, Lanjut Rekapitulasi BKPSDM >>";
             echo "</button>";
             echo "</form>";
-	  } else if (($this->session->userdata('level') == "ADMIN") AND ($this->mkinerja->getstatuspengantar($idunker, $thn, $bln) == "VERIFIKASI")){
+	  } else if (($this->session->userdata('nip') == "198104072009041002") AND ($this->mkinerja->getstatuspengantar($idunker, $thn, $bln) == "VERIFIKASI")){
           //} else if (($this->session->userdata('tpp_priv') == "Y") AND ($this->mkinerja->getstatuspengantar($idunker, $thn, $bln) == "VERIFIKASI")) { 
             echo "<form method='POST' action='../kinerja/simpankalkulasi'>";
             echo "<input type='hidden' name='idpengantar' id='idpengantar' value='$idpengantar'>";

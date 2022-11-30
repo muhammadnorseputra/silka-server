@@ -84,7 +84,7 @@ class Pegawai extends REST_Controller  {
             )
         );       
     
-        $jwt = JWT::encode($token, $this->configToken()['secretkey']);
+        $jwt = JWT::encode($token, $this->configToken()['secretkey'], 'HS256');
         $output = [
                 'status' => 200,
                 'message' => 'Token Is Generated',

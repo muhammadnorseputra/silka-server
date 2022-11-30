@@ -408,9 +408,9 @@ class Kgb extends CI_Controller {
         </tr>
         <tr class='info'>
           <td align='right' width='130'>No. SK :</td>
-          <td align='left'><input type='text' size='30' name='nosk' value='<?php echo $v['no_sk']; ?>' disabled/></td>
+          <td align='left'><input type='text' size='30' name='nosk' value='<?php echo $v['no_sk']; ?>' readonly /></td>
           <td align='right'>Tgl. SK :</td>
-          <td align='left'><input type='text' size='12' maxlength='10' onkeyup='validAngkaStrip(this)' name='tglsk' class='tanggal' value='<?php echo tgl_sql($v['tgl_sk']); ?>' disabled/>
+          <td align='left'><input type='text' size='12' maxlength='10' onkeyup='validAngkaStrip(this)' name='tglsk' class='tanggal' value='<?php echo tgl_sql($v['tgl_sk']); ?>' readonly/>
             <small id="passwordHelpInline" class="text-muted">
               Hari-Bulan-Tahun (HH-BB-TTTT).
             </small>
@@ -418,17 +418,17 @@ class Kgb extends CI_Controller {
         </tr>
         <tr class='info'>
           <td align='right'>Pejabat :</td>
-          <td align='left' colspan='3'><input type='text' size='80' maxlength='100' name='pjbpengantar' value='<?php echo $v['pejabat_sk']; ?>' disabled/></td>
+          <td align='left' colspan='3'><input type='text' size='80' maxlength='100' name='pjbpengantar' value='<?php echo $v['pejabat_sk']; ?>' readonly/></td>
         </tr>
         <tr class='info'>
           <td align='right'>Masa Kerja :</td>
           <td align='left'>
-            <input type='text' size='2' maxlength='2' onkeyup='validAngka(this)' name='mkthnlama' value='<?php echo $v['mk_thn']; ?>' disabled/> Tahun
-            <input type='text' size='2' maxlength='2' onkeyup='validAngka(this)' name='mkblnlama' value='<?php echo $v['mk_bln']; ?>' disabled/> Bulan
+            <input type='text' size='2' maxlength='2' onkeyup='validAngka(this)' name='mkthnlama' value='<?php echo $v['mk_thn']; ?>' readonly /> Tahun
+            <input type='text' size='2' maxlength='2' onkeyup='validAngka(this)' name='mkblnlama' value='<?php echo $v['mk_bln']; ?>' readonly /> Bulan
           </td>
           <td align='right'>Gaji Pokok :</td>
           <td align='left'>
-            Rp. <input type='text' size='10' maxlength='7' name='gapoklama' onkeyup='validAngka(this)' value='<?php echo $v['gapok']; ?>' disabled/>
+            Rp. <input type='text' size='10' maxlength='7' name='gapoklama' onkeyup='validAngka(this)' value='<?php echo $v['gapok']; ?>' readonly />
             <small id="gajiHelpInline" class="text-muted">
               ditulis Tanpa titik
             </small>
@@ -439,20 +439,21 @@ class Kgb extends CI_Controller {
           <td align='left'>
             <?php
               $golru = $this->mpegawai->golru()->result_array();
-              echo "<select name='fid_golru_lama' id='fid_golru_lama' disabled/>";  
+              echo "<select name='fid_golru_lama' id='fid_golru_lama' />";  
               foreach($golru as $gl)
               {
                 if ($v[fid_golru] == $gl[id_golru]) {
                   echo "<option value='".$gl['id_golru']."' selected>".$gl['nama_golru'].' - '.$gl['nama_pangkat']."</option>";
-                } else {
-                  echo "<option value='".$gl['id_golru']."'>".$gl['nama_golru'].' - '.$gl['nama_pangkat']."</option>";
-                }
+                } 
+		//else {
+                //  echo "<option value='".$gl['id_golru']."'>".$gl['nama_golru'].' - '.$gl['nama_pangkat']."</option>";
+                //}
               }
 	      echo "</select>";
             ?>
           </td>
           <td align='right'>TMT :</td>
-          <td align='left'><input type='text' size='12' maxlength='10' onkeyup='validAngkaStrip(this)' name='tmt' class='tanggal' value='<?php echo tgl_sql($v['tmt']); ?>' disabled/>
+          <td align='left'><input type='text' size='12' maxlength='10' onkeyup='validAngkaStrip(this)' name='tmt' class='tanggal' value='<?php echo tgl_sql($v['tmt']); ?>' readonly />
             <small id="passwordHelpInline" class="text-muted">
               Hari-Bulan-Tahun (HH-BB-TTTT).
             </small>
