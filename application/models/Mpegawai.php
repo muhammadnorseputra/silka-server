@@ -233,7 +233,7 @@ if ($this->mpegawai->cekpernahkp($nip)) { // pernah KP
 
   public function rwyph($nip)
   {
-    $q = $this->db->query("select nama_tanhor, fid_jenis_tanhor, tahun, pejabat, no_keppres, tgl_keppres from riwayat_tanhor where nip='$nip' ORDER BY tahun desc");    
+    $q = $this->db->query("select id, nama_tanhor, fid_jenis_tanhor, tahun, pejabat, no_keppres, tgl_keppres from riwayat_tanhor where nip='$nip' ORDER BY tahun desc");    
     return $q;    
   }
 

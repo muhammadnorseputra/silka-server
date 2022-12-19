@@ -708,7 +708,9 @@ class Mkinerja_pppk extends CI_Model
              
             if($qjmljft->num_rows() > 0) {
                 $jmljft = $qjmljft->num_rows();     
-            }
+            } else {
+		$jmljft = 0;
+	    }
         
         // Jumlah Wajib ekinerja
         $jmlusul = $this->getjumlahusul_perperiode($thn, $bln);
@@ -721,7 +723,9 @@ class Mkinerja_pppk extends CI_Model
              
             if($query->num_rows() > 0) {
                 $jmlnol = $query->num_rows();     
-            }
+            } else {
+		$jmlnol = 0;
+	    }
 
         // Jumlah Wajib ekinerja
         $jmlusul = $this->getjumlahusul_perperiode($thn, $bln);

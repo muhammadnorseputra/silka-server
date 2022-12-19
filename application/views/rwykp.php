@@ -36,6 +36,13 @@
         </div>
         <div style="padding:3px;overflow:auto;width:99%;height:390px;border:1px solid white" >
           <table class="table table-condensed">
+          <?php if($this->session->userdata('level') == 'ADMIN'): ?>
+        	 <tr>
+        	 	<td class="text-right">
+        	 		<button class="btn btn-primary" data-toggle="modal" data-target="#entrikp">+ Tambah</button>
+        	 	</td>
+        	 </tr>
+        	<?php endif; ?>
             <tr>
               <td colspan='2' align='center'>                            
                 <table class='table table-condensed table-hover'>
@@ -335,3 +342,209 @@ if ($intbkn_session == "YA") {
 }
 ?>
 
+<!-- Modal Entri Riwayat KP -->
+<div id="entrikp" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<?= form_open(base_url('pegawai/entri_kp_aksi'), ['id' => 'f_entrikp', 'class' => 'form-horizontal'], ['nip' => $nip]); ?>
+			<div class="modal-header">
+	        <h4 class="modal-title">Tambah Riwayat KP</h4>
+	        <?= $this->mpegawai->getnama($nip); ?> - <?= $nip ?>
+	      </div>
+	      <div class="modal-body">
+		        <div class="row">
+		        	<div class="container">
+			        	<div class="col-md-2 col-lg-2">
+			        		<div class="form-group" style="margin-right: 10px;">
+			        			<label for="uraian">Uraian</label>
+			        			<select name="uraian" id="uraian">
+                      <option value="">Pilih Uraian</option>
+                      <option value="CPNS">CPNS</option>
+                      <option value="PNS">PNS</option>
+                      <option value="KENAIKAN PANGKAT">KENAIKAN PANGKAT</option>
+                    </select>
+			        		</div>
+			        	</div>
+                <div class="col-md-2 col-lg-2">
+			        		<div class="form-group" style="margin-right: 10px;">
+			        			<label for="jenis">Jenis</label>
+			        			<select name="jenis" id="jenis">
+                      <option value="">Pilih Jenis</option>
+                      <option value="REGULER">REGULER</option>
+                      <option value="PILIHAN (STRUKTURAL)">PILIHAN (STRUKTURAL)</option>
+                      <option value="PILIHAN (JFT)">PILIHAN (JFT)</option>
+                      <option value="PILIHAN (PI)">PILIHAN (PI)</option>
+                      <option value="PILIHAN (TUBEL)">PILIHAN (TUBEL)</option>
+                    </select>
+			        		</div>
+			        	</div>
+                <div class="col-md-2 col-lg-2">
+			        		<div class="form-group" style="margin-right: 10px;">
+			        			<label for="golru">Golongan Ruang</label> <br>
+			        			<select name="golru" id="golru">
+                    </select>
+			        		</div>
+			        	</div>
+                <div class="col-md-2 col-lg-2">
+			        		<div class="form-group" style="margin-right: 10px;">
+			        			<label for="tmt">TMT Pangkat</label>
+                    <input type="date" name="tmt" id="tmt" class="form-control">
+			        		</div>
+			        	</div>
+		        	</div> <!-- container -->
+		        </div> <!-- row -->
+            <div class="row">
+              <div class="container">
+                  <div class="col-md-5 col-lg-5">
+                    <div class="form-group" style="margin-right: 10px;">
+                      <label for="dlm_jabatan">Dalam Jabatan</label>
+                      <input type="text" name="dlm_jabatan" id="dlm_jabatan" class="form-control" placeholder="Pada ">
+                    </div>
+                  </div>
+                  <div class="col-md-3 col-lg-3">
+                    <div class="form-group" style="margin-right: 10px;">
+                      <label for="gaji">Gaji Pokok | <span id="toRupiah"></span></label>
+                      <input type="text" name="gaji" class="form-control" placeholder="Rupiah" size='20' maxlength='100' onkeyup="isRupiah(this)" onchange="isRupiah(this)"/>
+                    </div>
+                  </div>
+                  <div class="col-md-1 col-lg-1">
+                    <div class="form-group" style="margin-right: 10px;">
+                      <label for="ak">AK</label>
+                      <input type="text" name="ak" id="ak" size='5' maxlength='10' class="form-control" placeholder="0.00">
+                    </div>
+                  </div>
+              </div> <!-- container -->
+            </div> <!-- row -->
+            <div class="row">
+              <div class="container">
+                  <div class="col-md-1 col-lg-1">
+                    <div class="form-group" style="margin-right: 10px;">
+                      <label for="mk_tahun">MK Tahun</label>
+                      <input type="number" name="mk_tahun" id="mk_tahun" size='5' maxlength='5' class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-md-1 col-lg-1">
+                    <div class="form-group" style="margin-right: 10px;">
+                      <label for="mk_bulan">MK Bulan</label>
+                      <input type="number" name="mk_bulan" id="mk_bulan" size='5' maxlength='5' class="form-control">
+                    </div>
+                  </div>
+              </div> <!-- container -->
+            </div> <!-- row -->
+            <hr>
+            <div class="row">
+              <div class="container">
+                  <div class="col-md-3 col-lg-3">
+                    <div class="form-group" style="margin-right: 10px;">
+                      <label for="pejabat_sk">Pejabat (SK)</label>
+                      <input type="text" name="pejabat_sk" id="pejabat_sk" class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-md-4 col-lg-4">
+                    <div class="form-group" style="margin-right: 10px;">
+                      <label for="nomor_sk">Nomor (SK)</label>
+                      <input type="text" name="nomor_sk" id="nomor_sk" class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-md-2 col-lg-2">
+                    <div class="form-group" style="margin-right: 10px;">
+                      <label for="tgl_sk">Tanggal (SK)</label>
+                      <input type="date" name="tgl_sk" id="tgl_sk" class="form-control">
+                    </div>
+                  </div>
+              </div> <!-- container -->
+            </div> <!-- row -->
+	      </div>
+	      <div class="modal-footer">
+	      	<button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
+	      	<button type="submit" class="btn btn-primary">Simpan & Update</button>
+	      </div>
+	      <?= form_close() ?>
+		</div>
+	</div>
+</div>
+<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/select2/css/select2.min.css') ?>">
+<script type="text/javascript" src="<?php echo base_url('assets/select2/js/select2.min.js') ?>"></script>
+<style>
+.select2-container .select2-selection--single {
+	height: 35px !important;
+	font-weight: bold;
+	font-size: 16px;
+}
+label {
+  font-weight: bold;
+  font-size: 14px;
+  color: #323232;
+}
+/* Hide Calendar Icon In Chrome */
+input[type="date"]::-webkit-inner-spin-button,
+input[type="date"]::-webkit-calendar-picker-indicator {
+    display: none;
+    -webkit-appearance: none;
+}
+</style>
+<script>
+  function formatNumber(num) {
+    return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+  }
+
+  function isRupiah(e) {
+    let num = e.value;
+    $('span#toRupiah').html(`Rp. ${formatNumber(num)}`);
+  }
+	$(function() {
+		var $modal = $('#entrikp');
+		var $form = $("#f_entrikp");
+		$modal.on('shown.bs.modal', function () {
+		  $('input[name="gd"]').focus();
+		  $(this).find("#uraian,#jenis").select2({
+				width: "100%",
+        theme: "classic",
+        minimumResultsForSearch: Infinity,
+				dropdownParent: $('#entrikp')
+			}); 
+      $(this).find('#golru').select2({
+        width: "100%",
+        theme: "classic",
+        selectOnClose: false,
+        placeholder: 'Golongan Ruang',
+        dropdownParent: $('#entrikp'),
+        ajax: {
+          url: '<?= base_url("pegawai/list_golru") ?>',
+          dataType: 'json',
+          delay: 250,
+          minimumInputLength: 1,
+          data: function (params) {
+            return {
+              q: params.term, // search term
+            };
+          },
+          processResults: function (data) {
+            // Transforms the top-level key of the response object from 'items' to 'results'
+            return {
+              results: data
+            };
+          },
+          templateResult: function(res) {
+            return `${res.id} - ${res.text}`
+          }
+          // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
+        }
+      });
+		});
+		
+		$modal.on('hide.bs.modal', function () {
+		  $form.get(0).reset();
+		})
+		  
+		// var $select_tp = $("select[name='tp']");
+		// $select_tp.on("change", function(e) {
+		// 	e.preventDefault();
+		// 	var $this = $(this);
+		// 	var $id_tp = $this.val();
+		// 	$.getJSON(`<?= base_url("pegawai/list_jurusan_pendidikan") ?>`, {id: $id_tp}, function(res) {
+		// 		$("select[name='jp']").html(res);
+		// 	});
+		// })
+	});
+</script>

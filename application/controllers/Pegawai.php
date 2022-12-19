@@ -243,6 +243,48 @@ class Pegawai extends CI_Controller {
     $this->load->view('template', $data);
   }
 
+  public function list_golru() {
+  	$db = $this->db->like('nama_golru', $this->input->get('q'))->or_like('id_golru', $this->input->get('q'))->get('ref_golru')->result();
+  	$row = [];
+  	foreach($db as $g) {
+  		$sel['id'] = $g->id_golru;
+  		$sel['text'] = $g->nama_golru;
+      $row[] = $sel;
+  	}
+  	echo json_encode($row);
+  }
+
+  public function entri_kp_aksi() {
+    $i = $this->input->post();
+    $nip = $i['nip'];
+    $update_data = [
+      'fid_golru_skr' => $i['golru'],
+      'tmt_golru_skr' => $i['tmt']
+    ];
+    $insert_data = [
+      'nip' => $nip,
+      'uraian' => $i['uraian'],
+      'fid_golru' => $i['golru'],
+      'tmt' => $i['tmt'],
+      'gapok' => $i['gaji'],
+      'dlm_jabatan' => $i['dlm_jabatan'],
+      'angka_kredit' => $i['ak'],
+      'mkgol_thn' => $i['mk_tahun'],
+      'mkgol_bln' => $i['mk_bulan'],
+      'pejabat_sk' => $i['pejabat_sk'],
+      'no_sk' => $i['nomor_sk'],
+      'tgl_sk' => $i['tgl_sk'],
+      'jenis' => $i['jenis'],
+      'created_at' => date('Y-m-d H:i:s'),
+      'created_by' => $this->session->userdata('nama')
+    ];
+    // $update = $this->db->where('nip', $nip)->update('pegawai', $update_data);
+    // if($update) {
+    //   $this->db->insert('riwayat_pekerjaan', $insert_data);
+    // }
+    echo json_encode($insert_data);
+  }
+
   function rwykgb()
   {    
     $nip = $this->input->post('nip');
@@ -587,8 +629,82 @@ class Pegawai extends CI_Controller {
     $nip = $this->input->post('nip');    
     $data['pegrwyph'] = $this->mpegawai->rwyph($nip)->result_array();       
     $data['nip'] = $nip;
+    $data['pesan'] = '';
+    $data['jnspesan'] = '';
     $data['content'] = 'rwyph';
     $this->load->view('template', $data);
+  }
+
+  public function ref_jenis_tanhor() {
+  	$db = $this->db->like('nama_jenis_tanhor', $this->input->get('q'))->get('ref_jenis_tanhor')->result();
+  	$row = [];
+  	foreach($db as $g) {
+  		$sel['id'] = $g->id_jenis_tanhor;
+  		$sel['text'] = $g->nama_jenis_tanhor;
+      $row[] = $sel;
+  	}
+  	echo json_encode($row);
+  }
+
+  public function entri_penghargaan() {
+    $i = $this->input->post();
+    $data = [
+      'nip' => $i['nip'],
+      'fid_jenis_tanhor' => $i['jenis_tanhor'],
+      'nama_tanhor' => $i['nama_tanhor'],
+      'tahun' => $i['tahun'],
+      'pejabat' => $i['pejabat'],
+      'no_keppres' => $i['nomor'],
+      'tgl_keppres' => $i['tanggal'],
+      'created_at' => date('Y-m-d H:i:s'),
+      'created_by' => $this->session->userdata('nama')
+    ];
+    $nama = $this->mpegawai->getnama($i['nip']);
+    if($i!= null) 
+  	{
+  		$db = $this->db->insert('riwayat_tanhor', $data);
+  		if($db)
+  		{
+  			// callback pesan, true
+  			$data['pesan'] = '<b>Sukses</b>, Riwayat Penghargaan PNS <u>'.$nama.'</u> berhasil ditambahkan.';
+      	$data['jnspesan'] = 'alert alert-success';
+  		} else {
+  			// callback pesan, true
+  			$data['pesan'] = '<b>Gagal</b>, Riwayat Penghargaan PNS <u>'.$nama.'</u> gagal ditambahkan.';
+      	$data['jnspesan'] = 'alert alert-danger';
+  		}
+  	}
+
+    $this->rwyph();
+  }
+
+  public function hapusrwyph()
+  {
+    $nip = $this->input->post('nip');
+  	$id  = $this->input->post('id');
+
+  	$tbl = 'riwayat_tanhor';
+  	
+  	$nama = $this->mpegawai->getnama($nip);
+  
+  	// jika nip ada	
+  	if($nip != '') {
+  		// hapus riwayat pendidikan berdasarkan id
+  		$del = $this->mpegawai->delete_table($tbl, ['id' => $id]);
+  		// jika hapus pada database, true
+  		if($del) {			
+			// callback pesan, true
+  			$data['pesan'] = '<b>Sukses</b>, Riwayat Penghargaan PNS <u>'.$nama.'</u> berhasil dihapus.';
+      	$data['jnspesan'] = 'alert alert-success';
+
+  		} else {
+  			// callback pesan, false
+  			$data['pesan'] = '<b>Gagal</b>, Riwayat Penghargaan PNS <u>'.$nama.'</u> gagal dihapus.';
+      	$data['jnspesan'] = 'alert alert-danger';
+  		}
+  	}
+  	
+    $this->rwyph();
   }
 
   function rwyjab()
@@ -1667,7 +1783,7 @@ class Pegawai extends CI_Controller {
                         </select>
                   </td>
                 </tr>
-		<tr class='danger'>
+		  <tr class='danger'>
                   <td align='right'>Integrasi SAPK</td>
                   <td>
                         <select name="integrasi" required>

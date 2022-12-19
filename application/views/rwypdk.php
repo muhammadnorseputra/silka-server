@@ -34,7 +34,7 @@
  		<?php
       if (isset($pesan) != '') {
       ?>
-        <div class="<?php echo $jnspesan; ?>" alert-info" role="alert">
+        <div class="<?php echo $jnspesan; ?> alert-info" role="alert">
           <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
           <?php
           echo $pesan;
