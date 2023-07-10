@@ -1,6 +1,6 @@
 <!-- Default panel contents -->
   <center>
-  <div class="panel panel-info"   style="padding:3px;overflow:auto;width:98%;height:600px;">
+  <div class="panel panel-info"   style="padding:3px;overflow:auto;width:98%;height:98%;">
         <div class='panel-heading' align='left'><span class="glyphicon glyphicon-file" aria-hidden="true"></span>
         <b>STATISTIK DATA PENSIUN</b>
         </div>
@@ -77,7 +77,7 @@
     </div>
 
     <div class="col-lg-4" align='center'>
-        <pre><div class='text-success'><i class="fa fa-bar-chart-o fa-fw"></i> TREN PENSIUN BULANAN TAHUN <?php echo $thn; ?></div></pre>
+        <pre><div class='text-success'><i class="fa fa-bar-chart-o fa-fw"></i> TREN BULANAN PENSIUN BUP TAHUN <?php echo $thn; ?></div></pre>
         <div id="rwybulan" style="height: 100%; width: 100%"></div>
         <script type="text/javascript">
 	Highcharts.chart('rwybulan', {
@@ -156,7 +156,7 @@
                                         $jmljadu = $this->mpensiun->getjmlperjnsbulan('2022','6');
                                         echo "[";
                                         foreach($jmljadu as $v):
-                                                echo $v->jumlah.",";
+                                                //echo $v->jumlah.",";
                                         endforeach;
                                         echo "]";
                                 ?>
@@ -166,9 +166,49 @@
 				<?php
                                         $jmlaps = $this->mpensiun->getjmlperjnsbulan('2022','7');
                                         echo "[";
+					
                                         foreach($jmlaps as $v):
-                                                echo $v->jumlah.",";
+						if ($v->bulan = '1') { $jml1 = 3; } else { $jml1 = 0; }
+                                                if ($v->bulan = '2') { $jml2 = $v->jumlah; } else { $jml2 = 0; }
+                                                if ($v->bulan = '3') { $jml3 = $v->jumlah; } else { $jml3 = 0; }
+                                                if ($v->bulan = '4') { $jml4 = $v->jumlah; } else { $jml4 = 0; }
+						if ($v->bulan = '5') { $jml5 = $v->jumlah; } else { $jml5 = 0; }
+                                                if ($v->bulan = '6') { $jml6 = $v->jumlah; } else { $jml6 = 0; }
+                                                if ($v->bulan = '7') { $jml7 = $v->jumlah; } else { $jml7 = 0; }
+                                                if ($v->bulan = '8') { $jml8 = $v->jumlah; } else { $jml8 = 0; }
+						if ($v->bulan = '9') { $jml9 = $v->jumlah; } else { $jml9 = 0; }
+                                                if ($v->bulan = '10') { $j10 = $v->jumlah; } else { $j10 = 0; }
+                                                if ($v->bulan = '11') { $j11 = $v->jumlah; } else { $j11 = 0; }
+                                                if ($v->bulan = '12') { $j12 = $v->jumlah; } else { $j12 = 0; }
+						
+						//if ($v->bulan == '5') { echo $v->jumlah.","; break; } else { echo "0,"; break; }
+                                                //if ($v->bulan == '6') { echo $v->jumlah.","; break; } else { echo "0,"; break; }
+                                                //if ($v->bulan == '7') { echo $v->jumlah.","; break; } else { echo "0,"; break; }
+                                                //if ($v->bulan == '8') { echo $v->jumlah.","; break; } else { echo "0,"; break; }
+						//if ($v->bulan == '9') { echo $v->jumlah.","; break; } else { echo "0,"; break; }
+                                                //if ($v->bulan == '10') { echo $v->jumlah.","; break; } else { echo "0,"; break; }
+                                                //if ($v->bulan == '11') { echo $v->jumlah.","; break; } else { echo "0,"; break; }
+                                                //if ($v->bulan == '12') { echo $v->jumlah.","; break; } else { echo "0,"; break; }
+
+						/*for ($i = 1; $i <= 12; $i++){
+							if ($i == $v->bulan) {
+								echo $v->jumlah.",";
+								echo $i.",";
+								break;
+							} 
+							else {
+								echo "0,";
+								break;
+							}
+						}
+						*/
+						//continue;
+						//echo $v->jumlah.",";
                                         endforeach;
+					//echo $jml1.",".$jml2.",".$jml3.",".$jml4.",".$jml5.",".$jml6.",".$jml7.",".$jml8.",".$jml9.",".$jml10.",".$jml11.",".$jml12;
+					//echo $jml1.",".$jml2.",".$jml3.",".$jml4.",".$jml5.",".$jml6.",".$jml7.",".$jml8.",".$jml9.",".$jml10;
+					//echo $jml1;
+					//echo "2,0,1,1,0,0,1,0,0,1,0,0";
                                         echo "]";
                                 ?>
 		}

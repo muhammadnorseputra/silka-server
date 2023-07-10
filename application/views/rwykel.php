@@ -201,7 +201,7 @@ function GetXmlHttpObject()
                       <th width='250'><center><u>Tgl. Nikah</u><br />No. Akta Nikah</center></th>
                       <th align='100'><center><u>Tmp. Lahir</u><br />Tgl. Lahir</center></th>
                       <th width='150'><center>Pekerjaan</center></th>
-                      <th width='250'><center><u>Status Kawin</u><br />Status Hidup</center></th>
+                      <th width='250'><center><u>Status Kawin</u><br />Status Hidup<br />Tanggungan</center></th>
                       <th width='250'><center><u>Tgl. Cerai</u><br />Akta Cerai</center></th>
                       <th width='250'><center><u>Tgl. Meninggal</u><br />Akta Meninggal</center></th>
                       <th width='150' colspan='2'><center>Aksi</center></th>
@@ -243,7 +243,7 @@ function GetXmlHttpObject()
                       ?>
 
 
-                      <td><?php echo '<u>'.$v['status_kawin'].'</u><br /> Status Hidup : '.$v['status_hidup']; ?></td>
+                      <td><?php echo '<u>'.$v['status_kawin'].'</u><br /> Status Hidup : '.$v['status_hidup'].'<br/>Tanggungan : '.$v['tanggungan']; ?></td>
                       <td><?php echo '<u>'.$tglcerai.'</u><br />'.$v['no_akta_cerai']; ?></td>
                       <td><?php echo '<u>'.$tglmeninggal.'</u><br />'.$v['no_akta_meninggal']; ?></td>
                       <td align='center' width='30'>
@@ -322,7 +322,7 @@ function GetXmlHttpObject()
                       ?>                    
                       <th align='30'><center>Jenis Kelamin</center></th>
                       <th width='200'><center><u>Tempat Lahir</u><br />Tgl. lahir</center></th>
-                      <th width='150'><center><u>Status Anak</u><br />Status  Hidup</center></th>
+                      <th width='150'><center><u>Status Anak</u><br />Status Hidup<br/>Tanggungan</center></th>
                       <th width='100' colspan='2'><center>Aksi</center></th>
                     </tr>
                     <?php
@@ -335,7 +335,7 @@ function GetXmlHttpObject()
                       <td><?php echo $this->mpegawai->getnamasutri($nip,$v['fid_sutri_ke']); ?></td>
                       <td><?php echo $v['jns_kelamin']; ?></td>
                       <td><?php echo '<u>'.$v['tmp_lahir'].'</u><br />'.tgl_indo($v['tgl_lahir']); ?></td>
-                      <td><?php echo '<u>'.$v['status'].'</u><br /> Status Hidup : '.$v['status_hidup']; ?></td>
+                      <td><?php echo '<u>'.$v['status'].'</u><br /> Status Hidup : '.$v['status_hidup'].'<br/>Tanggungan : '.$v['tanggungan']; ?></td>
                       <td align='center' width='30'>
                         <form method='POST' name='editsutri' action='../pegawai/editanak'>
                           <?php          

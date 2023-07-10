@@ -455,9 +455,19 @@ if ($intbkn_session == "YA") {
               </div> <!-- container -->
             </div> <!-- row -->
 	      </div>
-	      <div class="modal-footer">
-	      	<button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
-	      	<button type="submit" class="btn btn-primary">Simpan & Update</button>
+	      <div class="modal-footer" style="display:flex; justify-content: flex-end;">
+          <div>
+            <label class="radio-inline">
+              <input type="radio" name="op" id="inlineRadio1" value="op1" checked> Update Profile & Riwayat
+            </label>
+            <label class="radio-inline" style="margin-right: 10px;">
+              <input type="radio" name="op" id="inlineRadio2" value="op2"> Riwayat Only
+            </label>
+          </div>
+          <div style="display: flex-end">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
+            <button type="submit" class="btn btn-primary">Simpan & Update</button>
+          </div>
 	      </div>
 	      <?= form_close() ?>
 		</div>

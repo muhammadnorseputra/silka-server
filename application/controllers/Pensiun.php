@@ -129,7 +129,7 @@ class Pensiun extends CI_Controller {
           endif;
         ?>
 	     <?php
-			if($this->session->userdata('nama') == "kholik" || $this->session->userdata('nama') == "uda" || $this->session->userdata('nama') == "putra"):
+			if($this->session->userdata('nama') == "bain" || $this->session->userdata('nama') == "uda" || $this->session->userdata('nama') == "putra"):
 				if($v['nama_jenis_pensiun'] == 'BUP'):
 		  ?>
 	        <form method="POST" action="../santunan_korpri/entri_santunan">
@@ -451,8 +451,6 @@ class Pensiun extends CI_Controller {
 
             if (($bln_lahir == 12) AND ($thn_bup == $tahun)) {$thn_bup++;}
             if (($bln_lahir == 12) AND ($thn_bup == $tahun-1)) {$thn_bup;}
-            
-       
 
             if (($thn_bup == $tahun) OR (($thn_bup == $tahun-1) AND ($bln_lahir == 12))) {
               ?>

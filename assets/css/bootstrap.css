@@ -5879,13 +5879,13 @@ button.close {
   outline: 0;
 }
 .modal.fade .modal-dialog {
-  -webkit-transition: -webkit-transform .3s ease-out;
-       -o-transition:      -o-transform .3s ease-out;
-          transition:         transform .3s ease-out;
-  -webkit-transform: translate(0, -25%);
-      -ms-transform: translate(0, -25%);
-       -o-transform: translate(0, -25%);
-          transform: translate(0, -25%);
+  -webkit-transition: -webkit-transform .1s ease-out;
+       -o-transition:      -o-transform .1s ease-out;
+          transition:         transform .1s ease-out;
+  -webkit-transform: translate(0, -45%);
+      -ms-transform: translate(0, -45%);
+       -o-transform: translate(0, -45%);
+          transform: translate(0, -45%);
 }
 .modal.in .modal-dialog {
   -webkit-transform: translate(0, 0);
@@ -5911,8 +5911,8 @@ button.close {
   border: 1px solid rgba(0, 0, 0, .2);
   border-radius: 6px;
   outline: 0;
-  -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, .5);
-          box-shadow: 0 3px 9px rgba(0, 0, 0, .5);
+  -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, .5);
+          box-shadow: 0 3px 12px rgba(0, 0, 0, .5);
 }
 .modal-backdrop {
   position: fixed;
@@ -5921,15 +5921,15 @@ button.close {
   bottom: 0;
   left: 0;
   z-index: 1040;
-  background-color: #000;
+  background-color: #fff;
 }
 .modal-backdrop.fade {
   filter: alpha(opacity=0);
   opacity: 0;
 }
 .modal-backdrop.in {
-  filter: alpha(opacity=50);
-  opacity: .5;
+  filter: alpha(opacity=80);
+  opacity: .9;
 }
 .modal-header {
   padding: 15px;

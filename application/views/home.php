@@ -9,7 +9,7 @@
 
  		<link rel="stylesheet" href="<?php echo base_url('assets/css/bootstrap.min.css'); ?>" />		
 		<link rel="stylesheet" href="<?php echo base_url('assets/css/font-awesome.css'); ?>" />
-
+		
 		<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
 		<style>
 			.text-center {
@@ -186,7 +186,7 @@
 			      <p><code>Jika anda bukan User terdaftar,</code><a href="<?php echo base_url('login/logintamu') ?>">Klik Disini</a> untuk login sebagai tamu.</p>
 			      <br/>	
 			  	  -->
-			      <p class="text-center text-muted" style="margin-top:8%;">BKPSDM Kab. Balangan © 2017</p>
+			      <p class="text-center text-muted" style="margin-top:8%;">BKPSDM Kab. <a style="color: #777; text-decoration:none;" href="//mediabalangan.com" target="_blank">Balangan</a> © 2017</p>
 			      	
 			    </form>
 			    </div>

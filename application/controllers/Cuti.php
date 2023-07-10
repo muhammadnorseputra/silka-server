@@ -316,7 +316,8 @@ class Cuti extends CI_Controller {
     	   echo "<center><img src='$photo' width='60' height='80' alt='$nip.jpg' class='img-thumbnail'><br />$nama";      
     	   echo "<center><b><span style='color: #FF0000'>Usul CUTI TAHUNAN Tahun ".$thnusul." sedang diproses</span></b></center>";
         // cek apakah data riwayat SKP ada	
-      } else if (($skpada == 0) AND ($tmtcpns != $tahun)) {
+      } 
+	else if (($skpada == 0) AND ($tmtcpns != $tahun)) {
           echo "<center><img src='$photo' width='60' height='80' alt='$nip.jpg' class='img-thumbnail'><br />$nama";
           echo "<center><b><span style='color: #FF0000'>Data SKP Tahun ".$tahun." tidak ditemukan dalam riwayat SKP</span></b></center>";
         // cek jika file SKP tidak ada
@@ -377,11 +378,13 @@ class Cuti extends CI_Controller {
     
       if ($pernahusul) {
         echo "<div align='center'><b><span style='color: #FF0000'>Usul CUTI TAHUNAN Tahun ".$thnusul." sedang diproses</span></b></center>";
-      } else if (($skpada == 0) AND ($tmtcpns != $tahun)) {
-          echo "<br/><b><span style='color: #FF0000'>DATA SKP TAHUN ".$tahun."<br/>TIDAK DITEMUKAN DALAM RIWAYAT SKP</span></b></center>";
-      } else if ((!file_exists('./fileskp/'.$nmfile.'.pdf')) AND (!file_exists('./fileskp/'.$nmfile.'.PDF')) AND ($tmtcpns != $tahun)) {
-          echo "<br/><b><span style='color: #FF0000'>FILE BERKAS SKP TAHUN ".$tahun."<br/>BELUM DIUPLOAD</span></b></center>";
-      } else {
+      } 
+      //	else if (($skpada == 0) AND ($tmtcpns != $tahun)) {
+      //    echo "<br/><b><span style='color: #FF0000'>DATA SKP TAHUN ".$tahun."<br/>TIDAK DITEMUKAN DALAM RIWAYAT SKP</span></b></center>";
+      //} else if ((!file_exists('./fileskp/'.$nmfile.'.pdf')) AND (!file_exists('./fileskp/'.$nmfile.'.PDF')) AND ($tmtcpns != $tahun)) {
+      //    echo "<br/><b><span style='color: #FF0000'>FILE BERKAS SKP TAHUN ".$tahun."<br/>BELUM DIUPLOAD</span></b></center>";
+      //} 
+	else {
           echo "<input type='hidden' name='nipsimpan' size='20' value='$nip' />";
           echo "<br /><div align='center'>
               <button type='submit' class='btn btn-success btn-sm'>

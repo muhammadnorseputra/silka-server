@@ -135,84 +135,130 @@
             {
           ?>
               <tr>
-              <td colspan='2'>            
-                <div class="panel panel-warning">
-                    <!-- Default panel contents -->
-                    <div class="panel-heading" align='center'><b>Upload File Berkas SK CPNS dan PNS</b></div>
-                    <table class='table table-condensed   table-hover'>
-                      <tr>                        
-                        <td align='center'>
-                        <?php
-                          $lokasifile='./filecp/';
-                          $namafile=$v['berkas'];
-                          
-                          // awal dengan FTP
-                          /*
-                          $this->load->library('ftp');
+              <td colspan='2'>  
+                <!-- Nav tabs -->
+              <ul class="nav nav-tabs" role="tablist">
+		<li role="presentation" class="active"><a href="#usulpns" aria-controls="pns" role="tab" data-toggle="tab">KELENGKAPAN BERKAS USUL PNS</a></li>
+                <li role="presentation"><a href="#cpns" aria-controls="cpns" role="tab" data-toggle="tab">SK CPNS / PNS</a></li>
+              </ul>
 
-                          $config['hostname'] = '192.168.1.4';
-                          $config['username'] = 'silka_ftp';
-                          $config['password'] = 'FtpSanggam';
-                          $config['debug'] = TRUE;
-
-                          $this->ftp->connect($config);
-
-                          $list = $this->ftp->list_files('/filecp/');
-                          $nmfile = '/filecp/'.$namafile.'.pdf';
-
-                          if (in_array($nmfile, $list))
-                          {
-                            ?>
-                            <form action="<?=base_url()?>download/cpnspns" method="post" enctype="multipart/form-data">
-                              <input type='hidden' name='file' id='file' value='<?php echo $nmfile; ?>'>
-                              <button type="submit" value="upload" class="btn btn-success">
-                            <span class="glyphicon glyphicon-upload" aria-hidden="false"></span>&nbspDownload</button>
-                            </form>
+              <!-- Tab panes -->
+              <div class="tab-content" style='background-color:#F0F0F0';>
+              <div role="tabpanel" class="tab-pane" id="cpns" style='padding:10px';>
+		<div class="row">
+                        <div class="col-md-8">
+				<span class='text-success'>Upload file Scan SK CPNS dan PNS disini</span>		        
+			</div>
+                        <div class="col-md-4">
                             <?php
-                            echo "<br />Silahkan upload untuk memperbarui file, 
-                                  harus dengan format .pdf ukuran maksimal 2 MB !!!";
-                          }
+                              $lokasifile='./filecp/';
+                              $namafile=$v['berkas'];
+                              
+                              // awal dengan FTP
+                              /*
+                              $this->load->library('ftp');
 
-                          $this->ftp->close(); 
-                          
-                          */
-                          // akhir FTP
+                              $config['hostname'] = '192.168.1.4';
+                              $config['username'] = 'silka_ftp';
+                              $config['password'] = 'FtpSanggam';
+                              $config['debug'] = TRUE;
 
+                              $this->ftp->connect($config);
 
+                              $list = $this->ftp->list_files('/filecp/');
+                              $nmfile = '/filecp/'.$namafile.'.pdf';
 
-                          if (file_exists($lokasifile.$namafile.'.pdf')) {
-                            $namafile=$namafile.'.pdf';
-                          } else {
-                            $namafile=$namafile.'.PDF';
-                          }
+                              if (in_array($nmfile, $list))
+                              {
+                                ?>
+                                <form action="<?=base_url()?>download/cpnspns" method="post" enctype="multipart/form-data">
+                                  <input type='hidden' name='file' id='file' value='<?php echo $nmfile; ?>'>
+                                  <button type="submit" value="upload" class="btn btn-success">
+                                <span class="glyphicon glyphicon-upload" aria-hidden="false"></span>&nbspDownload</button>
+                                </form>
+                                <?php
+                                echo "<br />Silahkan upload untuk memperbarui file, harus dengan format .pdf";
+                              }
 
+                              $this->ftp->close(); 
+                              
+                              */
+                              // akhir FTP
 
-                          if (file_exists ($lokasifile.$namafile))
-                            echo "<a class='btn btn-info btn-xs' href='../filecp/$namafile' target='_blank' role='button'>
-                                  <span class='glyphicon glyphicon-download-alt' aria-hidden='true'></span>
-                                  Download File Berkas SK CPNS/PNS</a><br />Silahkan upload untuk memperbarui file, 
-                                  harus dengan format .pdf ukuran maksimal 2 MB !!!";
-                          else
-                            echo "<h4><span class='label label-warning'>File berkas SK CPNS/PNS tidak tersedia dalam sistem, silahkan upload !!!</span></h4>";
+                              if (file_exists($lokasifile.$namafile.'.pdf')) {
+                                $namafile=$namafile.'.pdf';
+                              } else {
+                                $namafile=$namafile.'.PDF';
+                              }
 
-                        //echo form_open_multipart('upload/insert');                        
-                        ?>
-                        <!-- Jalankan function insert pada controller upload -->
-                        </td>
-                        <form action="<?= base_url() ?>upload/insertcpnspns" method="post" enctype="multipart/form-data">
-                        <td align='right'>                        
-                        <input type="file" name="filecp" size="40" class="btn btn-info" />
-                        <input type='hidden' name='nip' id='nip' maxlength='20' value='<?php echo $v['nip']; ?>'>
-                        <input type='hidden' name='nmberkaslama' id='nmberkaslama' value='<?php echo $v['berkas']; ?>'>
-                        </td>
-                        <td align='left'>
-                        <button type="submit" value="upload" class="btn btn-success">
-                        <span class="glyphicon glyphicon-upload"></span>&nbspUpload</button>
-                        </td>
-                        </form>
-                      </tr>
-                    </table>
-                </div>            
+                              if (file_exists ($lokasifile.$namafile))
+                                echo "<a class='btn btn-info btn-xs' href='../filecp/$namafile' target='_blank' role='button'>
+                                      <span class='glyphicon glyphicon-download-alt' aria-hidden='true'></span>
+                                      Download File Berkas SK CPNS/PNS</a><br/> Silahkan upload untuk memperbarui file, harus dengan format .pdf";
+                              else
+				echo "<span class='text text-danger'>File tidak tersedia, silahkan upload !!!</span> harus dengan format .pdf";
+
+                            //echo form_open_multipart('upload/insert');                        
+                            ?>
+                            <!-- Jalankan function insert pada controller upload -->
+                            <form action="<?= base_url() ?>upload/insertcpnspns" method="post" enctype="multipart/form-data">
+                            <input type="file" name="filecp" size="40" class="btn btn-info btn-sm" />
+                            <input type='hidden' name='nip' id='nip' maxlength='20' value='<?php echo $v['nip']; ?>'>
+                            <input type='hidden' name='nmberkaslama' id='nmberkaslama' value='<?php echo $v['berkas']; ?>'>
+                            <button type="submit" value="upload" class="btn btn-success btn-sm">
+                            <span class="glyphicon glyphicon-upload"></span>&nbspUpload</button>
+                            </form>
+                      </div> <!-- end col -->
+		</div> <!-- end row -->	
+                </div>
+		  
+                <div role="tabpanel" class="tab-pane active" id="usulpns" style='padding:10px';>
+                <!-- <div class="panel panel-success"> -->
+                        <!-- Default panel contents -->
+                        <!-- <div class="panel-heading" align='center'><b>Upload File Berkas Kelengkapan Usulan PNS</b></div> -->
+		    <div class="row">
+                        <div class="col-md-8"><small>
+				<span class='text-danger'>Upload file Scan Dokumen Persyaratan Usulan PNS,
+				Format File <b>PDF</b> dengan Ukuran Maksimal <b>5 MByte</b><br/>
+				SK CPNS, SPMT, SPPTL, Dokumen Penilaian Kinerja 1 (satu) Tahun Terakhir<br/>
+				Surat keterangan Sehat Jasmani/Rohani, Surat Keterangan Tidak Mengkonsumsi Narkoba, Psikotropika serta Zat Adiktif Lainnya<br/>
+				Surat Pernyataan Tidak Sedang Dalam Proses atau Menjalani Hukuman Disiplin.
+				</span></small>
+		    	</div>
+			<div class="col-md-4">
+                            <?php
+                              $lokasifile='./filecp/';
+                              $filename=$v['berkas_pns'];
+                              
+                              if (file_exists($lokasifile.$filename.'.pdf')) {
+                                $filename=$filename.'.pdf';
+                              } else {
+                                $filename=$filename.'.PDF';
+                              }
+
+                              if (file_exists ($lokasifile.$filename))
+                                echo "<a class='btn btn-success btn-xs' href='../filecp/$filename' target='_blank' role='button'>
+                                      <span class='glyphicon glyphicon-download-alt' aria-hidden='true'></span>
+                                      Download Berkas</a><br/> Silahkan upload untuk memperbarui file, harus dengan format .pdf";
+                              else
+                                echo "<span class='text text-danger'>File tidak tersedia, silahkan upload !!!</span> harus dengan format .pdf";
+
+                            //echo form_open_multipart('upload/insert');                        
+                            ?>
+                            <!-- Jalankan function insert pada controller upload -->
+                            <form action="<?= base_url() ?>upload/berkas_pns" method="post" enctype="multipart/form-data">
+                            <input type="file" name="filecp" size="40" class="btn btn-info btn-sm" />
+                            <input type='hidden' name='nip' id='nip' maxlength='20' value='<?php echo $v['nip']; ?>'>
+                            <input type='hidden' name='nmberkaslama' id='nmberkaslama' value='<?php echo $v['berkas_pns']; ?>'>
+                            <button type="submit" value="upload" class="btn btn-success btn-sm">
+                            <span class="glyphicon glyphicon-upload"></span>&nbspUpload</button>                    
+			    </form>        
+		     </div> <!-- end ROW --> 
+                  </div>
+                </div>
+              </div>
+                            
+                           
               </td>
               </tr>
           <?php
@@ -223,6 +269,7 @@
             if ($this->mpegawai->getstatpeg($v['nip']) == 'PNS')
             {
           ?>
+	    <br/>
               <tr>
               <td colspan='2'>            
                 <div class="panel panel-info">

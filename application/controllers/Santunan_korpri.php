@@ -4,6 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Santunan_korpri extends CI_Controller {
 
     public function __construct() {
+		
         parent::__construct();
         // Load Helper 
         $this->load->helper(array('url','form','fungsitanggal','fungsipegawai','fungsiterbilang'));
@@ -21,12 +22,26 @@ class Santunan_korpri extends CI_Controller {
     public function index(){
     	return "Hai, ".$this->session->userdata('nama');
     }
+
+	// ---------------- Statistik -------------------//
+    public function statistik() {
+		$thn = $this->input->get('tahun');
+    	$data = [
+    		'content' => 'santunan_korpri/statistik',
+			'jenis' => $this->korpri->ref_santunan()->result(),
+			'tahun' => $thn,
+			'list_tahun' => $this->korpri->list_tahun()->result(),
+			'js'	  => 'santunan_korpri/statistik_santunan_js',
+    	];
+      $this->load->view('template', $data);
+    }
     
     // ---------------- Rekapitulasi -------------------//
     public function rekapitulasi_santunan() {
     	$data = [
     		'content' => 'santunan_korpri/rekap_santunan',
-    		'js'			=> 'santunan_korpri/rekap_santunan_js'
+    		'js'	  => 'santunan_korpri/rekap_santunan_js',
+			'jenis' => $this->korpri->ref_santunan()->result()
     	];
       $this->load->view('template', $data);
     }
@@ -43,7 +58,7 @@ class Santunan_korpri extends CI_Controller {
   			
   			if($row->fid_jenis_tali_asih == 1) {
 		    	$ket = $row->tgl_bup; 
-		    } elseif($row->fid_jenis_tali_asih == 2) {
+		    } elseif($row->fid_jenis_tali_asih == 2 || $row->fid_jenis_tali_asih == 4 || $row->fid_jenis_tali_asih == 5) {
 		    	$ket = $row->tgl_meninggal;
 		    } else {
 		    	$ket = $row->tgl_kebakaran;
@@ -101,33 +116,33 @@ class Santunan_korpri extends CI_Controller {
     	echo json_encode($response);
     }
     
-    public function ceknip() {
+    public function ceknip2() {
     	$nip = $this->input->get('nip');
     	$unitkerja = $this->korpri->cekunitkerja($nip);
     	$data = $this->korpri->ceknip($nip);
     	if($data->num_rows() > 0) {
     		$d = $data->row();
     		
-    		$dbnip = $this->korpri->dbnip($nip);
-    		if($dbnip == true) {
-    			$icon = "<i class='fa fa-check-circle fa-3x text-success'></i>";
-    		} else {
-    			$icon = "<i class='fa fa-times-circle fa-3x text-danger'></i>";
-    		}
+		$dbnip = $this->korpri->dbnip($nip);
+		if($dbnip == true) {
+			$icon = "<i class='fa fa-check-circle fa-3x text-success'></i>";
+		} else {
+			$icon = "<i class='fa fa-times-circle fa-3x text-danger'></i>";
+		}
     		
-    		$lokasifile = './photo/';
+    	$lokasifile = './photo/';
         $filename = "$nip.jpg";
-    		if (file_exists ($lokasifile.$filename)) {
+    	if (file_exists ($lokasifile.$filename)) {
           $photo = "../photo/$nip.jpg";
         } else {
           $photo = "../photo/nophoto.jpg";
         }
 	      
-				$rwysetuju = $this->mpegawai->rwyupdate_setuju($nip);
+		$rwysetuju = $this->mpegawai->rwyupdate_setuju($nip);
 	      if ($rwysetuju == 1) {
-	    		$img = '<img src="data:image/jpeg;base64,'.base64_encode($this->mpegawai->show_photo_pegawai($nip)).'" width="120" height="160"  class="img-thumbnail"/>';
+	    		$img = '<img src="data:image/jpeg;base64,'.base64_encode($this->mpegawai->show_photo_pegawai($nip)).'" alt="'.$nip.'" width="110" height="140"  class="img-thumbnail"/>';
 	      } else {
-					$img = "<img src='$photo' width='120' height='160' alt='' class='img-thumbnail'>";
+					$img = "<img src='$photo' width='110' height='140' alt='$nip' class='img-thumbnail'>";
 				}
 				
 				$html = $img;
@@ -140,6 +155,81 @@ class Santunan_korpri extends CI_Controller {
     	}
     	
     	echo json_encode(['data' => $html, 'unker' => $unker]);
+    }
+
+	public function ceknip() {
+    	$nip = $this->input->get('nip');
+    	$data = $this->korpri->ceknip($nip);
+		$dbnip = $this->korpri->dbnip($nip);
+
+		if($dbnip == false) {
+			$result = '<b>ERROR</b>, DATA SANTUNAN SUDAH ADA';
+			$result_status = false;
+			$unor = null;
+		} else {
+			if($data->num_rows() > 0) {
+			$d = $data->row();	
+
+				if($dbnip == true) {
+					$icon = "<i class='fa fa-check-circle fa-3x text-success'></i>";
+				} else {
+					$icon = "<i class='fa fa-times-circle fa-3x text-danger'></i>";
+				}
+
+				$lokasifile = './photo/';
+				$filename = "$nip.jpg";
+				if (file_exists ($lokasifile.$filename)) {
+					$photo = "../photo/$nip.jpg";
+				} else {
+					$photo = "../photo/nophoto.jpg";
+				}
+
+				$rwysetuju = $this->mpegawai->rwyupdate_setuju($nip);
+				if ($rwysetuju == 1) {
+					$img = '<img src="data:image/jpeg;base64,'.base64_encode($this->mpegawai->show_photo_pegawai($nip)).'" alt="'.$nip.'" width="80" height="110"  class="img-thumbnail"/>';
+				} else {
+					$img = "<img src='$photo' width='80' height='110' alt='$nip' class='img-thumbnail'>";
+				}
+
+				if(isset($d->nama_unit_kerja) != "") {
+					$unor = $d->nama_unit_kerja;
+				} else {
+					$unor = $this->korpri->getnamaunitkerja($d->fid_unit_kerja);
+				}
+
+				if(isset($d->fid_jnsjab) != "") {
+					
+					if ($d->fid_jnsjab == 1) { $idjab = $d->fid_jabatan;
+					}elseif ($d->fid_jnsjab == 2) { $idjab = $d->fid_jabfu;
+					}elseif ($d->fid_jnsjab == 3) { $idjab = $d->fid_jabft;
+					}
+
+					$tmtbup = '<span>TMT BUP <br><b>'.$this->mpegawai->gettmtbup($idjab, $d->tgl_lahir, $d->fid_jnsjab).'</b></span>';
+				} else {
+					$tmtbup = '';
+				}
+
+				$result = '
+					<div style="display: flex; justify-content: start; align-item: center; gap: 12px; border: 1px dashed blue; background:#eaeaea; padding: 8px">
+						<div>
+							'.$img.'
+						</div>
+						<div style="display: flex; flex-direction: column; justify-content: start; gap: 4px;">
+							<span>NAMA <br><b>'.namagelar($d->gelar_depan, $d->nama, $d->gelar_belakang).'</b></span>
+							<span>NIP <br><b>'.polanip($d->nip).'</b></span>
+							'.$tmtbup.'
+							<span>UNIT KERJA <br><b>'.$unor.'</b></span>
+						</div>
+					</div>
+				';
+				$result_status = true;
+			} else {
+				$result = '<b>WARNING</b>, DATA TIDAK DITEMUKAN';
+				$result_status = false;
+				$unor = null;
+			}
+		}
+    	echo json_encode(['data' => $result, 'status' => $result_status, 'unor' => $unor]);
     }
     
     public function entri_santunan() {
@@ -177,7 +267,7 @@ class Santunan_korpri extends CI_Controller {
     public function save() {
     	$nip = $this->input->post('nip');
     	$unker = $this->input->post('unit_kerja');
-    	$jta = $this->input->post('jenis_tali_asih');
+    	$jta = $this->input->post('jenis_santunan_korpri');
     	$besar_santunan = $this->input->post('besar_santunan');
     	$tahun = $this->input->post('tahun');
     	$bulan = $this->input->post('bulan');

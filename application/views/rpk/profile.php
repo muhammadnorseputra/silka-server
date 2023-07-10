@@ -44,6 +44,10 @@
     }
   } 
 </script>
+<center>
+      <h3>Rancangan Pengembangan Karir</h3>
+      <p>Silahkan pilih unit kerja anda</p> <hr>
+    </center>
 <div class="container text-center">
   <table class='table table-condensed'>
     <tr>
@@ -67,10 +71,7 @@
 </div>
 <div>  
   <div id='tampil'>
-    <center>
-      <h3>Rancangan Pengembangan Karir</h3>
-      <p>Silahkan pilih unit kerja anda</p> <hr>
-    </center>
+    
   </div>
 </div>
 

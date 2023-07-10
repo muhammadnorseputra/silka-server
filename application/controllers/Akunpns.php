@@ -47,6 +47,9 @@ class Akunpns extends CI_Controller {
       if ($nipnama != '') {
       	$data['user'] = $this->makunpns->listakun_bynipnama($nipnama)->result_array();
       } 
+      //else {
+      //	$data['user'] = $this->makunpns->listakun()->result_array();
+      //}
       $data['content'] = 'akunpns/listakun';
       $data['pesan'] = '';    
       $data['jnspesan'] = '';

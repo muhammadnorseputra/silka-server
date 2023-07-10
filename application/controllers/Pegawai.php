@@ -17,11 +17,14 @@ class Pegawai extends CI_Controller {
       $this->load->model('mstatistik');
       $this->load->model('mkinerja');
       $this->load->model('munker');
+      $this->load->model('mtppng');
       $this->load->model('mcuti'); // untuk riwayat cuti
       $this->load->model('datacetak');
       $this->load->model('mpip');
       $this->load->model('mwsbkn');
       $this->load->model('mskp');      
+      $this->load->model('mpetajab');
+
 
       // untuk login session
       if (!$this->session->userdata('nama'))
@@ -77,7 +80,7 @@ class Pegawai extends CI_Controller {
   function rwycp()
   {
     //$nip = $this->input->get('nip');
-    $nip 		 	 = $this->input->post('nip');
+    $nip = $this->input->post('nip');
     $data['peg'] 	 = $this->mpegawai->rwycp($nip)->result_array();    
     $data['content'] = 'rwycp';
     $this->load->view('template', $data);
@@ -257,10 +260,12 @@ class Pegawai extends CI_Controller {
   public function entri_kp_aksi() {
     $i = $this->input->post();
     $nip = $i['nip'];
+
     $update_data = [
       'fid_golru_skr' => $i['golru'],
       'tmt_golru_skr' => $i['tmt']
     ];
+
     $insert_data = [
       'nip' => $nip,
       'uraian' => $i['uraian'],
@@ -278,11 +283,19 @@ class Pegawai extends CI_Controller {
       'created_at' => date('Y-m-d H:i:s'),
       'created_by' => $this->session->userdata('nama')
     ];
-    // $update = $this->db->where('nip', $nip)->update('pegawai', $update_data);
-    // if($update) {
-    //   $this->db->insert('riwayat_pekerjaan', $insert_data);
-    // }
-    echo json_encode($insert_data);
+
+    if($i['op'] == 'op1') {
+      $update = $this->db->where('nip', $nip)->update('pegawai', $update_data);
+      if($update) {
+        $this->db->insert('riwayat_pekerjaan', $insert_data);
+      }
+    } 
+    
+    if($i['op'] == 'op2') {
+      $this->db->insert('riwayat_pekerjaan', $insert_data);
+    }
+    
+    $this->rwykp();
   }
 
   function rwykgb()
@@ -707,6 +720,57 @@ class Pegawai extends CI_Controller {
     $this->rwyph();
   }
 
+  public function editrwyph()
+  {
+  	$nip = $this->input->post('nip');
+  	$id  = $this->input->post('id');
+  	$db = $this->mpegawai->select_table('riwayat_tanhor', ['id' => $id])->row();
+  	
+  	$data = [
+  		'row' => $db,
+  		'nip' => $nip,
+  		'id' => $id,
+  		'ref' => $this->db->get('ref_jenis_tanhor')->result(),
+  		'content' => 'rwyph_edit'
+  	];
+  	$this->load->view('template', $data);
+  	//echo json_encode($db);
+  }
+
+  public function edit_tanhor_aksi()
+  {
+    $p = $this->input->post();
+  	$id = $p['id'];
+  	$nip = $p['nip'];
+
+  	$nama = $this->mpegawai->getnama($nip);
+    $data = [
+      'fid_jenis_tanhor' => $p['jenis'],
+      'nama_tanhor' => $p['nama_tanhor'],
+      'tahun' => $p['tahun'],
+      'pejabat' => $p['pejabat'],
+      'no_keppres' => $p['nomor'],
+      'tgl_keppres' => $p['tanggal'],
+      'updated_at' => date('Y-m-d H:i:s'),
+      'updated_by' => $this->session->userdata('nama')
+    ];
+
+    $up = $this->mpegawai->update_table('riwayat_tanhor', $data, ['id' => $id]);
+    
+    if($up) {
+    // callback pesan, true
+      $data['pesan'] = '<b>Sukses</b>, Riwayat Penghargaan PNS <u>'.$nama.'</u> berhasil diupdate.';
+      $data['jnspesan'] = 'alert alert-success';
+    } else {
+    
+      // callback pesan, false
+      $data['pesan'] = '<b>Gagal</b>, Riwayat Penghargaan PNS <u>'.$nama.'</u> gagal diupdate.';
+      $data['jnspesan'] = 'alert alert-danger';
+    }
+
+    $this->rwyph();
+  }
+
   function rwyjab()
   {    
     $nip = $this->input->post('nip');    
@@ -775,6 +839,7 @@ class Pegawai extends CI_Controller {
     if ($this->session->userdata('profil_priv') == "Y") { 
       $data = mysql_real_escape_string(trim($this->input->post('data')));
     	if ($data != '') {
+		if ($data == 'uda') $data = "198104072009041002";
     		// nip dan nama akan dicari pada instansi sesuai kewenangan user yang login
     		$datatnp['pegtnp'] = $this->mpegawai->getnipnama($data)->result_array();
     		$datatnp['jmldata'] = count($this->mpegawai->getnipnama($data)->result_array());
@@ -1736,12 +1801,12 @@ class Pegawai extends CI_Controller {
 	        
 	        <tr>
           		<td align='right'>TMT Jabatan :</td>
-          		<td><input type="date" class="tanggal" name="tmt_jabatan" size='15' maxlength='10' value='2022-11-04' required /></td>
+          		<td><input type="date" class="tanggal" name="tmt_jabatan" size='15' maxlength='10' value='2023-05-29' required /></td>
         	  </tr>
         	  <tr>
           		<td align='right'>Tanggal Pelantikan :</td>
           		<td>
-          			<input type="date" class="tanggal" name="tgl_pelantikan" size='15' value='2022-11-04' maxlength='10'/>
+          			<input type="date" class="tanggal" name="tgl_pelantikan" size='15' value='2023-05-29' maxlength='10'/>
           			<p class="help-block text-danger">*(Boleh dikosongi bila kadida.) <br></p>
           		</td>
         	  </tr>
@@ -1758,7 +1823,7 @@ class Pegawai extends CI_Controller {
         	</tr>
         	<tr class='warning'>
 	          <td align='right'>Nomor SK :</td>
-	          <td><input type="text" name="nosk" size='50' maxlength='200' value='821/251/BKPSDM-BLG/2022' required /></td>
+	          <td><input type="text" name="nosk" size='50' maxlength='200' value='821/156/BKPSDM-BLG/2023' required /></td>
 	        </tr>
 	        
 	        <tr class='warning'>
@@ -1768,7 +1833,7 @@ class Pegawai extends CI_Controller {
 	        
 	        <tr class='warning'>
           		<td align='right'>Tgl. SK :</td>
-          		<td><input type="date" name="tglsk" class="tanggal" size='15' maxlength='10'  value='2022-11-04' required /></td>
+          		<td><input type="date" name="tglsk" class="tanggal" size='15' maxlength='10'  value='2023-05-26' required /></td>
         	</tr>
                 <tr class='danger'>
                   <td align='right'>Jenis Prosedur</td>
@@ -1803,6 +1868,7 @@ class Pegawai extends CI_Controller {
                                 <?php
                                         echo "<option value='0' selected>Riwayat & Profile</option>";
                                         echo "<option value='1'>Only Riwayat</option>";
+                                        echo "<option value='2'>Only Profile</option>";
                                 ?>
                         </select>
                   </td>
@@ -1903,6 +1969,7 @@ class Pegawai extends CI_Controller {
   		jika aksi ?
   		0 : simpan ke table riwayat dan update profile
   		1 : hanya simpan ke table riwayat
+  		2 : hanya simpan ke table profile
   		*/
   		$aksi_table = $p['aksi_table'];
   		
@@ -1963,6 +2030,15 @@ class Pegawai extends CI_Controller {
 		$nama = $this->mpegawai->getnama($nip);
 		//var_dump($aksi_table);die();
 		
+    // Jika hanya profile only
+    if($aksi_table == "2") {
+      $this->mpegawai->update_jabatan_rywtjab('pegawai', $data_pegawai, ['nip' => $nip]);
+      $data['pesan'] = '<b>Sukses</b>, Riwayat Jabatan PNS A.n. <u>'.$nama.'</u> berhasil update pada profile Jabatan.';
+      $data['jnspesan'] = 'alert alert-success';
+      $this->rwyjab();
+      return false;
+    }
+
 		$db_riwayat = $this->mpegawai->insert_rwyjab('riwayat_jabatan', $data_riwayat);
 		if($db_riwayat) {
 			if($aksi_table == "0") {
@@ -2730,18 +2806,19 @@ class Pegawai extends CI_Controller {
             </button>&nbsp
           </form>
         </div>
+	<br/>
       <form method='POST' action='../pegawai/tambahsutri_aksi'>
       <input type='hidden' name='nip' id='nip' maxlength='18' value='<?php echo $nip; ?>'>
       <table class="table table-condensed table-hover">        
         <tr class='danger'>
           <td align='right' width='150'>Nama <?php echo $ketsutri; ?> :</td>
-          <td colspan='3'><input type="text" name="namasutri" size='40' maxlength='50' required /></td>
+          <td colspan='5'><input type="text" name="namasutri" size='40' maxlength='50' required /></td>
         </tr>
         <tr class='danger'>
           <td align='right'>Tempat Lahir :</td>
           <td><input type="text" name="tmplahir" size='30' maxlength='30' required /></td>        
-          <td align='right' width='150'>Tanggal Lahir :</td>
-          <td><input type="text" name="tgllahir" class="tanggal" size='15' maxlength='10' required />
+          <td align='right' width='100'>Tanggal Lahir :</td>
+          <td colspan='3'><input type="text" name="tgllahir" class="tanggal" size='15' maxlength='10' required />
 	  <small>dd-mm-yyyy (contoh : 31-01-1982)</small>
 	  </td>
         </tr>
@@ -2749,13 +2826,13 @@ class Pegawai extends CI_Controller {
           <td align='right'>No. Akta Nikah :</td>
           <td><input type="text" name="aktanikah" size='30' maxlength='100' required /></td>
           <td align='right'>Tanggal Nikah :</td>
-          <td><input type="text" name="tglnikah" class="tanggal" size='15' maxlength='10' required />
+          <td colspan='3'><input type="text" name="tglnikah" class="tanggal" size='15' maxlength='10' required />
 	  <small>dd-mm-yyyy (contoh : 31-12-2012)</small>
 	  </td>
         </tr>
         <tr class='danger'>
           <td align='right'>Pekerjaan :</td>
-          <td colspan='3'>
+          <td colspan='5'>
             <select name="pekerjaan" id="pekerjaan" required >
               <option value='' selected>-- Pilih Pekerjaan --</option>
               <option value='PEGAWAI NEGERI'>PEGAWAI NEGERI</option>
@@ -2777,28 +2854,30 @@ class Pegawai extends CI_Controller {
           </td>
           <td align='right'>Status Hidup :</td>
           <td><input id="statushidup" name="statushidup" type="checkbox" value="YA" checked="checked">
+          <td align='right'>Tanggungan :</td>
+          <td><input id="tanggungan" name="tanggungan" type="checkbox" value="YA" checked="checked">
           </td>
         </tr>
         <tr class='success'>
-          <td align='right'>NIP <?php echo $ketsutri; ?> (Jika PNS):</td>
+          <td align='right'>NIP <?php echo $ketsutri; ?> (Jika PNS) :</td>
           <td><input type="text" name="nipsutri"  size='25' maxlength='18' /></td>
-          <td align='right'>No. Kartu <?php echo $ketsutri; ?> :</td>
-          <td><input type="text" name="nokarisu" size='20' maxlength='15' /></td>
+          <td align='right' colspan='2'>No. Kartu <?php echo $ketsutri; ?> :</td>
+          <td colspan='2'><input type="text" name="nokarisu" size='20' maxlength='15' /></td>
         </tr>
         <tr class='success'>
           <td align='right'>Tanggal Cerai :</td>
           <td><input type="text" name="tglcerai" class="tanggal" size='15' maxlength='10' /></td>
-          <td align='right'>No. Akta Cerai :</td>
-          <td><input type="text" name="aktacerai" size='40' maxlength='50' /></td>
+          <td align='right' colspan='2'>No. Akta Cerai :</td>
+          <td colspan='2'><input type="text" name="aktacerai" size='40' maxlength='50' /></td>
         </tr>        
         <tr class='success'>
           <td align='right'>Tanggal Meninggal :</td>
           <td><input type="text" name="tglmeninggal" class="tanggal" size='15' maxlength='10' /></td>
-          <td align='right'>No. Akta Meninggal :</td>
-          <td><input type="text" name="aktameninggal" size='40' maxlength='50' /></td>
+          <td align='right' colspan='2'>No. Akta Meninggal :</td>
+          <td colspan='2'><input type="text" name="aktameninggal" size='40' maxlength='50' /></td>
         </tr>
 	<tr>
-		<td colspan='3'>
+		<td colspan='7'>
 		<small> Catatan : 
 			<br/>- Warna merah wajib diisi
 			<br/>- Warna hijau boleh dikosongkah
@@ -2807,7 +2886,7 @@ class Pegawai extends CI_Controller {
 		</td>
 	</tr>
         <tr>
-          <td align='right' colspan='4'>
+          <td align='right' colspan='7'>
                 <button type="submit" class="btn btn-success btn-sm">
                 <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>&nbspSimpan
                 </button>
@@ -2832,9 +2911,13 @@ class Pegawai extends CI_Controller {
 
     $statuskawin = addslashes($this->input->post('statuskawin'));
     $statushidup = addslashes($this->input->post('statushidup'));
-
     if ($statushidup != 'YA') {
       $statushidup = 'TIDAK';
+    }
+
+    $tanggungan = addslashes($this->input->post('tanggungan'));
+    if ($tanggungan != 'YA') {
+      $tanggungan = 'TIDAK';
     }
 
     $nipsutri = addslashes($this->input->post('nipsutri'));  
@@ -2873,6 +2956,7 @@ class Pegawai extends CI_Controller {
       'nip_sutri'         => $nipsutri,
       'status_kawin'      => $statuskawin,
       'status_hidup'      => $statushidup,
+      'tanggungan'	  => $tanggungan,
       'tgl_cerai'         => $tglcerai,
       'no_akta_cerai'     => $aktacerai,
       'tgl_meninggal'     => $tglmeninggal,
@@ -2990,9 +3074,13 @@ class Pegawai extends CI_Controller {
 
     $statuskawin = $this->input->post('statuskawin');
     $statushidup = addslashes($this->input->post('statushidup'));
-
     if ($statushidup != 'YA') {
       $statushidup = 'TIDAK';
+    }
+
+    $tanggungan = addslashes($this->input->post('tanggungan'));
+    if ($tanggungan != 'YA') {
+      $tanggungan = 'TIDAK';
     }
 
     $nipsutri = addslashes($this->input->post('nipsutri'));  
@@ -3029,6 +3117,7 @@ class Pegawai extends CI_Controller {
       'nip_sutri'         => $nipsutri,
       'status_kawin'      => $statuskawin,
       'status_hidup'      => $statushidup,
+      'tanggungan'	  => $tanggungan,	
       'tgl_cerai'         => $tglcerai,
       'no_akta_cerai'     => $aktacerai,
       'tgl_meninggal'     => $tglmeninggal,
@@ -3120,20 +3209,21 @@ class Pegawai extends CI_Controller {
             </button>&nbsp
           </form>
         </div>
+	<br />
       <form method='POST' action='../pegawai/tambahanak_aksi'>
       <input type='hidden' name='nip' id='nip' maxlength='18' value='<?php echo $nip; ?>'>
       <table class="table table-condensed table-hover">        
-        <tr>
-          <td align='right' width='150'>Nama Anak :</td>
+        <tr class='danger'>
+          <td align='right' width='150'>Nama Anak</td>
           <td colspan='3'><input type="text" name="namaanak" size='40' maxlength='50' required /></td>
         </tr>
-        <tr>
+        <tr class='danger'>
           <td align='right'>Tempat Lahir :</td>
           <td><input type="text" name="tmplahir" size='30' maxlength='30' required /></td>        
-          <td align='right' width='150'>Tanggal Lahir :</td>
-          <td><input type="text" name="tgllahir" class="tanggal" size='15' maxlength='10' required /></td>
+          <td align='right' width='150'>Tanggal Lahir</td>
+          <td><input type="text" name="tgllahir" class="tanggal" size='15' maxlength='10' required /> <small>dd-mm-yyyy (contoh : 31-12-2012)</small></td>
         </tr>
-        <tr>
+        <tr class='danger'>
           <td align='right'>Nama <?php echo $ketibubapak; ?></td>
           <td>          
           <select name="sutri_ke" id="sutri_ke" required >
@@ -3147,7 +3237,7 @@ class Pegawai extends CI_Controller {
             ?>
           </select>
           </td>
-          <td align='right'>Jenis Kelamin:</td>
+          <td align='right'>Jenis Kelamin</td>
           <td>
             <select name="jnskel" id="jnskel" required >
               <option value='' selected>-- Pilih Jenis Kelamin --</option>
@@ -3156,8 +3246,8 @@ class Pegawai extends CI_Controller {
             </select>
           </td>
         </tr>
-        <tr>
-          <td align='right'>Status Anak:</td>
+        <tr class='danger'>
+          <td align='right'>Status Anak</td>
           <td colspan='3'>
             <select name="status" id="status" required >
               <option value='' selected>-- Pilih Status --</option>
@@ -3167,9 +3257,11 @@ class Pegawai extends CI_Controller {
             </select>
           </td>
         </tr>
-        <tr>
-          <td align='right'>Status Hidup :</td>
-          <td colspan='3'><input id="statushidup" name="statushidup" type="checkbox" value="YA" checked="checked" />
+        <tr class='danger'>
+          <td align='right'>Status Hidup</td>
+          <td><input id="statushidup" name="statushidup" type="checkbox" value="YA" checked="checked" />
+          </td><td align='right'>Tanggungan :</td>
+          <td><input id="tanggungan" name="tanggungan" type="checkbox" value="YA" checked="checked" />
           </td>
         </tr>        
         <tr>
@@ -3194,9 +3286,13 @@ class Pegawai extends CI_Controller {
     $jnskel = addslashes($this->input->post('jnskel'));
     $status = addslashes($this->input->post('status'));
     $statushidup = addslashes($this->input->post('statushidup'));
-
     if ($statushidup != 'YA') {
       $statushidup = 'TIDAK';
+    }
+
+    $tanggungan = addslashes($this->input->post('tanggungan'));
+    if ($tanggungan != 'YA') {
+      $tanggungan = 'TIDAK';
     }
     
     $user = addslashes($this->session->userdata('nip'));
@@ -3211,6 +3307,7 @@ class Pegawai extends CI_Controller {
       'tgl_lahir'         => $tgllahir,
       'status'            => $status,
       'status_hidup'      => $statushidup,
+      'tanggungan'	  => $tanggungan,
       'created_at'        => $tgl_aksi,
       'created_by'        => $user
       );
@@ -3309,10 +3406,14 @@ class Pegawai extends CI_Controller {
     $jnskel = addslashes($this->input->post('jnskel'));
     $status = addslashes($this->input->post('status'));   
     $statushidup = addslashes($this->input->post('statushidup'));
-
     if ($statushidup != 'YA') {
       $statushidup = 'TIDAK';
     }  
+
+    $tanggungan = addslashes($this->input->post('tanggungan'));
+    if ($tanggungan != 'YA') {
+      $tanggungan = 'TIDAK';
+    }
     
     $user = addslashes($this->session->userdata('nip'));
     $tgl_aksi = $this->mlogin->datetime_saatini();
@@ -3325,6 +3426,7 @@ class Pegawai extends CI_Controller {
       'tgl_lahir'         => $tgllahir,
       'status'            => $status,
       'status_hidup'      => $statushidup,
+      'tanggungan'	  => $tanggungan,
       'updated_at'        => $tgl_aksi,
       'updated_by'        => $user
       );
@@ -3887,6 +3989,7 @@ class Pegawai extends CI_Controller {
     $data['pegrwyabs'] = $this->mpegawai->rwyabsensi($nip)->result_array();
     $data['pegrwykin'] = $this->mpegawai->rwykinerja($nip)->result_array();
     $data['pegrwytpp'] = $this->mpegawai->rwytpp($nip)->result_array();
+    $data['pegrwytppng'] = $this->mpegawai->rwytppng($nip)->result_array();
     $data['pegrwygaji'] = $this->mpegawai->rwygaji($nip)->result_array();
     $data['nip'] = $nip;
     $data['pesan'] = '';

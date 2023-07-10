@@ -50,8 +50,8 @@ class Pppk extends CI_Controller {
       if ($this->session->userdata('nonpns_priv') == "Y") { 
         $data = $this->input->post('data');
         // dapatkan data dengan nipppk dan nama
-        $datatnp['datapppk'] = $this->mpppk->getbyniknama($data)->result_array();
-        $datatnp['jmldata'] = count($this->mpppk->getbyniknama($data)->result_array());
+        $datatnp['datapppk'] = $this->mpppk->getnipnama($data)->result_array();
+        $datatnp['jmldata'] = count($this->mpppk->getnipnama($data)->result_array());
         $datatnp['content'] = 'pppk/tampildatacari';
         $this->load->view('template', $datatnp);
       }
@@ -321,7 +321,8 @@ class Pppk extends CI_Controller {
           <td>
             <?php echo $v['nipppk']; ?><br />
             <?php echo namagelar($v['gelar_depan'],$v['nama'],$v['gelar_blk']); ?><br/>
-            <i><?php echo tgl_indo($v['tgl_lahir']); ?></i>
+            <i><?php echo tgl_indo($v['tgl_lahir']); ?></i> <br>
+            <b style="color: #fff"><?= $v['pppk_id'] ?></b>
           </td>
           <td align='center' width='50'>         
 
@@ -367,7 +368,7 @@ class Pppk extends CI_Controller {
             echo "<form method='POST' action='../pppk/hapuspppk'>";          
             echo "<input type='hidden' name='nipppk' id='nipppk' maxlength='18' value='$v[nipppk]'>";
             ?>
-            <button type="submit" class="btn btn-danger btn-xs ">
+            <button type="submit" class="btn btn-danger btn-xs " disabled>
             <span class="glyphicon glyphicon glyphicon-trash" aria-hidden="true"></span>
             <br /> Hapus
             </button>
@@ -416,6 +417,20 @@ class Pppk extends CI_Controller {
       $data['unker'] = $this->munker->dd_unker()->result_array();
       $data['content'] = 'pppk/tampilunker';
       $this->load->view('template',$data);
+    }
+  }
+
+  function rwygaji()
+  {
+    //cek priviledge session user -- profil_priv
+    if ($this->session->userdata('nonpns_priv') == "Y") {
+      $nipppk = $this->input->post('nipppk');
+      $data['rwygaji'] = $this->mpppk->rwygaji($nipppk)->result_array();
+      $data['nipppk'] = $nipppk;
+      $data['pesan'] = '';
+      $data['jnspesan'] = '';
+      $data['content'] = 'pppk/rwygaji';
+      $this->load->view('template', $data);
     }
   }
 }

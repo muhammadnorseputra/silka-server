@@ -416,7 +416,7 @@
             	<td>Tahun: <input type="text" name="maker_tahun" size='5' maxlength='2' value="<?= $d['maker_tahun'] ?>" placeholder="tahun"/> / Bulan: <input type="text" placeholder="bulan" name="maker_bulan" value="<?= $d['maker_bulan'] ?>" size='5' maxlength='2' /> / <b>Gaji Pokok</b> <input type="text" value="<?= $d['gaji_pokok'] ?>" name="gaji_pokok" size='12' maxlength='10' required /></td>
             	<td align='right' bgcolor='#D9EDF7'><b>Tmt PPPK</b></td>
             	<td>
-              	<input type="text" class="tanggal" name="tmt_pppk" value="<?= tgl_sql($d['tmt_pppk']) ?>" size='12' required />
+              	<input type="text" class="tanggal" name="tmt_pppk_awal" value="<?= tgl_sql($d['tmt_pppk_awal']) ?>" size='12' required />
               	<small class="text-muted">** WAJIB DIISI</small>
               </td>
             </tr> 

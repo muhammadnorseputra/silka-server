@@ -14,7 +14,7 @@ class Makunpns extends CI_Model {
     $q = $this->db->query("select up.*, p.fid_jnsjab, p.fid_jabfu, p.fid_jabft, p.fid_jabatan, p.fid_unit_kerja from userportal_pns as up, pegawai as p, ref_unit_kerjav2 as u, ref_instansi_userportal as iu
                             where up.nip = p.nip
                             and p.fid_unit_kerja = u.id_unit_kerja
-                            and u.fid_instansi = iu.id_instansi
+                            and u.fid_instansi_userportal = iu.id_instansi
                             and iu.nip_user like '%$nip%' order by p.nama");
     return $q;
   }
@@ -24,19 +24,28 @@ class Makunpns extends CI_Model {
   {
     $nip = $this->session->userdata('nip');
     $q = $this->db->query("select up.*, 
-    												p.fid_jnsjab, 
-    												p.fid_jabfu, 
-    												p.fid_jabft, 
-    												p.fid_jabatan, 
-    												p.fid_unit_kerja 
-    												from userportal_pns as up, pegawai as p, ref_unit_kerjav2 as u, ref_instansi_userportal as iu
-                            where up.nip = p.nip
-                            and (p.nip like '%$nipnama%' OR p.nama like '%$nipnama%')
-                            and p.fid_unit_kerja = u.id_unit_kerja
-                            and u.fid_instansi = iu.id_instansi
-                            and iu.nip_user like '%$nip%' order by p.nama");
+    		p.fid_jnsjab, 
+    		p.fid_jabfu, 
+    		p.fid_jabft, 
+    		p.fid_jabatan, 
+    		p.fid_unit_kerja 
+    		from userportal_pns as up, pegawai as p, ref_unit_kerjav2 as u, ref_instansi_userportal as iu
+                where up.nip = p.nip
+                and (p.nip like '%$nipnama%' OR p.nama like '%$nipnama%')
+                and p.fid_unit_kerja = u.id_unit_kerja
+                and u.fid_instansi_userportal = iu.id_instansi
+                and iu.nip_user like '%$nip%' order by p.nama");
     return $q;
   }
+
+	//$ceknip = $this->db->query("select p.nip, p.nama from pegawai as p, ref_instansi_userportal as iu, ref_unit_kerjav2 as u, userportal as up
+        //        where u.fid_instansi_userportal = iu.id_instansi
+        //        and u.nama_unit_kerja not like '-%'
+        //        and up.nip = '$nipuser'
+        //        and iu.nip_user like '%$nipuser%'
+        //        and p.nip = '$nip'
+        //        and p.fid_unit_kerja = u.id_unit_kerja
+        //        order by u.id_unit_kerja");
 
   // TODO
   function gettotalakun()
@@ -108,11 +117,21 @@ class Makunpns extends CI_Model {
     if ($jml == 0) {
       // cek apakah nip akun dalam kewenangan user login
       $nipuser = $this->session->userdata('nip');
-      $ceknip = $this->db->query("select p.nip, p.nama from pegawai as p, ref_instansi_userportal as iu, ref_unit_kerjav2 as u where 
-                              p.fid_unit_kerja = u.id_unit_kerja
-                              and u.fid_instansi = iu.id_instansi
-                              and iu.nip_user like '%".$nipuser."%'
-                              and p.nip = '".$nip."'");    
+      //$ceknip = $this->db->query("select p.nip, p.nama from pegawai as p, ref_instansi_userportal as iu, ref_unit_kerjav2 as u where 
+      //                        p.fid_unit_kerja = u.id_unit_kerja
+      //                        and u.fid_instansi = iu.id_instansi
+      //                        and iu.nip_user like '%".$nipuser."%'
+      //                        and p.nip = '".$nip."'");    
+      
+	$ceknip = $this->db->query("select p.nip, p.nama from pegawai as p, ref_instansi_userportal as iu, ref_unit_kerjav2 as u, userportal as up
+		where u.fid_instansi_userportal = iu.id_instansi
+                and u.nama_unit_kerja not like '-%'
+                and up.nip = '$nipuser'
+                and iu.nip_user like '%$nipuser%'
+		and p.nip = '$nip'
+		and p.fid_unit_kerja = u.id_unit_kerja
+                order by u.id_unit_kerja");
+		        			
       $jmldata = $ceknip->num_rows();
       if ($jmldata == 0) {        
         return 2; // akun diluar kewenangan user

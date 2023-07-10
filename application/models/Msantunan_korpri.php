@@ -11,12 +11,24 @@ class Msantunan_korpri extends CI_Model {
 		return $result;
 	}
 	public function ceknip($nip) {
-		return $this->db->get_where('pegawai_pensiun', array('nip' => $nip));
+		$this->db->select('*');
+		$this->db->from('pegawai');
+		$this->db->where('nip', $nip);
+		$q = $this->db->get();
+		if($q->num_rows() == 0) {
+			$this->db->select('*');
+			$this->db->from('pegawai_pensiun');
+			$this->db->where('nip', $nip);
+			$q = $this->db->get();
+		}
+		return $q;
 	}
 	public function cekunitkerja($nip) {
-		$this->db->select('nama_unit_kerja');
-		$this->db->from('pegawai_pensiun');
-		$this->db->where('nip', $nip);
+		$this->db->select('CONCAT_WS("'.' ",pp.fid_unit_kerja,p.nama_unit_kerja) AS nama_unit_kerja', false);
+		$this->db->from('pegawai_pensiun AS p');
+		$this->db->join('pegawai AS pp', 'p.nip=pp.nip', 'left');
+		$this->db->where('pp.nip', $nip);
+		$this->db->or_where('p.nip', $nip);
 		return $this->db->get()->row();
 	}
 	public function save_santunan($data) {
@@ -32,14 +44,18 @@ class Msantunan_korpri extends CI_Model {
 	public $order_colums = array('t.id_tali_asih');
 	public $column_search = array('t.nip','p.nama', 'pp.nama');
 
+
 	public function get_data_santunan($tahun, $bulan, $jns_santunan) {
+		
 		$this->db->select($this->select_colums);
 		$this->db->from($this->table);
 		$this->db->join('pegawai as p', 't.nip=p.nip', 'left');
 		$this->db->join('pegawai_pensiun as pp', 't.nip=pp.nip', 'left');
+		
 		if(!empty($tahun)){
 			$this->db->where('t.tahun', $tahun);			
-		} 
+		}
+
 		if(!empty($bulan)) {
 			$this->db->where('t.bulan', $bulan);
 		}
@@ -110,6 +126,10 @@ class Msantunan_korpri extends CI_Model {
 		}
 		return $result;
 	}
+
+	public function ref_santunan() {
+		return $this->db->get('ref_jenis_tali_asih');
+	}
 	
 	public function cetakrekapitulasi($x,$y,$z) {
 		$this->db->select($this->select_colums);
@@ -170,5 +190,59 @@ class Msantunan_korpri extends CI_Model {
 			$r = $q->row();
 			return $r->nama_jenis_tali_asih;
 		}   
+	}
+
+	public function getnamaunitkerja($id) {
+		$this->db->select('nama_unit_kerja');
+		$this->db->from('ref_unit_kerjav2');
+		$this->db->where('id_unit_kerja', $id);
+		$q = $this->db->get()->row();
+		return $q->nama_unit_kerja;
+	}
+
+	public function iuran_bulanan($bulan, $tahun) {
+		if($tahun != null) {
+			return $this->db->select_sum('besar_santunan')->where('bulan', $bulan)->where('tahun', $tahun)->get('tali_asih_korpri')->row()->besar_santunan;
+		}
+		return $this->db->select_sum('besar_santunan')->where('bulan', $bulan)->get('tali_asih_korpri')->row()->besar_santunan;
+	}
+
+	public function santunan_bulanan($bulan, $tahun) {
+		if($tahun != null) {
+			return $this->db->select('nip')->where('bulan', $bulan)->where('tahun', $tahun)->get('tali_asih_korpri')->num_rows();
+		}
+		return $this->db->select('nip')->where('bulan', $bulan)->get('tali_asih_korpri')->num_rows();
+	}
+
+	public function iuran_perjenis($jns, $tahun) {
+		if($tahun != null) {
+			return $this->db->select_sum('besar_santunan')->where('fid_jenis_tali_asih', $jns)->where('tahun', $tahun)->get('tali_asih_korpri')->row()->besar_santunan;
+		}
+		return $this->db->select_sum('besar_santunan')->where('fid_jenis_tali_asih', $jns)->get('tali_asih_korpri')->row()->besar_santunan;
+	}
+
+	public function total_perjenis($jns, $tahun) {
+		if($tahun != null) {
+			return $this->db->select('nip')->where('fid_jenis_tali_asih', $jns)->where('tahun', $tahun)->get('tali_asih_korpri')->num_rows();
+		}
+		return $this->db->select('nip')->where('fid_jenis_tali_asih', $jns)->get('tali_asih_korpri')->num_rows();
+	}
+
+	public function list_tahun() {
+		return $this->db->select('tahun')->from('tali_asih_korpri')->group_by('tahun')->get();
+	}
+
+	public function iuran_pertahun($tahun=null) {
+		if($tahun != null) {
+			return $this->db->select_sum('besar_santunan')->where('tahun', $tahun)->get('tali_asih_korpri')->row()->besar_santunan;
+		}
+		return $this->db->select_sum('besar_santunan')->get('tali_asih_korpri')->row()->besar_santunan;
+	}
+
+	public function total_pertahun($tahun=null) {
+		if($tahun != null) {
+			return $this->db->select('nip')->where('tahun', $tahun)->get('tali_asih_korpri')->num_rows();
+		}
+		return $this->db->select('nip')->get('tali_asih_korpri')->num_rows();
 	}
 }

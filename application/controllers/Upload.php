@@ -250,6 +250,88 @@ class Upload extends CI_Controller {
         $this->load->view('template', $data);
     }
 
+    public function berkas_pns() {      
+        
+        $nip = $this->input->post('nip');
+        $nmberkaslama = $this->input->post('nmberkaslama');    
+
+        $this->load->library('upload');
+
+        // membuat nomor acak untuk nama file
+        $karakter = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+        $string='';
+        $pjg = 21;
+        for ($i=0; $i < $pjg; $i++) {
+            $pos = rand(0, strlen($karakter)-1);
+            $string .= $karakter{$pos};
+        }
+
+        $nmfile = $nip."-BERKASPNS-".$string; //nama file nip (18 karakter) + '-' + nomor acak (21 karakter acak)
+        //$nmfile = "file_".time(); //nama file + fungsi time
+        //$config['upload_path'] = './assets/uploads/'; //Folder untuk menyimpan hasil upload
+        $config['upload_path'] = './filecp/'; //Folder untuk menyimpan hasil upload
+        $config['allowed_types'] = 'pdf|PDF'; //type yang dapat diakses bisa anda sesuaikan
+        //$config['allowed_types'] = 'gif|jpg|png|jpeg|bmp'; //type yang dapat diakses bisa anda sesuaikan
+        $config['max_size'] = '5120'; //maksimum besar file 5M
+        $config['file_name'] = $nmfile; //nama yang terupload nantinya
+
+        $this->upload->initialize($config);
+        
+        
+        if($_FILES['filecp']['name'])
+        {
+            if ($this->upload->do_upload('filecp'))
+            {
+                $gbr = $this->upload->data();
+                $data = array(
+                  'namafile' =>$gbr['file_name'],
+                  'type' =>$gbr['file_type'],
+                  'keterangan' =>$this->input->post('textket')
+                  
+                );                
+                $datapns = array(      
+                  'berkas_pns'   => $nmfile
+                );
+
+                $where = array(
+                  'nip'      => $nip
+                );
+
+                $this->mpegawai->edit_cpnspns($where, $datapns);
+
+		// file lama dihapus, karena 1 orang PNS hanya memiliki 1 SK CPNS dan 1 SK PNS
+            	if (file_exists('./filecp/'.$nmberkaslama.'.pdf')) {
+                	unlink('./filecp/'.$nmberkaslama.'.pdf');
+            	} else if (file_exists('./filecp/'.$nmberkaslama.'.PDF')) {
+                        unlink('./filecp/'.$nmberkaslama.'.PDF');
+                }	
+
+                //pesan yang muncul jika berhasil diupload pada session flashdata
+                //$this->session->set_flashdata("pesan", "<div class=\"col-md-12\"><div class=\"alert alert-success\" id=\"alert\">Upload gambar berhasil !!</div></div>");
+                
+                //redirect('./pegawai/uploadok'); //jika berhasil maka akan ditampilkan view upload ok
+                $data['pesan'] = '<b>Sukses</b>, Kelangkapan Berkas berhasil diupload.';
+                $data['jnspesan'] = 'alert alert-success';
+            } else{
+                //pesan yang muncul jika terdapat error dimasukkan pada session flashdata
+                //$this->session->set_flashdata("pesan", "<div class=\"col-md-12\"><div class=\"alert alert-danger\" id=\"alert\">Gagal upload gambar !!</div></div>");
+                
+                //redirect('./pegawai/uploadnok'); //jika gagal maka akan ditampilkan view upload not ok
+                $data['pesan'] = '<b>Gagal</b>, Kelangkapan Berkas gagal diupload.';
+                $data['jnspesan'] = 'alert alert-danger';
+            }
+        } else {
+            //redirect('./pegawai/uploadnok'); //jika file belum dipilih maka akan ditampilkan view upload no ok
+            $data['pesan'] = '<b>Sukses</b>, Kelangkapan Berkas gagal diupload.';
+            $data['jnspesan'] = 'alert alert-danger';
+        }
+
+        $data['nip'] = $nip;
+        $data['peg'] = $this->mpegawai->detail($nip)->result_array();
+        $data['content'] = 'pegdetail';
+        $this->load->view('template', $data);
+    }
+
     public function insertkp() {      
 
         $nip = $this->input->post('nip');
@@ -403,6 +485,87 @@ class Upload extends CI_Controller {
         } else {
             //redirect('./pegawai/uploadnok'); //jika file belum dipilih maka akan ditampilkan view upload no ok
             $data['pesan'] = '<b>Sukses</b>, Berkas SK KGB Terakhir gagal diupload.';
+            $data['jnspesan'] = 'alert alert-danger';
+        }
+        $data['nip'] = $nip;
+        $data['peg'] = $this->mpegawai->detail($nip)->result_array();
+        $data['content'] = 'pegdetail';
+        $this->load->view('template', $data);
+    }
+
+    public function insertcuti() {      
+
+        $nip = $this->input->post('nip');
+        $nmberkaslama = $this->input->post('nmberkaslama');
+        $jnscuti = $this->input->post('jeniscuti');
+        $thncuti = $this->input->post('tahuncuti');
+        $idcuti = $this->input->post('id');
+
+        $this->load->library('upload');
+
+        // membuat nomor acak untuk nama file
+        $karakter = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+        $string='';
+        $pjg = 17;
+        for ($i=0; $i < $pjg; $i++) {
+            $pos = rand(0, strlen($karakter)-1);
+            $string .= $karakter{$pos};
+        }
+
+        //nama file nip (18 karakter) + '-' + jenis cuti + tahuncuti nomor acak (17 karakter acak)
+        $nmfile = $nip."-".$jnscuti."-".$thncuti.$string; 
+        //$nmfile = "file_".time(); //nama file + fungsi time
+        //$config['upload_path'] = './assets/uploads/'; //Folder untuk menyimpan hasil upload
+        $config['upload_path'] = './filecuti/'; //Folder untuk menyimpan hasil upload
+        $config['allowed_types'] = 'pdf'; //type yang dapat diakses bisa anda sesuaikan
+        //$config['allowed_types'] = 'gif|jpg|png|jpeg|bmp'; //type yang dapat diakses bisa anda sesuaikan
+        $config['max_size'] = '1024'; //maksimum besar file 1M
+        $config['file_name'] = $nmfile; //nama yang terupload nantinya
+
+        $this->upload->initialize($config);
+        
+        if($_FILES['filecutiupload']['name'])
+        {            
+            if ($this->upload->do_upload('filecutiupload'))
+            {
+                $dataupload = $this->upload->data();
+                $data = array(
+                  'namafile' =>$dataupload['file_name'],
+                  'type' =>$dataupload['file_type'],
+                  'keterangan' =>$this->input->post('textket')
+                );                
+                $datatodb = array(      
+                  'berkas'   => $nmfile
+                );
+
+                $where = array(
+                  'nip'      => $nip,
+                  'id' => $idcuti
+                );
+
+                $this->mpegawai->edit_cuti($where, $datatodb);
+
+		        if (file_exists('./filecuti/'.$nmberkaslama.'.pdf')) {
+                	unlink('./filecuti/'.$nmberkaslama.'.pdf');
+            	}
+
+                //pesan yang muncul jika berhasil diupload pada session flashdata
+                //$this->session->set_flashdata("pesan", "<div class=\"col-md-12\"><div class=\"alert alert-success\" id=\"alert\">Upload gambar berhasil !!</div></div>");
+                
+                //redirect('./pegawai/uploadok'); //jika berhasil maka akan ditampilkan view upload ok
+                $data['pesan'] = '<b>Sukses</b>, Berkas SK CUTI Terakhir berhasil diupload.';
+                $data['jnspesan'] = 'alert alert-success';
+            } else{
+                //pesan yang muncul jika terdapat error dimasukkan pada session flashdata
+                //$this->session->set_flashdata("pesan", "<div class=\"col-md-12\"><div class=\"alert alert-danger\" id=\"alert\">Gagal upload gambar !!</div></div>");
+                
+                //redirect('./pegawai/uploadnok'); //jika gagal maka akan ditampilkan view upload not ok
+                $data['pesan'] = '<b>Gagal</b>, Berkas SK CUTI Terakhir gagal diupload.';
+                $data['jnspesan'] = 'alert alert-danger';
+            }
+        } else {
+            //redirect('./pegawai/uploadnok'); //jika file belum dipilih maka akan ditampilkan view upload no ok
+            $data['pesan'] = '<b>Gagal</b>, Berkas SK CUTI Terakhir gagal diupload.';
             $data['jnspesan'] = 'alert alert-danger';
         }
         $data['nip'] = $nip;

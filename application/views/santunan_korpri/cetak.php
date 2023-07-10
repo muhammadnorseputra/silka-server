@@ -150,20 +150,24 @@ class PDF extends FPDF
     $this->setXY(140,$y+10);
     $this->cell(80,5,'Mengetahui,',0,1,'L',1); 
     $this->setXY(140,$y+15);
+    $this->setFont('arial','B',8);
     $this->MultiCell(100,5,'KEPALA BIDANG PENGADAAN, PEMBERHENTIAN, INFORMASI KEPEGAWAIAN, MUTASI DAN PROMOSI ASN',0,"L"); 
    	$this->setXY(140,$y+40);
     $this->cell(80,5,'SUMEDI, M.Pd',0,1,'L',1); 
    	$this->setXY(140,$y+45);
+    $this->setFont('arial','',8);
     $this->cell(80,5,'NIP. '.polanip('197106081993031006'),0,1,'L',1);
     
     $this->setFont('arial','',8);
     $this->setXY(240,$y+10);
     $this->cell(80,5,'Paringin, '.tgl_indo(date('Y-m-d')),0,1,'L',1); 
     $this->setXY(240,$y+15);
+    $this->setFont('arial','B',8);
     $this->MultiCell(80,5,'JF ANALIS SUMBER DAYA MANUSIA APARATUR AHLI MUDA',0,'L'); 
    	$this->setXY(240,$y+40);
-    $this->cell(80,5,'REZA FAHDINA, S.Pd.I, MM, SE',0,1,'L',1); 
+    $this->cell(80,5,'HJ. RINAWATI, S.Sos',0,1,'L',1); 
    	$this->setXY(240,$y+45);
+    $this->setFont('arial','',8);
     $this->cell(80,5,'NIP. '.polanip('198204212006041008'),0,1,'L',1);  
   }
   

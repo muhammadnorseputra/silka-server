@@ -29,12 +29,12 @@
     url=url+"&bln="+str3;
     url=url+"&jns="+str4;
     url=url+"&sid="+Math.random();
-    xmlhttp.onreadystatechange=stateChangedData;
+    xmlhttp.onreadystatechange=stateChangedData1;
     xmlhttp.open("GET",url,true);
     xmlhttp.send(null);
   }
 
-  function stateChangedData(){
+  function stateChangedData1(){
     if (xmlhttp.readyState==4)
     {
       document.getElementById("tampilkan").innerHTML=xmlhttp.responseText;
@@ -94,7 +94,8 @@
         <?php
             //echo "<option value='0'>- Pilih Tahun -</option>";
             echo "<option value='2021'>2021</option>";          
-	    echo "<option value='2022' selected>2022</option>";
+	    echo "<option value='2022'>2022</option>";
+	    echo "<option value='2023' selected>2023</option>";
         ?>
         </select>
         </td>          
@@ -139,11 +140,11 @@
   <?php
 	$blnini = date('n');
 	$thnini = date('Y');
+	//$thn = $thnini-1;
 	echo "<span class='text-success'>
 		Data Absensi bulan ".strtoupper(bulan($blnini-1))." ".$thnini." haja nang kawa di-impor.
 	      </span>";
   ?>
-
   <div id='tampilkan'></div>
   </div>
 </div>

@@ -63,7 +63,7 @@
         <?php
           foreach($anak as $v):
         ?>
-          <table class="table table-condensed table-hover">        
+          <table class="table table-bordered table-hover">        
           <tr>
             <td align='right' width='150'>Nama Anak :</td>
             <td colspan='3'><input type="text" name="namaanak" size='40' maxlength='50' value='<?php echo $v['nama_anak']; ?>' required /></td>
@@ -132,9 +132,17 @@
             <td align='right'>Status Hidup :</td>
             <?php
               if ($v['status_hidup'] == 'YA') {
-                echo "<td colspan='3'><input id='statushidup' name='statushidup' type='checkbox' value='YA' checked='checked'></td>";
+                echo "<td><input id='statushidup' name='statushidup' type='checkbox' value='YA' checked='checked'></td>";
               } else {
-                echo "<td colspan='3'><input id='statushidup' name='statushidup' type='checkbox' value='YA'></td>";
+                echo "<td><input id='statushidup' name='statushidup' type='checkbox' value='YA'></td>";
+              }
+              ?>
+	    <td align='right'>Tanggungan :</td>
+            <?php
+              if ($v['tanggungan'] == 'YA') {
+                echo "<td colspan='3'><input id='tanggungan' name='tanggungan' type='checkbox' value='YA' checked='checked'></td>";
+              } else {
+                echo "<td colspan='3'><input id='tanggungan' name='tanggungan' type='checkbox' value='YA'></td>";
               }
               ?>
           </tr>        

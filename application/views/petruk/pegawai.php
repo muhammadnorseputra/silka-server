@@ -45,7 +45,7 @@
   } 
 </script>
 <?php
-	$get_bulan_open = "08";
+	$get_bulan_open = "06";
 	$get_bulan = date("m");
 	if($get_bulan === $get_bulan_open):
 ?>

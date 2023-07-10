@@ -55,7 +55,6 @@
     }
   } 
 </script>
-
 <!-- Default panel contents -->
   <center>
     <div class="panel panel-primary"   style="padding:3px;overflow:auto;width:98%;height:620px;">
@@ -105,7 +104,8 @@
         <?php
             echo "<option value='0'>- Pilih Tahun -</option>";
 	    echo "<option value='2021'>2021</option>";
-	    echo "<option value='2022' selected>2022</option>";
+	    echo "<option value='2022'>2022</option>";
+	    echo "<option value='2023' selected>2023</option>";
         ?>
         </select>
 

@@ -59,6 +59,7 @@
                       <th width='150'><center>Tgl. Mulai<br />Tgl. Selesai</center></th>
                       <!--<th><center>Alamat</center></th>-->
                       <th width='400'><center>Surat Keputusan</center></th>
+                      <th><center>Aksi</center></th>
                     </tr>
                     <?php
                       $no=1;
@@ -76,6 +77,58 @@
                       <td align='center'><?php echo tgl_indo($v['tgl_mulai']).'<br />s/d<br />'.tgl_indo($v['tgl_selesai']); ?></td>
                       <!--<td><?php //echo $v['alamat']; ?></td>-->
                       <td><?php echo $v['pejabat_sk'].'<br />Nomor : '.$v['no_sk'].'<br />Tanggal : '.tgl_indo($v['tgl_sk']); ?></td>
+                      <td align='left'>
+                      <?php
+                      $lokasifile = './filecuti/';
+                      $namafile = $v['berkas'];
+                    
+                      if (file_exists($lokasifile.$namafile.'.pdf')) {
+                        $namafile=$namafile.'.pdf';
+                      } else {
+                        $namafile=$namafile.'.PDF';
+                      }   
+
+                      // if (file_exists($lokasifile.$namafile)) {
+                        if ($v['berkas'] != NULL) {
+                          echo "<div>";
+                          echo "<a class='btn btn-warning btn-lg' href='../filecuti/$namafile' target='_blank' role='button'><span class='glyphicon glyphicon-download-alt' aria-hidden='true'></span>&nbspDownload</a>";  
+                          ?>
+                          <br />
+                          Silahkan upload untuk update file
+                          <form action="<?=base_url()?>upload/insertcuti" method="post" enctype="multipart/form-data">
+                            <input type="file" name="filecutiupload" size="40" class="btn btn-xs btn-info" />
+                            <input type='hidden' name='nip' id='nip' maxlength='20' value='<?php echo $nip; ?>'>
+                            <input type='hidden' name='id' id='id' maxlength='20' value='<?php echo $v['id']; ?>'>
+                            <input type='hidden' name='nmberkaslama' id='nmberkaslama' value='<?php echo $v['berkas']; ?>'>
+                            <input type='hidden' name='jeniscuti' id='jeniscuti' value='<?php echo $v['fid_jns_cuti']; ?>'>
+                            <input type='hidden' name='tahuncuti' id='tahuncuti' value='<?php echo $v['thn_cuti']; ?>'>
+                            <button type="submit" value="upload" class="btn btn-xs btn-success">
+                              <span class="glyphicon glyphicon-upload" aria-hidden="false"></span>&nbspUpload</button>                          
+                            </form>  
+                          <?php
+                            echo "</div>";
+                          }
+                        // }
+
+                        if (!file_exists($lokasifile.$namafile)) {
+                          if ($v['berkas'] == NULL) {                            
+                            echo "<div style='color: red'>File tidak tersedia, silahkan upload !!!</div>";
+                            ?>
+                            <form action="<?=base_url()?>upload/insertcuti" method="post" enctype="multipart/form-data">
+                            <input type="file" name="filecutiupload" size="40" class="btn btn-xs btn-info" />
+                            <input type='hidden' name='nip' id='nip' maxlength='20' value='<?php echo $nip; ?>'>
+                            <input type='hidden' name='id' id='id' maxlength='20' value='<?php echo $v['id']; ?>'>
+                            <input type='hidden' name='nmberkaslama' id='nmberkaslama' value='<?php echo $v['berkas']; ?>'>
+                            <input type='hidden' name='jeniscuti' id='jeniscuti' value='<?php echo $v['fid_jns_cuti']; ?>'>
+                            <input type='hidden' name='tahuncuti' id='tahuncuti' value='<?php echo $v['thn_cuti']; ?>'>
+                            <button type="submit" value="upload" class="btn btn-xs btn-success">
+                              <span class="glyphicon glyphicon-upload" aria-hidden="false"></span>&nbspUpload</button>                          
+                            </form> 
+                              <?php
+                          }
+                        }
+                          ?>
+                        </td>
                     </tr>
                     <?php
                       $no++;

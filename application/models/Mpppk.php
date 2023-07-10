@@ -11,10 +11,11 @@ class Mpppk extends CI_Model {
   {
   	$sess_nip = $this->session->userdata('nip');
   	$q = $this->db->query("select p.nipppk, p.gelar_depan, p.nama, p.gelar_blk, 
-  		g.nama_golru, p.fid_jabft, u.nama_unit_kerja, p.tmt_golru_pppk
-  		from pppk as p, ref_golru_pppk as g, ref_unit_kerjav2 as u, ref_instansi_userportal as i
+  		g.nama_golru, j.nama_jabft, u.nama_unit_kerja, p.tmt_golru_pppk, p.photo
+  		from pppk as p, ref_golru_pppk as g, ref_jabft as j, ref_unit_kerjav2 as u, ref_instansi_userportal as i
   		where
   		p.fid_golru_pppk = g.id_golru
+		and p.fid_jabft = j.id_jabft
   		and p.fid_unit_kerja = u.id_unit_kerja
   		and u.fid_instansi_userportal = i.id_instansi 
   		and i.nip_user like '%$sess_nip%'
@@ -22,6 +23,24 @@ class Mpppk extends CI_Model {
   		order by p.fid_golru_pppk desc, p.tmt_golru_pppk");
   	return $q;        
   }
+  
+  /*
+  function getnipnama($data)
+    {
+      $sess_nip = $this->session->userdata('nip');
+        $q = $this->db->query("select p.nipppk, p.gelar_depan, p.nama, p.gelar_blk,
+        g.nama_golru, p.fid_jabft, u.nama_unit_kerja, p.tmt_golru_skr
+        from pppk as p, ref_golru_pppk as g, ref_unit_kerjav2 as u, ref_instansi_userportal as i
+        where p.fid_golru_pppk = g.id_golru
+        and p.fid_unit_kerja = u.id_unit_kerja
+        and u.fid_instansi_userportal = i.id_instansi
+        and i.nip_user like '%$sess_nip%'
+        and (p.nipppk like '%$data%' OR p.nama like '%$data%')
+        order by p.fid_golru_pppk desc, p.tmt_golru_skr");
+        //$q = $this->db->query("select * from pegawai where fid_unit_kerja='$id'");
+        return $q;
+    }
+  */
 
   function getfidunker($nipppk)
   {
@@ -196,4 +215,10 @@ class Mpppk extends CI_Model {
 			return $row->keterangan;
 		}
 	}
+
+	public function rwygaji($nipppk)
+  	{
+    		$q = $this->db->query("select * from riwayat_gaji_pppk where nipppk='$nipppk' ORDER BY tahun desc, bulan desc");
+    		return $q;
+  	}
 }

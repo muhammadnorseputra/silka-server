@@ -444,11 +444,11 @@ table.dataTable thead .sorting:after {
 }
 
 .modal.fade .modal-dialog {
- -webkit-transform: scale(0.1);
- -moz-transform: scale(0.1);
- -ms-transform: scale(0.1);
- transform: scale(0.1);
- top: 300px;
+ -webkit-transform: translate(0, -100px);
+ -moz-transform: translate(0, -100px);
+ -ms-transform: translate(0, -100px);
+ transform: translate(0, -100px);
+ top: 400px;
  opacity: 0;
  -webkit-transition: all 0.3s;
  -moz-transition: all 0.3s;
@@ -456,10 +456,10 @@ table.dataTable thead .sorting:after {
 }
  
 .modal.fade.in .modal-dialog {
-    -webkit-transform: scale(1);
-    -moz-transform: scale(1);
-    -ms-transform: scale(1);
-    transform: scale(1);
+    -webkit-transform: translate(0,0);
+    -moz-transform: translate(0,0);
+    -ms-transform: translate(0,0);
+    transform: translate(0,0);
     -webkit-transform: translate3d(0, -300px, 0);
     transform: translate3d(0, -300px, 0);
     opacity: 1;

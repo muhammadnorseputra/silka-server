@@ -646,14 +646,21 @@
                 </div>
                 <div class="col-md-9 col-xs-10">
 		   <?php
-		   $status_ptkp = $this->mkinerja->get_jnsptkp($v['nip']);
-		   $ket_ptkp = $this->mkinerja->get_ketptkp($v['fid_status_ptkp']);
+			// Ambil PTKP dari Riwayat Keluarga
+			$jns_ptkp = $this->mtppng->get_jnsptkp_rwykel($v['nip']);
+			$ket_ptkp = $this->mtppng->get_ketptkp($jns_ptkp);
+			echo "<b>".$jns_ptkp." - ".$ket_ptkp."</b>";
+			// End PTKP dari Riwayat Keluarga
+
+		   //$status_ptkp = $this->mkinerja->get_jnsptkp($v['nip']);
+		   //$ket_ptkp = $this->mkinerja->get_ketptkp($v['fid_status_ptkp']);
+		   //if ($user = $this->session->userdata('level') == "ADMIN") {
 		   ?>		   
-		   <input type='hidden' name='id_status_ptkp' id='id_status_ptkp' value='<?php echo $v['fid_status_ptkp']; ?>' />
-		   <input type='text' size='40' value='<?php echo $status_ptkp.' - '.$ket_ptkp; ?>' disabled />
+		   <!--<input type='hidden' name='id_status_ptkp' id='id_status_ptkp' value='<?php //echo $v['fid_status_ptkp']; ?>' />-->
+		   <!--<input type='text' size='40' value='<?php //echo $status_ptkp.' - '.$ket_ptkp; ?>' disabled /> -->
 		   <!--<select name="id_status_ptkp" id="id_status_ptkp" required>-->
-                    <?php
-		    /*
+                    <?php		    
+		      /*
                       $sptkp = $this->mpegawai->status_ptkp()->result_array();
                       echo "<option value='' selected>- Pilih Status PTKP -</option>";
                       foreach($sptkp as $sp):
@@ -663,9 +670,14 @@
 			  echo "<option value=".$sp['id_status_ptkp'].">".$sp['status']." - ".$sp['keterangan']."</option>";
                         }
                       endforeach;
-		    */
+		      */
                     ?>
-                  </select>
+                    <!--</select>-->
+		    <?php
+		    //} else {
+		    //  echo "<b>".$status_ptkp." - ".$ket_ptkp."</b>";
+		    //}
+		    ?>
                   <br/><small class='text-info'>Sesuai dengan keadaan pada awal tahun</small><br/>
 		  <small class='text-danger'>WAJIB DIISI : Digunakan untuk perhitungan PPh 21 tahun berjalan, jika kosong maka dihitung sebagai TK/0 (Tidak Kawin tidak ada tanggungan)</small>
 		</div>

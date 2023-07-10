@@ -213,9 +213,10 @@ class Kgb extends CI_Controller {
               //echo "<center><b><span style='color: #FF0000'>ASN pernah diusulkan pada pengantar<br />Nomor : ".$this->mcuti->getnopengantarbynip($nip,date('Y'))."<br />Tanggal : ".tgl_indo($this->mcuti->gettglpengantarbynip($nip,date('Y')))."</span></b></center>";
         //echo "<center><img src='".base_url()."photo/$nip.jpg' width='75' height='100' alt='$nip.jpg' class='img-thumbnail'><br />$nama";
         echo "<center><span style='color: #FF0000'>Usul KGB PNS ybs sedang diproses</span></center>";
-      } else if ($skpada == 0) {
+      //} 
+	//else if ($skpada == 0) {
         //echo "<center><img src='".base_url()."photo/$nip.jpg' width='75' height='100' alt='$nip.jpg' class='img-thumbnail'><br />$nama";
-        echo "<center><span style='color: #FF0000'>Data SKP Tahun ".$tahun." tidak ditemukan,<br/> Silahkan lakukan updating data<br />pada riwayat SKP.</span></center>";
+        //echo "<center><span style='color: #FF0000'>Data SKP Tahun ".$tahun." tidak ditemukan,<br/> Silahkan lakukan updating data<br />pada riwayat SKP.</span></center>";
       } else if ((!file_exists('./filecp/'.$nmfilecp.'.pdf')) AND (!file_exists('./filecp/'.$nmfilecp.'.PDF'))) {
         //echo "<center><img src='".base_url()."photo/$nip.jpg' width='75' height='100' alt='$nip.jpg' class='img-thumbnail'><br />$nama";
         echo "<center><span style='color: #FF0000'>File Berkas CPNS/PNS belum diupload</span></center>";
@@ -226,9 +227,10 @@ class Kgb extends CI_Controller {
       } else if (((!file_exists('./filekp/'.$nmfilekp.'.pdf')) AND (!file_exists('./filekp/'.$nmfilekp.'.PDF'))) AND ($jmlrwykp != 0)) {
         //echo "<center><img src='".base_url()."photo/$nip.jpg' width='75' height='100' alt='$nip.jpg' class='img-thumbnail'><br />$nama";
         echo "<center><span style='color: #FF0000'>File Berkas SK Kenaikan Pangkat Terakhir belum diupload</span></center>";
-      } else if ((!file_exists('./fileskp/'.$nmfileskp.'.pdf')) AND (!file_exists('./fileskp/'.$nmfileskp.'.PDF'))) {
+      //} 
+	//else if ((!file_exists('./fileskp/'.$nmfileskp.'.pdf')) AND (!file_exists('./fileskp/'.$nmfileskp.'.PDF'))) {
         //echo "<center><img src='".base_url()."photo/$nip.jpg' width='75' height='100' alt='$nip.jpg' class='img-thumbnail'><br />$nama";
-        echo "<center><span style='color: #FF0000'>File Berkas SKP Tahun ".$tahun." belum diupload</span></center>";
+        //echo "<center><span style='color: #FF0000'>File Berkas SKP Tahun ".$tahun." belum diupload</span></center>";
       } else {
         //echo "<center><img src='".base_url()."photo/$nip.jpg' width='75' height='100' alt='$nip.jpg' class='img-thumbnail'><br />$nama";
         echo "<input type='hidden' name='nipsimpan' size='20' value='$nip' />";

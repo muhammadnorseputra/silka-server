@@ -58,9 +58,9 @@ class Mpensiun extends CI_Model {
 
   public function getjmlperjnsbulan($tahun,$jenis)
   {
-    $query = $this->db->query("select MONTH(tmt_pensiun), count(nip) as 'jumlah' from pensiun_detail
+    $query = $this->db->query("	select MONTH(tmt_pensiun) as 'bulan', count(nip) as 'jumlah' from pensiun_detail
                 where fid_jenis_pensiun = '$jenis' and tmt_pensiun like '".$tahun."-%' 
-		group by MONTH(tmt_pensiun) order by MONTH(tmt_pensiun)");
+    		group by MONTH(tmt_pensiun) order by MONTH(tmt_pensiun)");
 
         if($query->num_rows() > 0){
             foreach($query->result() as $data){

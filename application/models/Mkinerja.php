@@ -1709,6 +1709,19 @@ class Mkinerja extends CI_Model
         }
     }
 
+    function get_realisasikinerja_nakes($nip, $thn, $bln)
+    {
+        $q = $this->db->query("select jml_aktifitas_nakes from kinerja_bulanan where tahun = '".$thn."' and bulan = '".$bln."' and nip='".$nip."'");
+        if ($q->num_rows()>0)
+        {
+            $row=$q->row();
+            return $row->jml_aktifitas_nakes;
+        } else {
+            // jika data kinerja tidak ditemukan, set dengan nilai 0 NOL
+            return 0;
+        }
+    }
+
     function get_haktpp($nip)
     {
         $q = $this->db->query("select tpp from pegawai where nip='$nip'");

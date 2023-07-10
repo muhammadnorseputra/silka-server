@@ -176,7 +176,7 @@ function showtambahdikfung(nip)
                 <br />
                 <?php
                     //cek priviledge session user -- edit_profil_priv
-                    if ($this->session->userdata('level') == "ADMIN") { 
+                    if ($this->session->userdata('level') == "ADMIN" || $this->session->userdata('nama') == "197912292007011018") { 
                     ?>
                     <div id='dikjst'>
                     <table class='table table-condensed'>

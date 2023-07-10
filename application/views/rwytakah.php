@@ -206,11 +206,11 @@
           } else if ($v['fid_jenis_takah'] == 5) {
             $icon = 'fa fa-institution';
           } else if ($v['fid_jenis_takah'] == 6) {
-            $icon = 'fa fa-heart  ';
+            $icon = 'fa fa-heart';
           } else if ($v['fid_jenis_takah'] == 7) {
             $icon = 'fa fa-child';
           } else if ($v['fid_jenis_takah'] == 8) {
-            $icon = 'fa fa-list-ol';
+            $icon = 'fa fa-credit-card';
           }
 
           ?>

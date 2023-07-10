@@ -34,13 +34,13 @@
         </div>
         
         <table class="table table-bordered">
-          <?php if($this->session->userdata('level') == 'ADMIN'): ?>
+          <?php //if($this->session->userdata('level') == 'ADMIN'): ?>
         	 <tr>
         	 	<td class="text-right">
         	 		<button class="btn btn-primary" data-toggle="modal" data-target="#entri_tanhor">+ Tambah</button>
         	 	</td>
         	 </tr>
-        	<?php endif; ?>
+        	<?php //endif; ?>
           <tr>
             <td colspan='2' align='center'>                            
                 <table class='table table-condensed table-hover table-bordered'>
@@ -71,7 +71,7 @@
                     <td><?php echo $v['tahun']; ?></td>
                     <td width='300'><?php echo $v['pejabat'].'<br />Nomor : '.$v['no_keppres'].'<br />Tanggal : '.tgl_indo($v['tgl_keppres']); ?></td>
                     <?php if($this->session->userdata('level') === 'ADMIN'): ?>
-                      <td>
+                      <td style="display: flex; gap: 5px; border:0px;">
                         <form method='POST' action='../pegawai/hapusrwyph'>
 	                    		<?php
 	                    		echo "<input type='hidden' name='nip' id='nip' value='$nip'>";
@@ -79,6 +79,15 @@
 	                    		?>
 	                    		<button type="submit" class="btn btn-danger btn-xs">
 	                    			<span class="glyphicon glyphicon-trash" aria-hidden="true"></span><br/>Hapus
+	                    		</button>
+	                    	</form>
+                        <form method='POST' action='../pegawai/editrwyph'>
+	                    		<?php
+	                    		echo "<input type='hidden' name='nip' id='nip' value='$nip'>";
+	                    		echo "<input type='hidden' name='id' id='id' value='".$v['id']."'>";
+	                    		?>
+	                    		<button type="submit" class="btn btn-primary btn-xs">
+	                    			<span class="glyphicon glyphicon-trash" aria-hidden="true"></span><br/>Edit
 	                    		</button>
 	                    	</form>
                       </td>
@@ -198,7 +207,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 		  $('input[name="gd"]').focus();
       $(this).find('#jenis_tanhor').select2({
         width: "100%",
-        theme: "classic",
         selectOnClose: false,
         placeholder: 'Pilih Jenis Tanhor',
         dropdownParent: $('#entri_tanhor'),
@@ -228,6 +236,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 		
 		$modal.on('hide.bs.modal', function () {
 		  $form.get(0).reset();
+      $('#jenis_tanhor').val(null).trigger('change');
 		})
 	
 	});

@@ -405,9 +405,9 @@ class Absensi extends CI_Controller {
         <td align='center' width='80'>HADIR</td>
         <td align='center' width='80'>IZIN</td>
         <td align='center' width='80'>SAKIT</td>
-        <td align='center' width='80'>TERLAMBAT</td>
+        <td align='center' width='80' class='warning'>TERLAMBAT</td>
         <td align='center' width='80'>PULANG CEPAT</td>
-        <td align='center' width='80'>TANPA KETERANGAN</td>
+        <td align='center' width='80' class='danger'>TANPA KETERANGAN</td>
         <td align='center' width='80'>CUTI</td>
         <td align='center' width='80'>TUGAS DINAS</td>
         <td align='center' width='80'>TOTAL PENGURANG</td>
@@ -432,9 +432,9 @@ class Absensi extends CI_Controller {
           echo "<td>".$data->hadir."</td>";
           echo "<td>".$data->izin."</td>";
           echo "<td>".$data->sakit."</td>";
-          echo "<td>".$data->terlambat."</td>";
+          echo "<td class='warning'>".$data->terlambat."</td>";
           echo "<td>".$data->pulang_cepat."</td>";
-          echo "<td>".$data->tk."</td>";
+          echo "<td class='danger'>".$data->tk."</td>";
           echo "<td>".$data->cuti."</td>";
           echo "<td>".$data->tudin."</td>";
           if ($data->total_pengurang != 0) {
@@ -481,15 +481,15 @@ class Absensi extends CI_Controller {
     $this->load->view('template', $data);
   }
 
-  function curl($url, $data){
+  function curl($url, $data) {
     $ch = curl_init(); 
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
     // curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
-    //curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept:application/json', 'Content-Type:multipart/form-data; boundary=---011000010111000001101001', 'Authorization:Bearer bkpp'));
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept:application/json', 'Authorization:Bearer bkpp'));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept:application/json', 'Content-Type:multipart/form-data; boundary=---011000010111000001101001', 'Authorization:Bearer bkpp'));
+    //curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept:application/json', 'Authorization:Bearer bkpp'));
     $output = curl_exec($ch); 
     //var_dump($output);
     curl_close($ch);      
@@ -502,10 +502,10 @@ class Absensi extends CI_Controller {
     $thn = $this->input->get('thn');
     $bln = $this->input->get('bln');
 
-    $data = array("pegawai_nip"=>$nip,"year"=>$thn,"month"=>$bln);
-    $send = $this->curl("https://e-office.balangankab.go.id/silka/report/pegawai",$data);
+    $dataparam = array("pegawai_nip"=>$nip,"year"=>$thn,"month"=>$bln);
+    $send = $this->curl("https://e-office.balangankab.go.id/silka/report/pegawai",$dataparam);
 
-    //var_dump($data);
+    var_dump($dataparam);
     //echo json_encode(array('respon'=>$send),JSON_UNESCAPED_SLASHES);
     $data = json_decode($send, true);
     echo "Jumlah Hari Kerja : ".$data['data']['jumlah_hari_kerja'];
@@ -612,10 +612,22 @@ class Absensi extends CI_Controller {
               echo "<td align='center'>".$data['data']['absen_pegawai']['absenStatusPegawai']['TL']."</td>";
               echo "<td class='warning' align='center'>".$data['data']['absen_pegawai']['absenStatusPegawai']['IT']."</td>";
               echo "<td class='warning' align='center'>".$data['data']['absen_pegawai']['absenStatusPegawai']['IPC']."</td>";
-              echo "<td class='danger' align='center'>".$data['data']['absen_pegawai']['absenStatusPegawai']['totalPotongan']." %</td>";
-              $realisasi = 100 - $data['data']['absen_pegawai']['absenStatusPegawai']['totalPotongan'];
+	      
+	      if ($data['data']['jumlah_hari_kerja'] == $data['data']['absen_pegawai']['absenStatusPegawai']['A']) {
+                $realisasi = 0;
+              	$potongan = 100;
+              } else {
+                $potongan = $data['data']['absen_pegawai']['absenStatusPegawai']['totalPotongan'];
+                $realisasi = 100 - $potongan;
+              }
 
+              echo "<td class='danger' align='center'>".$potongan." %</td>";
               echo "<td class='info' align='center'><b>".$realisasi."</b></td>";
+
+              //echo "<td class='danger' align='center'>".$data['data']['absen_pegawai']['absenStatusPegawai']['totalPotongan']." %</td>";
+              //$realisasi = 100 - $data['data']['absen_pegawai']['absenStatusPegawai']['totalPotongan'];
+
+              //echo "<td class='info' align='center'><b>".$realisasi."</b></td>";
               $berhasil++;
 	    }
           }
@@ -689,6 +701,8 @@ class Absensi extends CI_Controller {
     $thn = $this->input->get('thn');
     $bln = $this->input->get('bln');
     $jns = $this->input->get('jns');
+    
+    //echo $nip." ".$thn." ".$bln." ".$jns;
 
     $berhasil = 0;
     $tidakditemukan = 0;
@@ -697,13 +711,13 @@ class Absensi extends CI_Controller {
     if ($jns == "pns") {
       $berhaktpp = $this->mkinerja->get_haktpp($nip);
       $nama = $this->mpegawai->getnama($nip);
-      $id = 'NIP';
+      $ket = 'NIP';
       // Cek apakah PNS yg dicari tersebut masuk kewenangan umpeg
       $masuk = count($this->mpegawai->getnipnama($nip)->result_array());
     } else if ($jns == "pppk") {
       $berhaktpp = $this->mkinerja_pppk->get_haktpp_pppk($nip);
       $nama = $this->mpegawai->getnama_pppk($nip);
-      $id = 'NIPPPK';
+      $ket = 'NIPPPK';
       // Cek apakah PNS yg dicari tersebut masuk kewenangan umpeg
       $masuk = count($this->mpppk->getnipnama($nip)->result_array());
     }
@@ -715,7 +729,7 @@ class Absensi extends CI_Controller {
         <small>
           <table class='table table-bordered' style='width: 85%'>
             <tr class='info'> 
-              <td align='center' width='250'><b><?php echo $id; ?>/ NAMA</b></td>
+              <td align='center' width='250'><b><?php echo $ket; ?>/ NAMA</b></td>
 	      <td align='center' width='100'><b>HARI KERJA</b></td>
               <td class='warning' align='center' width='100'><b>TERLAMBAT</b></td>
               <td align='center' width='100'><b>TEPAT WAKTU</b></td>
@@ -738,29 +752,18 @@ class Absensi extends CI_Controller {
               "month"       => $bln
             );
 	
-      $dataparm = array("pegawai_nip"=>$nip,"year"=> $thn,"month"=> $bln);
-	    $send = curlApi("https://e-office.balangankab.go.id/silka/report/pegawai", $dataparm);
-	    // var_dump($send);
-      $data = json_decode($send, true);
+	    $data = array("pegawai_nip"=>$nip,"year"=>$thn,"month"=>$bln);
+	    $url = "https://e-office.balangankab.go.id/silka/report/pegawai";
+            $send = curlApi($url,$data);
+	    $data = json_decode($send, true);
 	
-		/* API eOffice */
-		/*
-		$dataparm = array("pegawai_nip"=>$nip,"year"=>$thn,"month"=>$bln);
-		//$dataparm = array("pegawai_nip"=>198104072009041002,"year"=>2022,"month"=>7);
-    		$ch = curl_init();
-    		curl_setopt($ch, CURLOPT_URL, "https://e-office.balangankab.go.id/silka/report/pegawai");
-    		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-    		curl_setopt($ch, CURLOPT_POST, 1);
-    		curl_setopt($ch, CURLOPT_POSTFIELDS, $dataparm);
-    		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    		//curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept:application/json', 'Content-Type:multipart/form-data', 'Authorization:Bearer bkpp'));
-		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept:application/json', 'Authorization:Bearer bkpp'));
-    		$data = curl_exec($ch);
-    		curl_close($ch);
-		var_dump($dataparm);
-		var_dump($data);
-		*/
-		/* end API eOffice */
+      	    //$dataparm = array("pegawai_nip"=>$nip,"year"=> $thn,"month"=> $bln);
+	    //$send = curlApi("https://e-office.balangankab.go.id/silka/report/pegawai", $dataparm);
+	    //$send = $this->curl("https://e-office.balangankab.go.id/silka/report/pegawai", $dataparm);
+	    //var_dump($url);
+            //var_dump($send);
+	    //$data = json_decode($send, true);
+	    //var_dump($data);
 
             $jml = count($data);
             if ($jml != 0) {
@@ -769,7 +772,7 @@ class Absensi extends CI_Controller {
 	      
               if ($data['text'] == "success") { 
                 echo "<tr>";
-                echo "<td>".$id.".".$nip."<br/>".$nama."</td>"; 
+                echo "<td>".$ket.".".$nip."<br/>".$nama."</td>"; 
                 echo "<td align='center'>".$data['data']['jumlah_hari_kerja']."</td>";
 		echo "<td class='warning' align='center'>".$data['data']['absen_pegawai']['absenStatusPegawai']['terlambat']."</td>";
                 echo "<td align='center'>".$data['data']['absen_pegawai']['absenStatusPegawai']['tepatWaktu']."</td>";
@@ -781,9 +784,16 @@ class Absensi extends CI_Controller {
                 echo "<td align='center'>".$data['data']['absen_pegawai']['absenStatusPegawai']['TL']."</td>";
                 echo "<td class='warning' align='center'>".$data['data']['absen_pegawai']['absenStatusPegawai']['IT']."</td>";
                 echo "<td class='warning' align='center'>".$data['data']['absen_pegawai']['absenStatusPegawai']['IPC']."</td>";
-                echo "<td class='danger' align='center'>".$data['data']['absen_pegawai']['absenStatusPegawai']['totalPotongan']." %</td>";
-                $realisasi = 100 - $data['data']['absen_pegawai']['absenStatusPegawai']['totalPotongan'];
-
+                
+                if ($data['data']['jumlah_hari_kerja'] == $data['data']['absen_pegawai']['absenStatusPegawai']['A']) {
+			$realisasi = 0;
+			$potongan = 100;
+		} else {
+			$potongan = $data['data']['absen_pegawai']['absenStatusPegawai']['totalPotongan'];
+			$realisasi = 100 - $potongan;
+		}
+	
+		echo "<td class='danger' align='center'>".$potongan." %</td>";
                 echo "<td class='info' align='center'><b>".$realisasi."</b></td>";            
 		echo "</tr>";
 		echo "</table>";
@@ -793,7 +803,8 @@ class Absensi extends CI_Controller {
 		$sudahhitungtpp = $this->mkinerja->cektelahusul($nip, $thn, $bln);
 		if ($sudahhitungtpp) {
 			echo "<h4><span class='text-danger'>Kada kawa di-Impor karena TPP bulan ".bulan($bln)." ".$thn." sudah tuntung dihitung.</span></h4>";
-		} else if (($thnini == $thn) AND ($blnini == $bln+1) AND (!$sudahhitungtpp)) {
+		//} else if (($thnini == $thn) AND ($blnini == $bln+1) AND (!$sudahhitungtpp)) {
+		} else if (($thnini == '2023')  AND (!$sudahhitungtpp)) {
 			echo "<div class='row'>";
             		echo "<div class='col-md-12'>";
             		echo "<form method='POST' action='../absensi/importperorangan'>
@@ -878,7 +889,14 @@ class Absensi extends CI_Controller {
 	  
 	  // cek dlu apakah hasil API success dan hari kerja tidak nol
           if (($jns == "pns") AND ($status == "success") AND ($jml_hk != 0)) {
-            $realisasi = 100 - $data['data']['absen_pegawai']['absenStatusPegawai']['totalPotongan'];
+	    if ($jml_hk == $data['data']['absen_pegawai']['absenStatusPegawai']['A']) {
+                $realisasi = 0;
+                $potongan = 100;
+            } else {
+                $potongan = $data['data']['absen_pegawai']['absenStatusPegawai']['totalPotongan'];
+            	$realisasi = 100 - $potongan;
+            }
+            //$realisasi = 100 - $data['data']['absen_pegawai']['absenStatusPegawai']['totalPotongan'];
 
             $data = array(
             'nip'             => $nip,
@@ -896,7 +914,7 @@ class Absensi extends CI_Controller {
             'tepat_waktu'     => $data['data']['absen_pegawai']['absenStatusPegawai']['tepatWaktu'],
             'izin_terlambat'  => $data['data']['absen_pegawai']['absenStatusPegawai']['IT'],
             'izin_pulangcepat' => $data['data']['absen_pegawai']['absenStatusPegawai']['IPC'],
-            'total_pengurang' => $data['data']['absen_pegawai']['absenStatusPegawai']['totalPotongan'],
+            'total_pengurang' => $potongan,
             'realisasi'       => $realisasi,
             'entry_by'       => $user,
             'entry_at'       => $tgl_aksi
@@ -922,7 +940,14 @@ class Absensi extends CI_Controller {
               }
             }
           } else if (($jns == "pppk") AND ($status == "success") AND ($jml_hk != 0)) {
-            $realisasi = 100 - $data['data']['absen_pegawai']['absenStatusPegawai']['totalPotongan'];
+	    if ($jml_hk == $data['data']['absen_pegawai']['absenStatusPegawai']['A']) {
+                $realisasi = 0;
+                $potongan = 100;
+            } else {
+                $potongan = $data['data']['absen_pegawai']['absenStatusPegawai']['totalPotongan'];
+                $realisasi = 100 - $potongan;
+            }
+            //$realisasi = 100 - $data['data']['absen_pegawai']['absenStatusPegawai']['totalPotongan'];
 
             $data = array(
             'nipppk'          => $nip,
@@ -940,7 +965,7 @@ class Absensi extends CI_Controller {
             'tepat_waktu'     => $data['data']['absen_pegawai']['absenStatusPegawai']['tepatWaktu'],
             'izin_terlambat'  => $data['data']['absen_pegawai']['absenStatusPegawai']['IT'],
             'izin_pulangcepat' => $data['data']['absen_pegawai']['absenStatusPegawai']['IPC'],
-            'total_pengurang' => $data['data']['absen_pegawai']['absenStatusPegawai']['totalPotongan'],
+            'total_pengurang' => $potongan,
             'realisasi'       => $realisasi,
             'entry_by'       => $user,
             'entry_at'       => $tgl_aksi
@@ -1023,13 +1048,20 @@ class Absensi extends CI_Controller {
           //if ($data['message'] != "Data tidak ditemukan") {             
 	    $status = $data['text'];
             $jml_hk = $data['data']['jumlah_hari_kerja'];
-
             // cek dlu apakah hasil API success dan hari kerja tidak nol
             if (($jns == "pns") AND ($status == "success") AND ($jml_hk != 0)) {
 	      if ($jml_hk != 0) {
-              	$realisasi = 100 - $data['data']['absen_pegawai']['absenStatusPegawai']['totalPotongan'];
+		if ($jml_hk == $data['data']['absen_pegawai']['absenStatusPegawai']['A']) {
+                	$realisasi = 0;
+                        $potongan = 100;
+                } else {
+                        $potongan = $data['data']['absen_pegawai']['absenStatusPegawai']['totalPotongan'];
+                        $realisasi = 100 - $potongan;
+                }
+              	//$realisasi = 100 - $data['data']['absen_pegawai']['absenStatusPegawai']['totalPotongan'];
 	      } else {
 		$realisasi = 0;
+		$potongan = 100;
 	      }
 
               $data = array(
@@ -1048,11 +1080,13 @@ class Absensi extends CI_Controller {
               'tepat_waktu'     => $data['data']['absen_pegawai']['absenStatusPegawai']['tepatWaktu'],
               'izin_terlambat'  => $data['data']['absen_pegawai']['absenStatusPegawai']['IT'],
               'izin_pulangcepat' => $data['data']['absen_pegawai']['absenStatusPegawai']['IPC'],
-              'total_pengurang' => $data['data']['absen_pegawai']['absenStatusPegawai']['totalPotongan'],
+              'total_pengurang' => $potongan,
               'realisasi'       => $realisasi,
               'entry_by'       => $user,
               'entry_at'       => $tgl_aksi
               );
+
+	      //'total_pengurang' => $data['data']['absen_pegawai']['absenStatusPegawai']['totalPotongan'],
 
               if ($this->mabsensi->cekadadata($nip, $bln, $thn) == 0) {
                 if ($this->mabsensi->input_absensi($data)) {
@@ -1075,9 +1109,17 @@ class Absensi extends CI_Controller {
               }
             } else if (($jns == "pppk") AND ($status == "success") AND ($jml_hk != 0)) {
               if ($jml_hk != 0) {
-	      	$realisasi = 100 - $data['data']['absen_pegawai']['absenStatusPegawai']['totalPotongan'];
+	      	if ($jml_hk == $data['data']['absen_pegawai']['absenStatusPegawai']['A']) {
+                        $realisasi = 0;
+                        $potongan = 100;
+                } else {
+                        $potongan = $data['data']['absen_pegawai']['absenStatusPegawai']['totalPotongan'];
+                        $realisasi = 100 - $potongan;
+                }
+		//$realisasi = 100 - $data['data']['absen_pegawai']['absenStatusPegawai']['totalPotongan'];
 	      } else {
                 $realisasi = 0;
+		$potongan = 100;
               }		
 
               $data = array(

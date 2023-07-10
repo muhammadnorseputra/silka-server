@@ -177,7 +177,7 @@ if ($this->mpegawai->cekpernahkp($nip)) { // pernah KP
 
   public function rwyanak($nip)
   {
-    $q = $this->db->query("select nama_anak, fid_sutri_ke, jns_kelamin, tmp_lahir, tgl_lahir, status, status_hidup from riwayat_anak where nip='$nip' ORDER BY tgl_lahir asc");    
+    $q = $this->db->query("select nama_anak, fid_sutri_ke, jns_kelamin, tmp_lahir, tgl_lahir, status, status_hidup, tanggungan from riwayat_anak where nip='$nip' ORDER BY tgl_lahir asc");    
     return $q;    
   }
 
@@ -436,7 +436,7 @@ if ($this->mpegawai->cekpernahkp($nip)) { // pernah KP
   function getnipnama($data)
     {
       $sess_nip = $this->session->userdata('nip');
-        $q = $this->db->query("select p.nip, p.gelar_depan, p.nama, p.gelar_belakang, 
+        $q = $this->db->query("select p.pns_id, p.nip, p.gelar_depan, p.nama, p.gelar_belakang, 
         g.nama_golru, p.fid_jnsjab, p.fid_jabatan, p.fid_jabfu, p.fid_jabft, u.nama_unit_kerja, e.nama_eselon, p.tmt_golru_skr
         from pegawai as p, ref_eselon as e, ref_golru as g, ref_unit_kerjav2 as u, ref_instansi_userportal as i
         where p.fid_eselon = e.id_eselon
@@ -857,6 +857,12 @@ if ($this->mpegawai->cekpernahkp($nip)) { // pernah KP
   function edit_kgb($where, $data){
     $this->db->where($where);
     $this->db->update('riwayat_kgb',$data);
+    return true;
+  }
+
+  function edit_cuti($where, $data){
+    $this->db->where($where);
+    $this->db->update('riwayat_cuti',$data);
     return true;
   }
 
@@ -1530,8 +1536,17 @@ WHERE p.fid_unit_kerja = u.id_unit_kerja and p.fid_unit_kerja = '".$idunker."' o
   public function rwytpp($nip)
   {
     $q = $this->db->query("select * from usul_tpp as ut, usul_tpp_pengantar as pt where ut.nip='$nip' and ut.fid_pengantar = pt.id 
-	 and pt.status in ('REKAP','CETAK') ORDER BY ut.tahun desc, ut.bulan desc");    
+	 and pt.status in ('APPROVE','CETAK') ORDER BY ut.tahun desc, ut.bulan desc");    
     return $q;    
+  }
+
+  public function rwytppng($nip)
+  {
+    //$q = $this->db->query("select tp.*, st.nama_status from tppng as tp, ref_statustppng as st where tp.nip='$nip' and tp.fid_status = st.id_status
+//	 ORDER BY tp.tahun desc, tp.bulan desc");
+    
+    $q = $this->db->query("select * from tppng where nip='$nip' ORDER BY tahun desc, bulan desc");
+return $q;
   }
 
   public function status_ptkp()

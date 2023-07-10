@@ -49,13 +49,12 @@
 }
 
 .modal-backdrop {
-	background: rgba(0,0,0,1);
+	background: rgba(255,255,255,1);
 }
 .modal-backdrop-transparent {
-	filter:blur(5px) alpha(opacity=1);
+	filter:blur(8px) alpha(opacity=1);
 	opacity: 1;
 }
-
 .panel {
 	border-radius: 10px;
 	box-shadow: 0px 0px 3px #ccc;

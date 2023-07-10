@@ -13,6 +13,7 @@
 		<link rel="stylesheet" href="<?php echo base_url('assets/dark-mode/dark-mode.css') ?>">
     <link href="<?php echo base_url('assets/css/bootstrap.min.css') ?>" rel="stylesheet" />    
     <link rel="stylesheet" href="<?php echo base_url('assets/css/bootstrap-datepicker.css'); ?>" rel="stylesheet"/>
+    
 
 	<!-- ANALITIC -->
 	<!-- Global site tag (gtag.js) - Google Analytics -->

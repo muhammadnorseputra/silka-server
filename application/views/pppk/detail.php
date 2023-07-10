@@ -5,7 +5,7 @@
         <tr>  
 					<td align='right'>
           <?php
-          if (($this->session->userdata('nonpns_priv') == "Y") OR ($this->session->userdata('level') != "TAMU")) { 
+          if ($this->session->userdata('level') == "ADMIN") { 
             echo "<form method='POST' action='../pppk/edit'>";          
             ?>
             <button type="submit" class="btn btn-warning btn-sm">
@@ -57,7 +57,7 @@
             <tr bgcolor='#F2DEDE'>
               <td align='right' width='160'><b>NIP PPPK</b></td>
               <td colspan='3'><b><?php echo $v['nipppk']; ?></b></td>
-              <td align='center' rowspan='16' width='200' bgcolor='#D9EDF7'>
+              <td align='center' rowspan='17' width='200' bgcolor='#D9EDF7'>
 
               <div class="well well-sm" >
               <?php        
@@ -131,6 +131,18 @@
               ?>
               </div>
 
+	      <div class="well well-sm" align='center'>
+                <?php
+                  echo "<form method='POST' action='../pppk/rwygaji'>";
+                  echo "<input type='hidden' name='nipppk' id='nipppk' maxlength='18' value='$v[nipppk]'>";
+                ?>
+                <button type="submit" class="btn btn-success" style='padding:10px; width:230px;'>
+                  <span class="glyphicon glyphicon-apple" aria-hidden="true"></span>&nbspRIWAYAT GAJI</button>
+                <?php
+                    echo "</form>";
+                ?>
+              </div>
+
               </td>
             </tr>
             <tr>
@@ -140,7 +152,7 @@
             <tr>
               <td align='right' bgcolor='#D9EDF7'><b>Gelar Depan</b></td>
               <td><?php echo $v['gelar_depan']; ?></td>
-              <td  align='right' bgcolor='#D9EDF7' width='120'><b>Gelar Belakang</b></td>
+              <td  align='right' bgcolor='#D9EDF7' width='160'><b>Gelar Belakang</b></td>
               <td><?php echo $v['gelar_blk']; ?></tr>
             <tr>
               <td align='right' bgcolor='#D9EDF7'><b>Tempat Lahir</b>
@@ -154,20 +166,14 @@
               </td>
               <td colspan='3'>
                 <?php echo $v['alamat']; ?>
-                <table class="table table-condensed">
-                  <tr>
-                    <td colspan='4'>
-                      <?php echo $this->mpegawai->getkelurahan($v['fid_keldesa']); ?>
-                    </td>
-                  </tr>
-                </table>                            
+                <?php echo $this->mpegawai->getkelurahan($v['fid_keldesa']); ?>
               </td>
             </tr>
             <tr>
               <td width='150' bgcolor='#D9EDF7' align='right'><b>No. Telepon Rumah</b></td>
               <td><?php //echo $v['no_telp_rumah']; ?></td>
               <td bgcolor='#D9EDF7' align='right'><b>No. Hand Phone</b></td>
-              <td><?php //echo $v['no_hp']; ?></td>
+              <td><?php echo $v['no_handphone']; ?></td>
             </tr>
             <tr>
               <td align='right' bgcolor='#D9EDF7'><b>Jenis Kelamin</b></td>
@@ -196,13 +202,17 @@
               <td width='220'>(<?= $this->mpppk->getstatus_ptkp($v['fid_status_ptkp']) ?>) <?= $this->mpppk->getketerangan_ptkp($v['fid_status_ptkp']) ?></td>
             </tr>
             <tr>
-            	<td align='right' coolspan='4' bgcolor='#D9EDF7'><b>No. NPWP</b></td>
+            	<td align='right' bgcolor='#D9EDF7'><b>NIK</b></td>
             	<td>
+                <?= !empty($v['no_npwp']) ? $v['nik'] : "-"; ?>
+                </td>
+		<td align='right' bgcolor='#D9EDF7'><b>No. NPWP</b></td>
+                <td>
                 <?= !empty($v['no_npwp']) ? $v['no_npwp'] : "-"; ?>
-              </td>
+                </td>
             </tr>
             <tr>
-              <td align='center' colspan='4' class='warning'><b>TUGAS PEKERJAAN SAAT INI</b></td>
+              <td align='center' colspan='4' class='warning'><b>KONTRAK PERJANJIAN KERJA</b></td>
             </tr>
             <tr>
               <td align='right' bgcolor='#D9EDF7'><b>Unit Kerja</b></td>
@@ -236,7 +246,7 @@
               </td>
               <td align='right' bgcolor='#D9EDF7'><b>TMT PPPK</b></td>
               <td>
-              <?php echo tgl_indo($v['tmt_pppk']); ?>
+              <?php echo tgl_indo($v['tmt_pppk_awal'])." s/d ".tgl_indo($v['tmt_pppk_akhir']); ?>
               </td>
             </tr>
             
@@ -244,6 +254,10 @@
               <td align='right' bgcolor='#D9EDF7'><b>(TPP)</b><br><small>Tambahan Penghasilan Pegawai</small></td>
               <td>
               	<b><?php echo $v['tpp'] === 'YA' ? '<span class="text-success">BERHAK TPP</span>' : '<span class="text-danger">TIDAK BERHAK</span>'; ?></b>
+              </td>
+	      <td align='right' bgcolor='#D9EDF7'><b>MASA KONTRAK KERJA</b></td>
+              <td>
+              <?php echo $v['masakontrak_thn']." TAHUN, ".$v['masakontrak_bln']." BULAN"; ?>
               </td>
             </tr>
             
@@ -265,7 +279,7 @@
                   </tr>
                   <tr bgcolor='#DFF0D8'>
                     <td align='right'><b>TMT :</b></td>
-                    <td colspan='3'><?php echo tgl_indo($v['tmt_pppk']); ?></td>
+                    <td colspan='3'><?php echo tgl_indo($v['tmt_pppk_awal'])." s/d ".tgl_indo($v['tmt_pppk_akhir']); ?></td>
                   </tr>  
                 </table>
                 

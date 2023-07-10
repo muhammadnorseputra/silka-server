@@ -119,6 +119,17 @@ class Api extends CI_Controller {
         header('Content-Type: application/json');
         echo json_encode($response,TRUE);
     }
+
+    function get_grap_all() {
+        $response = [
+            'pns' => $this->Mapi->jmlpns(),
+            'nonpns' => $this->Mapi->jmlnonpns(),
+            'pensiun' => $this->Mapi->jmlpensiun(date('Y')),
+            'asn' => $this->Mapi->jmlasn(),
+        ];
+        header('Content-Type: application/json');
+        echo json_encode($response,TRUE);
+    }
     
     function get_grap_pns($jenis) {
     	if($jenis == 'jenkel') {

@@ -55,11 +55,11 @@ class PDF extends FPDF
 	    $this->cell(50,10,namagelar($d->gelar_depan, $d->nama, $d->gelar_belakang),0,1,'L',0); 
 	    
 	    $this->setXY($x,$y+5);
-	    $this->cell(50,10,'Pengelola Iuran',0,1,'L',0); 
+	    $this->cell(50,10,'Bendahara',0,1,'L',0); 
 	    $this->setXY($x,$y+25);
-	    $this->cell(50,10,'MARJANAH',0,1,'L',0); 
+	    $this->cell(50,10,'HJ. RINAWATI, S.Sos',0,1,'L',0); 
 	    $this->setXY($x,$y+30);
-	    $this->cell(50,10,'NIP. '.polanip("197412292007012008"),0,1,'L',0); 
+	    $this->cell(50,10,'NIP. '.polanip("198204212006041008"),0,1,'L',0); 
 	    
 	    $this->setXY($x,$y+40);
 	    $this->cell(50,10,"Mengetahui",0,1,'L',0); 

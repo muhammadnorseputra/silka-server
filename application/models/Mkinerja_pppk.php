@@ -301,7 +301,7 @@ class Mkinerja_pppk extends CI_Model
         return $q;    
       }
 
-      function get_realisasikinerja($nipppk, $thn, $bln)
+    function get_realisasikinerja($nipppk, $thn, $bln)
     {
         $q = $this->db->query("select nilai_skp from kinerja_bulanan_pppk where tahun = '".$thn."' and bulan = '".$bln."' and nipppk='".$nipppk."'");
         if ($q->num_rows()>0)
@@ -310,6 +310,19 @@ class Mkinerja_pppk extends CI_Model
             return $row->nilai_skp; 
         } else {
             // jika data absensi tidak ditemukan, set dengan nilai 0 NOL
+            return 0;
+        }
+    }
+
+    function get_realisasikinerja_nakes($nipppk, $thn, $bln)
+    {
+        $q = $this->db->query("select jml_aktifitas_nakes from kinerja_bulanan_pppk where tahun = '".$thn."' and bulan = '".$bln."' and nipppk='".$nipppk."'");
+        if ($q->num_rows()>0)
+        {
+            $row=$q->row();
+            return $row->jml_aktifitas_nakes;
+        } else {
+            // jika data kinerja tidak ditemukan, set dengan nilai 0 NOL
             return 0;
         }
     }
@@ -1033,4 +1046,9 @@ class Mkinerja_pppk extends CI_Model
         return $q->num_rows();
       }
 
+    function getjmlpeg_berhaktpp_perunker($id)
+    {
+        $q = $this->db->query("select nipppk from pppk where fid_unit_kerja='$id' and tpp = 'YA'");
+        return $q->num_rows();
+    }
 }

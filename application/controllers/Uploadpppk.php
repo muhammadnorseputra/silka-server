@@ -35,7 +35,7 @@ class Uploadpppk extends CI_Controller {
         $nmfile = $nip."-".$string.'.jpg'; //nama file nip + '-' + $id_golru (2 karakter) + nomor acak (19 karakter acak)
         $config['upload_path'] = './photononpns/'; //Folder untuk menyimpan hasil upload
         $config['allowed_types'] = 'jpg'; //type yang dapat diakses bisa anda sesuaikan
-        $config['max_size'] = '100'; //maksimum besar file 5M
+        $config['max_size'] = '350'; //maksimum besar file 5M
         $config['file_name'] = $nmfile; //nama yang terupload nantinya
 
         $this->upload->initialize($config);

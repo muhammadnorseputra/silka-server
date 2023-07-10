@@ -22,7 +22,7 @@
     echo '<b>Ditemukan '.$jmldata.' Data</b><br />';
     echo '</div>';
   ?>
-    <table class="table table-condensed table-hover">
+    <table class="table table-condensed">
       <tr class='info'>
         <td align='center'><b>#</b></td>
         <td align='center'><b>NIP</b></td>
@@ -38,7 +38,11 @@
       <tr>
         <td width='10' align='center'><?php echo $no; ?></td>
         <td width='150'><?php echo $v['nip']; ?></td>
-        <td><?php echo namagelar($v['gelar_depan'],$v['nama'],$v['gelar_belakang']); ?></td>
+        <td><?php
+		echo namagelar($v['gelar_depan'],$v['nama'],$v['gelar_belakang']); 
+		echo "<br/><small><span class='text-muted' style='color: white';>".$v['pns_id']."</span></small>";
+	    ?>
+	</td>
         <td align='center'>         
           <?php
             $lokasifile = './photo/';

@@ -1,5 +1,5 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
- 
+
 //untuk mengetahui bulan bulan
 if ( ! function_exists('bulan'))
 {
@@ -46,10 +46,26 @@ if ( ! function_exists('bulan'))
             case 13: //khusus untuk menampilkan info BUP bulan 12 (desemeber) dgn TMT bulan 1 (januari) tahun berikutnya
                 return "Januari";
                 break;
+	    case 14:
+                return "THR";
+                break;
+	    case 15:
+                return "TPP KE-13";
+                break;
         }
     }
 }
- 
+
+if ( ! function_exists('list_bulan')) 
+{
+    function list_bulan($month_format="m"){
+        $months =  [];
+        for ($i = 1; $i <=12; $i++) {
+            $months[] = date($month_format, mktime(0,0,0,$i));
+        }
+        return $months;
+    }
+}
 //format tanggal yyyy-mm-dd
 if ( ! function_exists('tgl_indo'))
 {

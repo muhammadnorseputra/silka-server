@@ -21,10 +21,10 @@
 							    <label for="nip" class="col-sm-2 control-label">NIP</label>
 							    <div class="col-sm-4">
 							    <?php if($type['jenis'] == 'bup'): ?>
-							      <input type="text" name="nip" class="form-control" id="nip" value="<?= $type['nip'] ?>" readonly>
+							      <input type="text" name="nip" class="form-control" id="nip" value="<?= $type['nip'] ?>">
 							      <input type="hidden" name="bln" id="bln" value="<?= $type['bulan_bup'] ?>">
 							    <?php else: ?>
-							    	<input type="text" name="nip" class="form-control" id="nip" value="<?= $type['nip'] ?>" readonly>
+							    	<input type="text" name="nip" class="form-control" id="nip" value="<?= $type['nip'] ?>">
 									<?php endif; ?>
 							    </div>
 							  </div>
@@ -42,7 +42,7 @@
 							  <div class="form-group">
 							  	<label for="jenis_tali_asih" class="col-sm-2 control-label">Jenis Santunan</label>
 							    <div class="col-sm-10">
-							    	<?php if($type['jenis'] == 'bup'): ?>
+							    		<?php if($type['jenis'] == 'bup'): ?>
 									  	<label class="radio-inline">
 											  <input type="radio" name="jenis_tali_asih" id="inlineRadio1" value="1" checked> <h4><b style="position:relative; bottom:10px;">PENSIUN BUP</b></h4>
 											</label>

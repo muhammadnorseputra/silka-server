@@ -602,8 +602,8 @@ if (($nmunker == '') OR ($thn == 0) OR ($bln == 0)) {
 
 	// tombol simpan hanya ditampilkan jika usulan hnya bulan lalu, dan tahun hnya tahun ini
    //if ($tahunini == $thn) {
-	if (($bulanini-1 == $bln) AND ($tahunini == $thn)) {
-	//if (($bln == '12') AND ($bulanini == '1') AND ($tahunini-1 == $thn)) {// Khusus Hitung TPP Desember pada Januari tahun berikutnya
+	//if (($bulanini-1 == $bln) AND ($tahunini == $thn)) {
+	if (($bln == '12') AND ($bulanini == '1') AND ($tahunini-1 == $thn)) {// Khusus Hitung TPP Desember pada Januari tahun berikutnya
 	//var_dump($bln);
 	//if ((($bulanini-1 == $bln) OR ($bulanini == $bln)) AND ($tahunini == $thn)) {
 	  //if (($this->session->userdata('level') == "ADMIN") AND ($this->mkinerja->getstatuspengantar($idunker, $thn, $bln) == "ENTRI")) {

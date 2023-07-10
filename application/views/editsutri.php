@@ -71,13 +71,13 @@
             <td align='right'>Tempat Lahir :</td>
             <td><input type="text" name="tmplahir" size='30' maxlength='30' value='<?php echo $v['tmp_lahir']; ?>' required /></td>        
             <td align='right' width='150'>Tanggal Lahir :</td>
-            <td><input type="text" name="tgllahir" class="tanggal" size='15' maxlength='10' value='<?php echo tgl_sql($v['tgl_lahir']); ?>' required /></td>
+            <td colspan='3'><input type="text" name="tgllahir" class="tanggal" size='15' maxlength='10' value='<?php echo tgl_sql($v['tgl_lahir']); ?>' required /></td>
           </tr>
           <tr>
             <td align='right'>Akta Nikah :</td>
             <td><input type="text" name="aktanikah" size='30' maxlength='100' value='<?php echo $v['no_akta_nikah']; ?>' required /></td>
             <td align='right'>Tanggal Nikah :</td>
-            <td><input type="text" name="tglnikah" class="tanggal" size='15' maxlength='10' value='<?php echo tgl_sql($v['tgl_nikah']); ?>' required /></td>
+            <td colspan='3'><input type="text" name="tglnikah" class="tanggal" size='15' maxlength='10' value='<?php echo tgl_sql($v['tgl_nikah']); ?>' required /></td>
           </tr>
           <tr>
             <td align='right'>Pekerjaan :</td>
@@ -135,7 +135,6 @@
               </select>
             </td>
             <td align='right'>Status Hidup :</td>
-
             <?php
             if ($v['status_hidup'] == 'YA') {
               echo "
@@ -144,14 +143,24 @@
               echo "
             <td><input id='statushidup' name='statushidup' type='checkbox' value='YA'></td>";
             }
+            ?>	
+	    <td align='right'>Tanggungan :</td>
+            <?php
+            if ($v['tanggungan'] == 'YA') {
+              echo "
+            <td><input id='tanggungan' name='tanggungan' type='checkbox' value='YA' checked='checked'></td>";
+            } else {
+              echo "
+            <td><input id='tanggungan' name='tanggungan' type='checkbox' value='YA'></td>";
+            }
             ?>
 
           </tr>
           <tr>
             <td align='right'>NIP <?php echo $ketsutri; ?> (Jika PNS):</td>
             <td><input type="text" name="nipsutri"  size='25' maxlength='18' value='<?php echo $v['nip_sutri']; ?>' /></td>
-            <td align='right'>No. Kartu <?php echo $ketsutri; ?> :</td>
-            <td><input type="text" name="nokarisu" size='20' maxlength='15' value='<?php echo $v['no_karisu']; ?>' /></td>
+            <td align='right' colspan='2'>No. Kartu <?php echo $ketsutri; ?> :</td>
+            <td colspan='2'><input type="text" name="nokarisu" size='20' maxlength='15' value='<?php echo $v['no_karisu']; ?>' /></td>
           </tr>
           <tr>
             <td align='right'>Tanggal Cerai :</td>
@@ -169,14 +178,14 @@
                 }
 	    ?>
             <td><input type="text" name="tglcerai" class="tanggal" size='15' maxlength='10' value='<?php echo $tgl_cerai; ?>'/></td>
-            <td align='right'>No. Akta Cerai :</td>
-            <td><input type="text" name="aktacerai" size='40' maxlength='50' value='<?php echo $v['no_akta_cerai']; ?>' /></td>
+            <td align='right' colspan='2'>No. Akta Cerai :</td>
+            <td colspan='2'><input type="text" name="aktacerai" size='40' maxlength='50' value='<?php echo $v['no_akta_cerai']; ?>' /></td>
           </tr>        
           <tr>
             <td align='right'>Tanggal Meninggal :</td>
             <td><input type="text" name="tglmeninggal" class="tanggal" size='15' maxlength='10' value='<?php echo $tgl_meninggal; ?>' /></td>
-            <td align='right'>No. Akta Meninggal :</td>
-            <td><input type="text" name="aktameninggal" size='40' maxlength='50' value='<?php echo $v['no_akta_meninggal']; ?>' /></td>
+            <td align='right' colspan='2'>No. Akta Meninggal :</td>
+            <td colspan='2'><input type="text" name="aktameninggal" size='40' maxlength='50' value='<?php echo $v['no_akta_meninggal']; ?>' /></td>
           </tr>          
         </table>
       </div> <!-- end class="panel-info" -->

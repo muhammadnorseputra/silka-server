@@ -3,7 +3,7 @@
 <script type="text/javascript" src="<?php echo base_url('assets/js/bootstrap-datepicker.js') ?>"></script>
 <script type="text/javascript" src="<?php echo base_url('assets/diklat/jquery.mask.min.js') ?>"></script>
 <script>
-    $('#besar_santunan').mask("#.###.##0", {reverse: true, placeholder: "Rp"});
+    $('#besar_santunan').mask("#.###.##0", {reverse: true, placeholder: "Rp. "});
     $('#tahun').mask("0000", {placeholder: "____"});
     $("#inlineRadio2").click(function(){
 
@@ -36,6 +36,11 @@ function ceknip(v) {
 }
 
 elnip.on('blur', function() {
+let values = $(this).val();
+ceknip(values);
+})
+
+elnip.on('change', function() {
 let values = $(this).val();
 ceknip(values);
 })
