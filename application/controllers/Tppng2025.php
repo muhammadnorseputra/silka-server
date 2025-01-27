@@ -172,8 +172,9 @@ class Tppng2025 extends CI_Controller {
     $idpengantar = addslashes($this->input->get('idpengantar'));    
     $idperiode = addslashes($this->input->get('idperiode'));
     $idjabpeta = addslashes($this->input->get('idjabpeta'));
-    $namajab = $this->mpetajab->get_namajab($idjabpeta);	
+    $namajabdf = $this->mpetajab->get_namajab($idjabpeta);	
     $idjabpltpeta = addslashes($this->input->get('idjabpltpeta'));
+    $namajabplt = $this->mpetajab->get_namajab($idjabpltpeta);
     $jnsplt = addslashes($this->input->get('jnsplt'));
     $pengurang = addslashes($this->input->get('pengurang'));
 
@@ -222,8 +223,10 @@ class Tppng2025 extends CI_Controller {
         }
 
         if (($jnsplt == 'plt100') AND ($idjabpltpeta != '')) {
-          $kelasjab = $this->mpetajab->get_kelas($idjabpltpeta);
+          $kelasjabplt = $this->mpetajab->get_kelas($idjabpltpeta);
+	  $kelasjab = $this->mpetajab->get_kelas($idjabpeta);
         } else {
+	  $kelasjabplt = "-";
           $kelasjab = $this->mpetajab->get_kelas($idjabpeta);  
         }
         //echo "<br/>";
@@ -245,12 +248,12 @@ class Tppng2025 extends CI_Controller {
                     <div class='col-md-8' align='left'>".$golru." (".$pangkat.")</div>
                   </div>
                   <div class='row'>
-                    <div class='col-md-4'><b>JABATAN</b></div>
-                    <div class='col-md-8' align='left'>".$namajab."</div>
+                    <div class='col-md-4'><b>JABATAN DEFINITIF</b></div>
+                    <div class='col-md-8' align='left'>".$namajabdf." (Kelas : ".$kelasjab.")</div>
                   </div>
                   <div class='row'>
-                    <div class='col-md-4'><b>KELAS JABATAN</b></div>
-                    <div class='col-md-8' align='left'>".$kelasjab."</div>
+                    <div class='col-md-4'><b>JABATAN PLT</b></div>
+                    <div class='col-md-8' align='left'>".$namajabplt."(Kelas : ".$kelasjab.")</div>
                   </div>
 		  <div class='row'>
                     <div class='col-md-4'><b>ATASAN LANGSUNG</b></div>
