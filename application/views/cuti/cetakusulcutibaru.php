@@ -10,6 +10,7 @@ class PDF extends FPDF
 	function Content($data)
 	{
           $mpeg = new Mpegawai();
+	  $mpppk = new Mpppk();
           $munker = new Munker();
           $mcuti = new Mcuti();
           $mpeg->load->helper('fungsitanggal');
@@ -39,21 +40,39 @@ class PDF extends FPDF
             $this->setFont('Arial','',12);
 
             $this->setXY(25,$y+55);
-            $this->cell(170,5,"FORMULIR PERMINTAAN DAN PEMBERIAN CUTI",0,1,'C',1); 
-            $this->setFont('Arial','',10);
+	    $get_jnsasn = $mcuti->mcuti->get_jnsasn($key->fid_pengantar);
+	    if ($get_jnsasn == "PNS") {	
+	            $this->cell(170,5,"FORMULIR PERMINTAAN DAN PEMBERIAN CUTI PNS",0,1,'C',1); 
+            } else if ($get_jnsasn == "PPPK") {
+                    $this->cell(170,5,"FORMULIR PERMINTAAN DAN PEMBERIAN CUTI PPPK",0,1,'C',1);
+            }
+	    $this->setFont('Arial','',10);
 
             // Awal data Pegawai
             $this->setXY(25,$y+60);
             $this->setFillColor(222,222,222);
-            $this->cell(170,7,"I. DATA PEGAWAI",1,1,'L',1); 
+	    if ($get_jnsasn == "PNS") {
+		$this->cell(170,7,"I. DATA PNS",1,1,'L',1);	
+            } else if ($get_jnsasn == "PPPK") {
+		$this->cell(170,7,"I. DATA PPPK",1,1,'L',1);
+            }
+            //$this->cell(170,7,"I. DATA PEGAWAI",1,1,'L',1); 
             $this->setFillColor(255,255,255);
             //Baris I
                 $this->setXY(25,$y+67);
                 $this->cell(20,7,"Nama",1,1,'L',1); 
                 $this->setXY(45,$y+67);
-                $this->cell(100,7,$mpeg->mpegawai->getnama($key->nip),1,1,'L',1); 
-                $this->setXY(145,$y+67);
-                $this->cell(50,7,"NIP : ".$key->nip,1,1,'L',1); 
+                if ($get_jnsasn == "PNS") {
+                	$this->cell(100,7,$mpeg->mpegawai->getnama($key->nip),1,1,'L',1);
+			$this->setXY(140,$y+67);
+                	$this->cell(55,7,"NIP : ".$key->nip,1,1,'L',1);
+		} else if ($get_jnsasn == "PPPK") {
+			$this->cell(100,7,$mpppk->mpppk->getnama_lengkap($key->nip),1,1,'L',1);
+			$this->setXY(140,$y+67);
+                	$this->cell(55,7,"NIPPPK : ".$key->nip,1,1,'L',1);
+ 		}
+                //$this->setXY(145,$y+67);
+                //$this->cell(50,7,"NIP : ".$key->nip,1,1,'L',1); 
             //Baris II
                 $this->setXY(25,$y+74);
                 $this->MULTICELL(20,5,'Jabatan','LRT','J',1);
@@ -64,17 +83,23 @@ class PDF extends FPDF
 
                 $this->Line(45,$y+79,45,$y+89);
 
-                if ($key->fid_jnsjab == 1) { $idjab = $key->fid_jabatan;
-                }else if ($key->fid_jnsjab == 2) { $idjab = $key->fid_jabfu;
-                }else if ($key->fid_jnsjab == 3) { $idjab = $key->fid_jabft;
-                }
+		$get_jnsasn = $mcuti->mcuti->get_jnsasn($key->fid_pengantar);
+        	if ($get_jnsasn == "PNS") {
+                	if ($key->fid_jnsjab == 1) { $idjab = $key->fid_jabatan;
+                	}else if ($key->fid_jnsjab == 2) { $idjab = $key->fid_jabfu;
+                	}else if ($key->fid_jnsjab == 3) { $idjab = $key->fid_jabft;
+                	}		
+                	$this->setFont('Arial','',9);
+                	$this->MULTICELL(100,5,$mpeg->mpegawai->namajab($key->fid_jnsjab, $idjab),'LT','L',1);
+                	//$this->setFont('Arial','',9);
 
-                $this->setFont('Arial','',9);
-                $this->MULTICELL(100,5,$mpeg->mpegawai->namajab($key->fid_jnsjab, $idjab),'LT','L',1);
-                //$this->setFont('Arial','',9);
+			$this->setXY(140,$y+74);
+                	$this->cell(55,7,"Masa Kerja : ".hitungmkcpns($key->nip),1,1,'L',1);
+		} else if ($get_jnsasn == "PPPK") {
+			$this->setFont('Arial','',9);
+                        $this->MULTICELL(100,5,$mpeg->mpegawai->namajab('3', $key->fid_jabft),'LT','L',1);
+		}
 
-                $this->setXY(145,$y+74);
-                $this->cell(50,7,"Masa Kerja : ".hitungmkcpns($key->nip),1,1,'L',1); 
             //Baris III
                 $this->setXY(25,$y+89);
                 $this->cell(20,7,"Unit Kerja",1,1,'L',1); 
@@ -84,6 +109,7 @@ class PDF extends FPDF
 
 
             // Awal Jenis Cuti Yang Diambil
+	    $this->setFont('Arial','',10);
             $this->setXY(25,$y+100);
             $this->setFillColor(222,222,222);
             $this->cell(170,7,"II. JENIS CUTI YANG DIAMBIL",1,1,'L',1); 
@@ -120,11 +146,11 @@ class PDF extends FPDF
 
             //Baris I
                 $this->setXY(25,$y+107);
-                if (($jnscuti == 'CUTI TAHUNAN') AND ($key->tambah_hari_tunda != 0)) {
-                    $this->cell(70,7,"1. Cuti Tahunan + Cuti Tunda",1,1,'L',1); 
-                } else {
+                //if (($jnscuti == 'CUTI TAHUNAN') AND ($key->tambah_hari_tunda != 0)) {
+                //    $this->cell(70,7,"1. Cuti Tahunan + Cuti Tunda",1,1,'L',1); 
+                //} else {
                     $this->cell(70,7,"1. Cuti Tahunan",1,1,'L',1); 
-                }
+                //}
                 $this->setXY(95,$y+107);
                 $this->cell(15,7,$ctahunan,1,1,'C',1); 
                 $this->setXY(110,$y+107);
@@ -166,7 +192,7 @@ class PDF extends FPDF
                 if ($jnscuti == 'CUTI BERSALIN') {
                     $this->cell(170,10,"Kelahiran Anak ke-".$key->ket_jns_cuti,1,1,'L',1); 
                 } else {
-                    $this->cell(170,10,$key->ket_jns_cuti,1,1,'L',1);     
+                    $this->cell(170,10,$key->alasan,1,1,'L',1);     
                 }                
                 $this->setFont('Arial','',10);
             // Akhir Alasan Cuti
@@ -178,25 +204,26 @@ class PDF extends FPDF
             $this->setFillColor(255,255,255);
             //Baris I
                 $this->setXY(25,$y+160);
-                if (($jnscuti == 'CUTI TAHUNAN') AND ($key->tambah_hari_tunda != 0)) {
-                    $jmlhari = $key->jml + $key->tambah_hari_tunda;
-                    $this->cell(80,5,"Selama : ".$jmlhari." hari (".$key->jml." ".strtolower($key->satuan_jml)." + ".$key->tambah_hari_tunda." hari cuti tunda)",1,1,'L',1); 
-                } else {
+                //if (($jnscuti == 'CUTI TAHUNAN') AND ($key->tambah_hari_tunda != 0)) {
+                //    $jmlhari = $key->jml + $key->tambah_hari_tunda;
+                //    $this->cell(80,5,"Selama : ".$jmlhari." hari (".$key->jml." ".strtolower($key->satuan_jml)." + ".$key->tambah_hari_tunda." hari cuti tunda)",1,1,'L',1); 
+                //} else {
                     $this->cell(80,5,"Selama : ".$key->jml." ".strtolower($key->satuan_jml),1,1,'L',1); 
-                }
+                //}
 
                 $this->setXY(105,$y+160);
+		$this->setFont('Arial','',9);
                 $this->cell(90,5,"Mulai Tanggal ".tgl_indo($key->tgl_mulai)." s/d ".tgl_indo($key->tgl_selesai),1,1,'L',1); 
                 //$this->setXY(105,$y+160);
                 //$this->cell(90,5,"31 Desember 2017 s/d 31 September 2018",1,1,'L',1); 
             // Akhir Lamanya Cuti
 
             // Awal Catatan Cuti
+	    $this->setFont('Arial','',10);	
             $this->setXY(25,$y+168);
             $this->setFillColor(222,222,222);
             $this->cell(170,7,"V. CATATAN CUTI",1,1,'L',1);            
             $this->setFillColor(255,255,255); 
-            $this->setFont('Arial','',10);
             $thnini = date('Y');
 
             // tahun ini 2018
@@ -283,7 +310,12 @@ class PDF extends FPDF
                 $this->setXY(25,$y+211);
                 $this->cell(80,5,"",'LRT',1,'L',1); 
                 $this->setXY(105,$y+211);
-                $this->cell(90,5,"No. Telp. ".$mpeg->mpegawai->getnotelpon($key->nip),1,1,'L',1); 
+		if ($get_jnsasn == "PNS") {
+			$this->cell(90,5,"No. Telp. ".$mpeg->mpegawai->getnotelpon($key->nip),1,1,'L',1);
+                } else if ($get_jnsasn == "PPPK") {
+			$this->cell(90,5,"",1,1,'L',1);
+                }
+                //$this->cell(90,5,"No. Telp. ".$mpeg->mpegawai->getnotelpon($key->nip),1,1,'L',1); 
             //Baris II
                 $this->setXY(25,$y+216);
                 $this->Line(25,$y+216,25,$y+240); 
@@ -298,7 +330,12 @@ class PDF extends FPDF
                 $this->Line(195,$y+221,195,$y+240);
                 $this->setFont('Arial','U',10);
                 $this->setXY(105,$y+230);
-                $this->cell(90,5,$mpeg->mpegawai->getnama($key->nip),'LR',1,'C',1); 
+		if ($get_jnsasn == "PNS") {
+			$this->cell(90,5,$mpeg->mpegawai->getnama($key->nip),'LR',1,'C',1);
+		} else if ($get_jnsasn == "PPPK") {
+                        $this->cell(90,5,$mpppk->mpppk->getnama_lengkap($key->nip),'LR',1,'C',1);
+                }
+                //$this->cell(90,5,$mpeg->mpegawai->getnama($key->nip),'LR',1,'C',1); 
                 $this->setFont('Arial','',10);
                 $this->setXY(105,$y+235);
                 $this->cell(90,5,'NIP. '.$key->nip,'LRB',1,'C',1);
@@ -324,7 +361,8 @@ class PDF extends FPDF
                 //$this->cell(70,10,"Atasan Langsung,",'LRT',1,'C',1);
                 $atasanlangsung = $mcuti->mcuti->getatasanlangsung($key->fid_unit_kerja);
                 $this->setXY(125,$y+251);
-                $this->MULTICELL(70,5,strtoupper($atasanlangsung),'LRT','C',1);
+                //$this->MULTICELL(70,5,strtoupper($atasanlangsung),'LRT','C',1);
+		$this->MULTICELL(70,5,"ATASAN LANGSUNG",'LRT','C',1);
                 //$this->cell(70,10,$atasanlangsung,'LRT',1,'C',1); 
                 $this->setFont('Arial','',10); 
             //Baris II
@@ -341,7 +379,7 @@ class PDF extends FPDF
                 $this->setFont('Arial','',8);
                 $this->Line(25,$y+261,25,$y+281); // garis tegak
                 $this->Line(125,$y+261,125,$y+281); // garis tegak
-                $this->Line(195,$y+261,195,$y+281); // garis tegak
+                $this->Line(195,$y+256,195,$y+281); // garis tegak
                 $this->cell(100,7,strtoupper($key->catatan_atasan),'LTR',1,'L',1); 
                 $this->Line(25,$y+281,125,$y+281); // garis datar
                 $this->setFont('Arial','',10);

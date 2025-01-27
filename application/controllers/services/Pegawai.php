@@ -1,6 +1,4 @@
 <?php 
-use \Firebase\JWT\JWT;
-use \Firebase\JWT\ExpiredException;
 
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
@@ -13,6 +11,9 @@ require APPPATH . '/libraries/JWK.php';
 
 class Pegawai extends REST_Controller  {
     
+    use \Firebase\JWT\JWT;
+    use \Firebase\JWT\ExpiredException;
+
     function __construct() {
 		
         parent::__construct();
@@ -101,7 +102,7 @@ class Pegawai extends REST_Controller  {
 
     public function index_post()
     {
-        $nip = $this->post('nip');
+        $nip = $this->query('nip');
         $pegawai = $this->api->services_pegawai($nip);
         
         // Cek Token JWT
@@ -167,4 +168,5 @@ class Pegawai extends REST_Controller  {
         ];
         $this->response($data, REST_Controller::HTTP_OK);
     }
+
 }

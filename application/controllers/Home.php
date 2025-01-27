@@ -13,6 +13,7 @@ class Home extends CI_Controller {
       $this->load->helper('fungsitanggal');
       $this->load->helper('fungsipegawai');
       $this->load->model('munker');
+      $this->load->model('mpetajab');
       $this->load->model('mpensiun');
       $this->load->model('mpip');
       $this->load->model('mkinerja');
@@ -213,7 +214,9 @@ class Home extends CI_Controller {
         <!--<td><?php //echo $v['nama_jabatan']; ?></td> -->
 
         <td>
-        <?php 
+        <?php
+	if (!$v['fid_peta_jabatan']) {
+ 
           if ($v['fid_jnsjab'] == 1) { $idjab = $v['fid_jabatan'];
           }else if ($v['fid_jnsjab'] == 2) { $idjab = $v['fid_jabfu'];
           }else if ($v['fid_jnsjab'] == 3) { $idjab = $v['fid_jabft'];
@@ -304,6 +307,20 @@ class Home extends CI_Controller {
             echo "</small>";
           }
 
+	} else {
+                $detail_pejab = $this->mpetajab->detailKomponenJabatan($v['fid_peta_jabatan'])->result_array();
+                foreach($detail_pejab as $dp) {
+                        //$nmunker_pj = $this->munker->getnamaunker($dp['fid_unit_kerja']);
+                        $nmjab_pj = $this->mpetajab->get_namajab($dp['id']);
+                        $jnsjab_pj = $this->mpetajab->get_namajnsjab($dp['fid_jnsjab']);
+                        $unor = $this->mpetajab->get_namaunor($dp['fid_atasan']);
+                        //echo "<small>".$nmunker_pj;
+                        echo $unor;
+                        echo "<br/><span class='label label-info'>".$jnsjab_pj."</span><br/>".$nmjab_pj;
+                        echo " <span class='text text-info'>(Kelas : ".$dp['kelas'].")</span>";
+                }
+	} // End if peta jabatan
+
         ?>          
         </td>
 	<?php
@@ -311,11 +328,11 @@ class Home extends CI_Controller {
         ?>
         <td align='center'>
           <?php
-          echo "<form method='POST' action='../pegawai/rwyjab' target='_blank'>";
+          echo "<form method='POST' action='../pegawai/rwykgb' target='_blank'>";
           echo "<input type='hidden' name='nip' id='nip' maxlength='18' value='$v[nip]'>";
           ?>
-          <button type="submit" class="btn btn-warning btn-xs">
-          <span class="glyphicon glyphicon glyphicon-plus" aria-hidden="true"></span><br/>Rwy Jab
+          <button type="submit" class="btn btn-success btn-xs btn-outline">
+          <span class="glyphicon glyphicon glyphicon-plus" aria-hidden="true"></span><br/>Rwy KGB
           </button>
           <?php
             echo "</form>";
@@ -330,7 +347,7 @@ class Home extends CI_Controller {
           echo "<form method='POST' action='../pip/tampilhasilukur' target='_blank'>";
           echo "<input type='hidden' name='nip' id='nip' maxlength='18' value='$v[nip]'>";
           ?>
-          <button type="submit" class="btn btn-success btn-xs">
+          <button type="submit" class="btn btn-success btn-xs btn-outline">
           <span class="fa fa-trophy" aria-hidden="true"></span><br/>IP ASN 2021
           </button>
           <?php
@@ -343,7 +360,7 @@ class Home extends CI_Controller {
           echo "<form method='POST' action='../pegawai/detail'>";          
           echo "<input type='hidden' name='nip' id='nip' maxlength='18' value='$v[nip]'>";
           ?>
-          <button type="submit" class="btn <?php echo "btn-".$warna;?> btn-xs">
+          <button type="submit" class="btn btn-info btn-xs btn-outline">
           <span class="glyphicon glyphicon glyphicon-user" aria-hidden="true"></span><br/>Detail
           </button>
           <?php
@@ -364,11 +381,26 @@ class Home extends CI_Controller {
   public function dashboard()
   {
     $data['jenkel'] = $this->mgraph->jenkel();
+    //$data['jenkel_pppk'] = $this->mgraph->jenkel_pppk();	
     $data['golru'] = $this->mgraph->golru();
+    //$data['golru_pppk'] = $this->mgraph->golru_pppk();
     $data['eselon'] = $this->mgraph->eselon();
     $data['jenjab'] = $this->mgraph->jenjab();
     $data['tingpen'] = $this->mgraph->tingpen();
     $data['content'] = 'dashboard';
+    $this->load->view('template', $data);
+  }
+
+  public function dashboard_pppk()
+  {
+    $data['jenkel'] = $this->mgraph->jenkel();
+    //$data['jenkel_pppk'] = $this->mgraph->jenkel_pppk();
+    $data['golru'] = $this->mgraph->golru();
+    //$data['golru_pppk'] = $this->mgraph->golru_pppk();
+    $data['eselon'] = $this->mgraph->eselon();
+    $data['jenjab'] = $this->mgraph->jenjab();
+    $data['tingpen'] = $this->mgraph->tingpen();
+    $data['content'] = 'dashboard-pppk';
     $this->load->view('template', $data);
   }
 

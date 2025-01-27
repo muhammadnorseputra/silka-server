@@ -25,6 +25,11 @@ class Mpegawai extends CI_Model {
   	return $q;	
   }
 
+  public function ref_agama() {
+        $q = $this->db->get('ref_agama');
+        return $q;
+  }
+
   function golru()
     {
         $sql = "SELECT * from ref_golru ORDER BY nama_golru";
@@ -111,7 +116,7 @@ if ($this->mpegawai->cekpernahkp($nip)) { // pernah KP
 
   public function rwykp($nip)
   {
-    $q = $this->db->query("select fid_golru, tmt, gapok, dlm_jabatan, angka_kredit, mkgol_thn, mkgol_bln, pejabat_sk, no_sk, tgl_sk, berkas from riwayat_pekerjaan where nip='$nip' ORDER BY tmt asc");    
+    $q = $this->db->query("select * from riwayat_pekerjaan where nip='$nip' ORDER BY tmt desc");    
     return $q;    
   }
 
@@ -261,12 +266,22 @@ if ($this->mpegawai->cekpernahkp($nip)) { // pernah KP
     where plt.nip='$nip' ORDER BY plt.tgl_sk desc");    
     return $q;    
   }
+
   public function get_eselon_byjabatan($id) 
   {
-    return $this->db->query("select * from ref_jabstruk as j 
-    								join ref_eselon as e on j.fid_eselon=e.id_eselon 
-    								where j.id_jabatan = '$id'");
+    return $this->db->query("select * from ref_jabstruk as j join ref_eselon as e on j.fid_eselon=e.id_eselon where j.id_jabatan = '$id'");
   }
+
+  public function get_ideselon_byjabatan($id)
+  {
+    $q = $this->db->query("select fid_eselon from ref_jabstruk where id_jabatan = '$id'");
+    if ($q->num_rows()>0)
+    {
+      $row=$q->row();
+      return $row->fid_eselon;
+    }
+  }
+
   function hapus_rwyplt($where){
     $this->db->where($where);
     $this->db->delete('riwayat_plt');
@@ -276,6 +291,12 @@ if ($this->mpegawai->cekpernahkp($nip)) { // pernah KP
   function hapus_rwyjab($where){
     $this->db->where($where);
     $this->db->delete('riwayat_jabatan');
+    return true;
+  }
+
+  function hapus_rwy_kgb_aksi($tbl, $where){
+    $this->db->where($where);
+    $this->db->delete($tbl);
     return true;
   }
   
@@ -310,6 +331,16 @@ if ($this->mpegawai->cekpernahkp($nip)) { // pernah KP
   {
     $q = $this->db->query("select * from riwayat_pokja where nip='".$nip."' and id='".$id."'");
     return $q;
+  }
+
+  public function namaunor($idjab)
+  {
+    $q = $this->db->query("select nama_unor from ref_jabstruk where id_jabatan='$idjab'");
+    if ($q->num_rows() > 0)
+    {
+      $row=$q->row();
+      return $row->nama_unor;
+    }
   }
 
   public function namajab($idjnsjab, $idjab)
@@ -383,6 +414,16 @@ if ($this->mpegawai->cekpernahkp($nip)) { // pernah KP
     } 
   }
 
+  public function getnama_only($nip)
+  {
+    $q = $this->db->query("select nama from pegawai where nip='$nip'");
+    if ($q->num_rows() > 0)
+    {
+      $row=$q->row();
+      return $row->nama;
+    }
+  }
+
   public function getnama_pppk($nipppk)
   {
     $q = $this->db->query("select gelar_depan, nama, gelar_blk from pppk where nipppk='$nipppk'");
@@ -437,7 +478,7 @@ if ($this->mpegawai->cekpernahkp($nip)) { // pernah KP
     {
       $sess_nip = $this->session->userdata('nip');
         $q = $this->db->query("select p.pns_id, p.nip, p.gelar_depan, p.nama, p.gelar_belakang, 
-        g.nama_golru, p.fid_jnsjab, p.fid_jabatan, p.fid_jabfu, p.fid_jabft, u.nama_unit_kerja, e.nama_eselon, p.tmt_golru_skr
+        g.nama_golru, p.fid_jnsjab, p.fid_jabatan, p.fid_jabfu, p.fid_jabft, p.fid_peta_jabatan, u.nama_unit_kerja, e.nama_eselon, p.tmt_golru_skr
         from pegawai as p, ref_eselon as e, ref_golru as g, ref_unit_kerjav2 as u, ref_instansi_userportal as i
         where p.fid_eselon = e.id_eselon
         and p.fid_golru_skr = g.id_golru
@@ -1533,6 +1574,26 @@ WHERE p.fid_unit_kerja = u.id_unit_kerja and p.fid_unit_kerja = '".$idunker."' o
     return $q;    
   }
 
+  public function rwykinerjabkn($nip)
+  {
+    $q = $this->db->query("select * from riwayat_kinerja_bkn where nip='$nip' ORDER BY tahun desc, bulan desc");
+    return $q;
+  }
+
+  public function rwykinerjabkn_tahunbulan($nip, $tahun, $bulan)
+  {	
+    $q = $this->db->query("select * from riwayat_kinerja_bkn where nip='$nip' AND tahun='$tahun' AND bulan='$bulan'");
+    if ($q->num_rows()>0) {
+      return $q;
+    }	
+  }
+
+  public function jml_rwykinerjabkn_tahunbulan($nip, $tahun, $bulan)
+  {
+    $q = $this->db->query("select * from riwayat_kinerja_bkn where nip='$nip' AND tahun='$tahun' AND bulan='$bulan'");
+      return $q->num_rows();
+  }
+
   public function rwytpp($nip)
   {
     $q = $this->db->query("select * from usul_tpp as ut, usul_tpp_pengantar as pt where ut.nip='$nip' and ut.fid_pengantar = pt.id 
@@ -1703,7 +1764,132 @@ order by p.fid_eselon, p.nip, p.fid_golru_skr, p.tmt_golru_skr");
         return $this->db->query($sql);
   }
 
+  function getnama_jnsjabbkn($id)
+  {
+    $q = $this->db->query("select nama_jenis_jabatan from ref_jenis_jabatan_bkn where id_jenis_jabatan='$id'");
+    if ($q->num_rows()>0)
+    {
+      $row=$q->row();
+      return $row->nama_jenis_jabatan;
+    }
+  }
 
+  public function edit_rwyskpbulanan($whr, $data) {
+	$this->db->where($whr);
+        $q = $this->db->update('riwayat_kinerja_bkn', $data);
+        return $q;
+  }
+
+  //status LHKPN
+  function cekstatuslhkpn($id) {
+    $q = $this->db->query("select wajib_lhkpn from pegawai where nip='$id'");
+    if ($q->num_rows()>0)
+    {
+      $row=$q->row();
+      if($row->wajib_lhkpn == 'YA') {
+        $status = 'YA';
+      } else {
+        $status = 'TIDAK';
+      }
+      return $status;
+    }
+  }
+
+  public function rwylhkpn($nip)
+  {
+    $q = $this->db->query("select * from riwayat_lhkpn where nip='$nip' ORDER BY tahun_wajib desc");
+    return $q;
+  }
+
+  function edit_rwylhkpn($where, $data){
+    $this->db->where($where);
+    $this->db->update('riwayat_lhkpn',$data);
+    return true;
+  }
+
+  public function cari_wllhkpn($idunker, $tahun)
+  {
+    $q = $this->db->query("select p.nip, CONCAT(p.gelar_depan,' ', p.nama,' ', p.gelar_belakang) as nama, u.nama_unit_kerja, rl.*
+from pegawai as p left join riwayat_lhkpn as rl on rl.nip = p.nip, ref_unit_kerjav2 as u
+where p.fid_unit_kerja = u.id_unit_kerja
+and u.id_unit_kerja = '$idunker'
+and rl.tahun_wajib = '$tahun'
+order by p.fid_eselon, p.nip, p.fid_golru_skr, p.tmt_golru_skr");
+  
+  return $q;
+  }
+
+  public function rwypenkom($nip)
+  {
+    $q = $this->db->query("select * from riwayat_penkom where nip='$nip' ORDER BY check_in desc");
+    return $q;
+  }
+
+  function jenis_workshop()
+  {
+    $sql = "SELECT * from ref_jenis_workshop ORDER BY id_jenis_workshop";
+    return $this->db->query($sql);
+  }
+
+  function getnama_jnsworkshop($id)
+  {
+    $q = $this->db->query("select nama_jenis_workshop from ref_jenis_workshop where id_jenis_workshop='$id'");
+    if ($q->num_rows()>0)
+    {
+      $row=$q->row();
+      return $row->nama_jenis_workshop;
+    }
+  }
+
+  function rumpun_diklat()
+  {
+    $sql = "SELECT * from ref_rumpun_diklat ORDER BY nama_rumpun_diklat";
+    return $this->db->query($sql);
+  }
+
+  function getnama_rumpundiklat($id)
+  {
+    $q = $this->db->query("select nama_rumpun_diklat from ref_rumpun_diklat where id_rumpun_diklat='$id'");
+    if ($q->num_rows()>0)
+    {
+      $row=$q->row();
+      return $row->nama_rumpun_diklat;
+    }
+  }
+
+  public function rwypmk($nip)
+  {
+    $q = $this->db->query("select * from riwayat_pmk where nip='$nip'");
+    return $q;
+  }
+
+  function gettmtpmkterakhir($nip) {
+    $q = $this->db->query("select tmt_baru from riwayat_pmk where nip='$nip' and tmt_baru IN (select max(tmt_baru) from riwayat_pmk where nip='$nip')");
+    if ($q->num_rows()>0)
+    {
+      $row=$q->row();
+      $tmt = $row->tmt_baru;
+    }
+    return $tmt;
+  }
+
+  function edit_rwypmk($where, $data){
+    $this->db->where($where);
+    $this->db->update('riwayat_pmk',$data);
+    return true;
+  }
+
+  function hapus_rwypmk($where){
+    $this->db->where($where);
+    $this->db->delete('riwayat_pmk');
+    return true;
+  }
+
+  public function simpan_rwypmk_terakhir($tbl, $data) {
+        $q = $this->db->insert($tbl, $data);
+        return $q;
+  }
+  
 
 }
 /* End of file mpegawai.php */

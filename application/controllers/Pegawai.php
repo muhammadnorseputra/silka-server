@@ -81,7 +81,7 @@ class Pegawai extends CI_Controller {
   {
     //$nip = $this->input->get('nip');
     $nip = $this->input->post('nip');
-    $data['peg'] 	 = $this->mpegawai->rwycp($nip)->result_array();    
+    $data['peg'] = $this->mpegawai->rwycp($nip)->result_array();    
     $data['content'] = 'rwycp';
     $this->load->view('template', $data);
   }
@@ -368,6 +368,31 @@ class Pegawai extends CI_Controller {
     $this->load->view('template', $data);
 		
 	}
+
+  function hapus_rwy_kgb() {
+    $id = $this->input->post('id');
+		$nip = $this->input->post('nip');
+
+    $whr = [
+      'nip' => $nip,
+      'id' => $id
+    ];
+    $nama = $this->mpegawai->getnama($nip);
+    $send = $this->mpegawai->hapus_rwy_kgb_aksi('riwayat_kgb', $whr);
+  	if($send) {
+  		$data['pesan'] = '<b>Sukses</b>, Riwayat KGB PNS <u>'.$nama.'</u> berhasil dihapus.';
+      $data['jnspesan'] = 'alert alert-success';
+  	} else {
+  		$data['pesan'] = '<b>Gagal</b>, Riwayat KGB PNS <u>'.$nama.'</u> Gagal dihapus.';
+      $data['jnspesan'] = 'alert alert-danger';
+  	}
+  	
+  	$data['pegrwykgb'] = $this->mpegawai->rwykgb($nip)->result_array();
+    $data['nip'] = $nip;
+    $data['content'] = 'rwykgb';
+    $this->load->view('template', $data);
+
+  }
 	
 	function update_rwy_kgb_aksi() {
 		$id = $this->input->post('id');
@@ -1069,12 +1094,14 @@ class Pegawai extends CI_Controller {
     //hanya admin
     $stspeg = $this->input->post('status_pegawai');
     $tpp = $this->input->post('tpp');
-    
-     $datapeg = array(      
+    $lhkpn = $this->input->post('lhkpn');    
+
+      $datapeg = array(      
       'alamat'      => $alamat,
       'fid_alamat_kelurahan'      => $idkel,
       'fid_status_pegawai' => $stspeg,
-      'tpp' => $tpp,
+      'tpp' 	    => $tpp,
+      'wajib_lhkpn'  => $lhkpn,
       'telepon'     => $telepon,
       'no_taspen'   => $notaspen,
       'no_askes'    => $noaskes,
@@ -1084,7 +1111,7 @@ class Pegawai extends CI_Controller {
       'fid_status_kawin' => $status_kawin
       );
     } else {
-    $datapeg = array(      
+      $datapeg = array(      
       'alamat'      => $alamat,
       'fid_alamat_kelurahan'      => $idkel,
       'telepon'     => $telepon,
@@ -1801,12 +1828,12 @@ class Pegawai extends CI_Controller {
 	        
 	        <tr>
           		<td align='right'>TMT Jabatan :</td>
-          		<td><input type="date" class="tanggal" name="tmt_jabatan" size='15' maxlength='10' value='2023-05-29' required /></td>
+          		<td><input type="date" class="tanggal" name="tmt_jabatan" size='15' maxlength='10' value='2024-04-01' required /></td>
         	  </tr>
         	  <tr>
           		<td align='right'>Tanggal Pelantikan :</td>
           		<td>
-          			<input type="date" class="tanggal" name="tgl_pelantikan" size='15' value='2023-05-29' maxlength='10'/>
+          			<input type="date" class="tanggal" name="tgl_pelantikan" size='15' value='0000-00-00' maxlength='10'/>
           			<p class="help-block text-danger">*(Boleh dikosongi bila kadida.) <br></p>
           		</td>
         	  </tr>
@@ -1823,7 +1850,7 @@ class Pegawai extends CI_Controller {
         	</tr>
         	<tr class='warning'>
 	          <td align='right'>Nomor SK :</td>
-	          <td><input type="text" name="nosk" size='50' maxlength='200' value='821/156/BKPSDM-BLG/2023' required /></td>
+	          <td><input type="text" name="nosk" size='50' maxlength='200' value='821/034/BKPSDM-BLG/2024' required /></td>
 	        </tr>
 	        
 	        <tr class='warning'>
@@ -1833,7 +1860,7 @@ class Pegawai extends CI_Controller {
 	        
 	        <tr class='warning'>
           		<td align='right'>Tgl. SK :</td>
-          		<td><input type="date" name="tglsk" class="tanggal" size='15' maxlength='10'  value='2023-05-26' required /></td>
+          		<td><input type="date" name="tglsk" class="tanggal" size='15' maxlength='10'  value='2024-04-01' required /></td>
         	</tr>
                 <tr class='danger'>
                   <td align='right'>Jenis Prosedur</td>
@@ -1854,8 +1881,8 @@ class Pegawai extends CI_Controller {
                         <select name="integrasi" required>
                                 <option value="0">Pilih Integrasi</option>
                                 <?php
-                                        echo "<option value='YA' selected>YA</option>";
-                                        echo "<option value='TIDAK'>TIDAK</option>";
+                                        echo "<option value='YA'>YA</option>";
+                                        echo "<option value='TIDAK' selected>TIDAK</option>";
                                 ?>
                         </select>
                   </td>
@@ -2033,6 +2060,7 @@ class Pegawai extends CI_Controller {
     // Jika hanya profile only
     if($aksi_table == "2") {
       $this->mpegawai->update_jabatan_rywtjab('pegawai', $data_pegawai, ['nip' => $nip]);
+      $this->mpegawai->update_jabatan_rywtjab('simgaji_pegawai', ['status_data' => 'ENTRI'], ['nip' => $nip]);
       $data['pesan'] = '<b>Sukses</b>, Riwayat Jabatan PNS A.n. <u>'.$nama.'</u> berhasil update pada profile Jabatan.';
       $data['jnspesan'] = 'alert alert-success';
       $this->rwyjab();
@@ -2043,9 +2071,10 @@ class Pegawai extends CI_Controller {
 		if($db_riwayat) {
 			if($aksi_table == "0") {
 		   	$this->mpegawai->update_jabatan_rywtjab('pegawai', $data_pegawai, ['nip' => $nip]);
+        $this->mpegawai->update_jabatan_rywtjab('simgaji_pegawai', ['status_data' => 'ENTRI'], ['nip' => $nip]);
 		   }
 		   // START jika Integrasi SAPK
-                   if ($p['integrasi'] == "YA") {
+      if ($p['integrasi'] == "YA") {
 				$data = $this->mwsbkn->forupjabsapk($nip)->result_array();
 				//var_dump($data);
         			foreach ($data as $hasil)
@@ -2109,12 +2138,13 @@ class Pegawai extends CI_Controller {
                     				);
 					// Update ID Riwayat Jabatan SAPK pada SILKa
 					$this->mpegawai->edit_rwyjab($whereidbkn, $dataidbkn);
+          $this->mpegawai->update_jabatan_rywtjab('simgaji_pegawai', ['status_data' => 'ENTRI'], ['nip' => $nip]);
             			} 
 				$data['pesan'] = '<b>Sukses</b>, Riwayat Jabatan PNS A.n. <u>'.$nama.'</u> berhasil ditambah, dan diupdate pada SAPK BKN.';
                         	$data['jnspesan'] = 'alert alert-success';
 			}
 
-		   } // END jika Integrasi SAPK
+		  } // END jika Integrasi SAPK
 		   else {
   		   $data['pesan'] = '<b>Sukses</b>, Riwayat Jabatan PNS A.n. <u>'.$nama.'</u> berhasil ditambah, SAPK BKN TIDAK DIUPDATE.';
       		   	$data['jnspesan'] = 'alert alert-info';
@@ -3659,9 +3689,9 @@ class Pegawai extends CI_Controller {
     //$nip = $this->input->post('nip'); // jika menggunakan metode post pada ajax
     ?>
 
-    <div class="panel panel-info" style='width :750px'>
+    <div class="panel panel-info" style='width :800px'>
       <!-- Default panel contents -->
-      <div class="panel-heading" align='center'><b>TAMBAH WORKSHOP / SEMINAR / LAINNYA</b></div>      
+      <div class="panel-heading" align='center'><b>TAMBAH DATA PENGEMBANGAN KOMPETENSI LAINNYA</b></div>      
         <br />
         <div align='right' style='width :99%'>
           <form method='POST' action='../pegawai/rwydik'>
@@ -3679,13 +3709,41 @@ class Pegawai extends CI_Controller {
 	  <small class="text-muted" style="color: red;">SELURUH DATA HARUS DIISI LENGKAP<br/>
           Untuk data tanggal harus dengan format hari-bulan-tahun (dd-mm-yyyy)</small>
           </td>
-        </tr>
+	        </tr>
         <tr>
           <td width='260' align='right'>Nama :</td>
           <td><?php echo $this->mpegawai->getnama($nip); ?></td>
         </tr>
         <tr>
-          <td align='right'>Nama Workshop / Seminar :</td>
+          <td align='right'>Jenis Kegiatan :</td>
+          <td>
+            <select name="fid_jenis" id="fid_jenis" required >
+              <option value='0' selected>-- Pilih Jenis --</option>
+               <?php
+               $jnsjd = $this->mpegawai->jenis_workshop()->result_array();
+               foreach($jnsjd as $jd) {
+                    echo "<option value='".$jd['id_jenis_workshop']."'>".$jd['nama_jenis_workshop']."</option>";
+               }
+               ?>
+            </select>
+          </td>
+        </tr>
+	<tr>
+          <td align='right'>Rumpun Diklat :</td>
+          <td>
+            <select name="fid_rumpun" id="fid_rumpun" required >
+              <option value='0' selected>-- Pilih Rumpun --</option>
+               <?php
+               $jnsw = $this->mpegawai->rumpun_diklat()->result_array();
+               foreach($jnsw as $jw) {
+                    echo "<option value='".$jw['id_rumpun_diklat']."'>".$jw['nama_rumpun_diklat']."</option>";
+               }
+               ?>
+	    </select>
+          </td>
+        </tr>
+        <tr>
+          <td align='right'>Nama Kegiatan :</td>
           <td><input type="text" name="namaws" size='80' maxlength='200' required /></td>
         </tr>
         <tr>
@@ -3742,6 +3800,8 @@ class Pegawai extends CI_Controller {
 
   function tambahws_aksi() {
     $nip = addslashes($this->input->post('nip'));
+    $fid_jenis = addslashes($this->input->post('fid_jenis'));
+    $fid_rumpun = addslashes($this->input->post('fid_rumpun'));
     $namaws = strtoupper(addslashes($this->input->post('namaws')));
     $tahun = addslashes($this->input->post('tahun'));
     $penyelenggara = strtoupper(addslashes($this->input->post('penyelenggara')));  
@@ -3772,6 +3832,8 @@ class Pegawai extends CI_Controller {
 
     $dataws = array(      
       'nip'             => $nip,
+      'fid_jenis_workshop'	=> $fid_jenis,
+      'fid_rumpun_diklat'      => $fid_rumpun,	
       'nama_workshop'   => $namaws,
       'tahun'           => $tahun,
       'instansi_penyelenggara'   => $penyelenggara,
@@ -3794,10 +3856,10 @@ class Pegawai extends CI_Controller {
       if ($this->mpegawai->input_ws($dataws))
         {
           // kirim konfirmasi pesan dan jenis pesan yang ada pada file tampilpengantarcuti.php
-          $data['pesan'] = '<b>Sukses</b>, Data Workshop / Seminar PNS A.n. <u>'.$nama.'</u> berhasil ditambah.';
+          $data['pesan'] = '<b>Sukses</b>, Data Pengembangan Kompetensi Lainnya PNS A.n. <u>'.$nama.'</u> berhasil ditambah.';
           $data['jnspesan'] = 'alert alert-success';
         } else {
-          $data['pesan'] = '<b>Gagal !</b>, Data Workshop / Seminar PNS A.n. <u>'.$nama.'</u> gagal ditambah.<br />Pastikan data sesuai dengan ketentuan';
+          $data['pesan'] = '<b>Gagal !</b>, Data Pengembangan Kompetensi Lainnya PNS A.n. <u>'.$nama.'</u> gagal ditambah.<br />Pastikan data sesuai dengan ketentuan';
           $data['jnspesan'] = 'alert alert-danger';
         }
     } else {
@@ -3834,10 +3896,10 @@ class Pegawai extends CI_Controller {
     if ($this->mpegawai->cek_adaws($nip, $no, $tahun) != 0) {
       if ($this->mpegawai->hapus_ws($where)) {
           // kirim konfirmasi pesan dan jenis pesan yang ada pada file tampilpengantarcuti.php
-          $data['pesan'] = '<b>Sukses</b>, Riwayat Workshop / Seminar A.n. '.$nama.', Tahun '.$tahun.' berhasil dihapus';
+          $data['pesan'] = '<b>Sukses</b>, Riwayat Pengembangan Kompetensi Lainnya A.n. '.$nama.', Tahun '.$tahun.' berhasil dihapus';
           $data['jnspesan'] = 'alert alert-success';
         } else {
-          $data['pesan'] = '<b>Gagal</b>, Riwayat Workshop / Seminar A.n. '.$nama.', Tahun '.$tahun.' gagal dihapus';
+          $data['pesan'] = '<b>Gagal</b>, Riwayat Pengembangan Kompetensi Lainnya A.n. '.$nama.', Tahun '.$tahun.' gagal dihapus';
           $data['jnspesan'] = 'alert alert-danger';
         }
     } else {
@@ -3878,6 +3940,8 @@ class Pegawai extends CI_Controller {
 
   function editws_aksi() {
     $nip = addslashes($this->input->post('nip'));
+    $fid_jenis = addslashes($this->input->post('fid_jenis'));
+    $fid_rumpun = addslashes($this->input->post('fid_rumpun'));
     $no = addslashes($this->input->post('no'));
     $tahun_lama = addslashes($this->input->post('tahun_lama'));
 
@@ -3911,6 +3975,8 @@ class Pegawai extends CI_Controller {
 
     $datadik = array(      
       'nip'                => $nip,
+      'fid_jenis_workshop'	=> $fid_jenis,
+      'fid_rumpun_diklat'      => $fid_rumpun,
       'nama_workshop'      => $namaws,
       'tahun'              => $tahun,
       'instansi_penyelenggara'   => $penyelenggara,
@@ -3937,10 +4003,10 @@ class Pegawai extends CI_Controller {
       if ($this->mpegawai->edit_ws($where, $datadik))
         {
           // kirim konfirmasi pesan dan jenis pesan yang ada pada file tampilpengantarcuti.php
-          $data['pesan'] = '<b>Sukses</b>, Data Workshop / Seminar PNS A.n. <u>'.$nama.'</u> berhasil dirubah.';
+          $data['pesan'] = '<b>Sukses</b>, Riwayat Pengembangan Kompetensi Lainnya PNS A.n. <u>'.$nama.'</u> berhasil dirubah.';
           $data['jnspesan'] = 'alert alert-success';
         } else {
-          $data['pesan'] = '<b>Gagal !</b>, Data Workshop / Seminar PNS A.n. <u>'.$nama.'</u> gagal dirubah.<br />Pastikan data sesuai dengan ketentuan';
+          $data['pesan'] = '<b>Gagal !</b>, Riwayat Pengembangan Kompetensi Lainnya PNS A.n. <u>'.$nama.'</u> gagal dirubah.<br />Pastikan data sesuai dengan ketentuan';
           $data['jnspesan'] = 'alert alert-danger';
         }
     
@@ -3987,7 +4053,8 @@ class Pegawai extends CI_Controller {
   {    
     $nip = $this->input->post('nip');
     $data['pegrwyabs'] = $this->mpegawai->rwyabsensi($nip)->result_array();
-    $data['pegrwykin'] = $this->mpegawai->rwykinerja($nip)->result_array();
+    $data['pegrwykinlama'] = $this->mpegawai->rwykinerja($nip)->result_array();
+    $data['pegrwykinbkn'] = $this->mpegawai->rwykinerjabkn($nip)->result_array();	
     $data['pegrwytpp'] = $this->mpegawai->rwytpp($nip)->result_array();
     $data['pegrwytppng'] = $this->mpegawai->rwytppng($nip)->result_array();
     $data['pegrwygaji'] = $this->mpegawai->rwygaji($nip)->result_array();
@@ -4280,6 +4347,619 @@ class Pegawai extends CI_Controller {
       echo "</table>";
     }
   }
+
+  function rwylhkpn()
+  {
+    $nip = $this->input->post('nip');
+    $data['pegrwylhkpn'] = $this->mpegawai->rwylhkpn($nip)->result_array();
+    $data['nip'] = $nip;
+    $data['content'] = 'rwylhkpn';
+    $this->load->view('template', $data);
+  }
+
+  
+  function tambahskpbulanan_aksi() {
+    $nip = addslashes($this->input->post('nip'));
+    $thn = '2024';
+    $bln = addslashes($this->input->post('bln'));
+    $jab = addslashes($this->input->post('jab'));
+    $unker = addslashes($this->input->post('unker'));
+    $nip_atasan = addslashes($this->input->post('nip_atasan'));
+    $nama_atasan = addslashes($this->input->post('nama_atasan'));
+    $jab_atasan = addslashes($this->input->post('jab_atasan'));
+    $unker_atasan = addslashes($this->input->post('unker_atasan'));
+    $hasilkerja = addslashes($this->input->post('hasilkerja'));
+    $perilakukerja = addslashes($this->input->post('perilakukerja'));
+    $predikatkinerja = addslashes($this->input->post('predikatkinerja'));
+
+    $user = addslashes($this->session->userdata('nip'));
+    $tgl_aksi = $this->mlogin->datetime_saatini();
+ 
+    $nama = $this->mpegawai->getnama($nip);
+
+   $data = array(
+      'nip'                  => $nip,
+      'nama'		     => $nama,
+      'tahun'                => $thn,
+      'bulan'                => $bln,
+      'skp_jabatan'          => $jab,
+      'skp_unor'             => $unker,
+      'pegawai_atasan_nip'   => $nip_atasan,
+      'pegawai_atasan_nama'     => $nama_atasan,
+      'pegawai_atasan_jabatan'  => $jab_atasan,
+      'pegawai_atasan_unor'  => $unker_atasan,
+      'hasil_kerja'          => $hasilkerja,
+      'perilaku_kerja'       => $perilakukerja,
+      'hasil_akhir'          => $predikatkinerja,
+      'waktu_dinilai'        => $tgl_aksi,      	
+    );
+
+    /*
+    $where = array(
+      'nip'             => $nip,
+      'tahun'           => $thn,
+      'bulan'           => $bln
+    );
+    */	
+
+   if ($this->mpegawai->insert_table('riwayat_kinerja_bkn', $data)) {
+      $data['pesan'] = "<b>SUKSES</b>, Penilaian Kinerja ".$nama." Bulan ".bulan($bln)." Tahun ".$thn." BERHASIL DITAMBAH.";
+      $data['jnspesan'] = "alert alert-success";
+   } else {
+      $data['pesan'] = "<b>GAGAL</b>, TPP ".$nama." Bulan ".bulan($bln)." Tahun ".$thn." GAGAL DITAMBAH.";
+      $data['jnspesan'] = "alert alert-warning";
+   }
+
+    $data['pegrwyabs'] = $this->mpegawai->rwyabsensi($nip)->result_array();
+    $data['pegrwykinlama'] = $this->mpegawai->rwykinerja($nip)->result_array();
+    $data['pegrwykinbkn'] = $this->mpegawai->rwykinerjabkn($nip)->result_array();
+    $data['pegrwytpp'] = $this->mpegawai->rwytpp($nip)->result_array();
+    $data['pegrwytppng'] = $this->mpegawai->rwytppng($nip)->result_array();
+    $data['pegrwygaji'] = $this->mpegawai->rwygaji($nip)->result_array();
+    $data['nip'] = $nip;
+    $data['content'] = 'rwytpp';
+    $this->load->view('template', $data);
+  }
+  
+
+  function tampil_wllhkpn()
+  {
+    //cek priviledge session user -- nominatif_priv
+    if ($this->session->userdata('nominatif_priv') == "Y") {
+      $data['unker'] = $this->munker->dd_unker()->result_array();
+      $data['pesan'] = '';
+       $data['jnspesan'] = '';	
+      $data['content'] = 'tampil_wllhkpn';
+      $this->load->view('template',$data);
+    }
+  }
+
+  function cari_wllhkpn() {
+    $idunker = $this->input->get('idunker');
+    $tahun = $this->input->get('tahun');
+
+    $sqlcari = $this->mpegawai->cari_wllhkpn($idunker, $tahun)->result_array();
+    $jml = count($this->mpegawai->cari_wllhkpn($idunker, $tahun)->result_array());
+    $jmlpeg = $this->munker->getjmlpeg($idunker);
+    $persen = round(($jml/$jmlpeg)*100, 2);
+
+    $jmlwl = 0;
+
+    if ($jml != 0) {
+      echo "<br/>";
+      echo "<div style='width: 90%;'>";
+      echo "<table class='table table-condensed table-hover'>";
+      echo "
+      <tr class='info'>
+        <td align='center' width='20'><b>No</b></td>
+        <td align='center' width='100'><b>NIP | Nama</b></td>
+        <td align='center' width='250'><b>Jabatan Wajib Lapor</b></td>
+        <td align='center' width='250'><b>Unit Kerja Wajin Lapor</b></td>
+	<td align='center' width='50'></td>
+      </tr>
+      ";
+
+      $no = 1;
+      foreach($sqlcari as $v):
+        echo "<tr><td align='center'>".$no."</td>";
+        echo '<td>NIP. ',$v['nip'], '<br />', $v['nama'],'</td>';
+        echo "<td>".$v['unit_kerja']."</td>";
+        echo "<td>".$v['unit_kerja']."</td>";
+	echo "<td>";
+          echo "<form method='POST' action='../pegawai/rwylhkpn' target='_blank'>";
+          echo "<input type='hidden' name='nip' id='nip' maxlength='18' value='$v[nip]'>";
+          ?>
+          <button type="submit" class="<?php echo $this->mpegawai->getbuttoncolor($v['nip']); ?> btn-block btn-outline btn-sm">
+            <span class="fa fa-eye fa-2x" aria-hidden="true"></span><br/>Riwayat LHKPN</button>
+          <?php
+          echo "</form>";
+	echo "</td>";
+        echo "<tr/>";
+
+        $jmlwl++;
+        $no++;
+      endforeach;
+
+      echo "<div align='left'><H5>";
+      echo "<span class='text text-primary'><b>Jumlah PNS : ".$jmlpeg."</b></span><br/>";
+      echo "<span class='text text-success'><b>Jumlah Wajib Lapor LHKPN : ".$jmlwl."</b></span><br/>";
+      echo "</H5></div>";	
+      echo "</table>";
+      echo "</div>";	
+    }
+  }
+
+  public function deleteskp2024()
+  {
+        $id  = $this->input->post('id');
+	$nip  = $this->input->post('nip');
+	$nmberkas  = $this->input->post('nmberkas');
+
+        $tbl = 'riwayat_kinerja_bkn';
+
+        $nama = $this->mpegawai->getnama($nip);
+
+        // jika nip ada
+        if($nip != '') {
+                // hapus riwayat kinerja BKN berdasarkan id
+                $del = $this->mpegawai->delete_table($tbl, ['id' => $id]);
+                // jika hapus pada database, true
+                if($del) {
+			if (file_exists('./fileskpbulanan/'.$nmberkas.'.pdf')) {
+                          unlink('./fileskpbulanan/'.$nmberkas.'.pdf');
+                        } elseif (file_exists('./fileskpbulanan/'.$nmberkas.'.PDF')) {
+                          unlink('./fileskpbulanan/'.$nmberkas.'.PDF');
+                        }
+
+                        // callback pesan, true
+                        $data['pesan'] = '<b>Sukses</b>, Riwayat Kinerja BKN PNS <u>'.$nama.'</u> berhasil dihapus.';
+        		$data['jnspesan'] = 'alert alert-success';
+
+                } else {
+                        // callback pesan, false
+                        $data['pesan'] = '<b>Gagal</b>, Riwayat Kinerja BKN PNS <u>'.$nama.'</u> gagal dihapus.';
+        		$data['jnspesan'] = 'alert alert-danger';
+                }
+        }
+	
+	$data['pegrwyabs'] = $this->mpegawai->rwyabsensi($nip)->result_array();
+    	$data['pegrwykinlama'] = $this->mpegawai->rwykinerja($nip)->result_array();
+    	$data['pegrwykinbkn'] = $this->mpegawai->rwykinerjabkn($nip)->result_array();
+    	$data['pegrwytpp'] = $this->mpegawai->rwytpp($nip)->result_array();
+    	$data['pegrwytppng'] = $this->mpegawai->rwytppng($nip)->result_array();
+    	$data['pegrwygaji'] = $this->mpegawai->rwygaji($nip)->result_array();
+    	$data['nip'] = $nip;
+    	$data['content'] = 'rwytpp';
+    	$this->load->view('template', $data);
+  }
+
+  function rwypenkom()
+  {
+    $nip = $this->input->post('nip');
+    $data['pegrwypenkom'] = $this->mpegawai->rwypenkom($nip)->result_array();
+    $data['nip'] = $nip;
+    $data['content'] = 'rwypenkom';
+    $this->load->view('template', $data);
+  }
+
+  function rwypmk()
+  {
+    $nip = $this->input->post('nip');
+    $data['pegrwypmk'] = $this->mpegawai->rwypmk($nip)->result_array();
+    $data['nip'] = $nip;
+    $data['content'] = 'rwypmk';
+    $this->load->view('template', $data);
+  }
+
+  function hapus_rwy_pmk() {
+    $id = $this->input->post('id');
+                $nip = $this->input->post('nip');
+
+    $whr = [
+      'nip' => $nip,
+      'id' => $id
+    ];
+    $nama = $this->mpegawai->getnama($nip);
+    $send = $this->mpegawai->hapus_rwypmk($whr);
+    if($send) {
+      $data['pesan'] = '<b>Sukses</b>, Riwayat PMK PNS <u>'.$nama.'</u> berhasil dihapus.';
+      $data['jnspesan'] = 'alert alert-success';
+    } else {
+      $data['pesan'] = '<b>Gagal</b>, Riwayat PMK PNS <u>'.$nama.'</u> Gagal dihapus.';
+      $data['jnspesan'] = 'alert alert-danger';
+    }
+
+    $data['pegrwypmk'] = $this->mpegawai->rwypmk($nip)->result_array();
+    $data['nip'] = $nip;
+    $data['content'] = 'rwypmk';
+    $this->load->view('template', $data);
+
+  }
+
+  function tambah_rwypmk_aksi() {
+        $nip = $this->input->post('nip');
+        $fid_golru = $this->input->post('fid_golru');
+        $mklama_thn = $this->input->post('mklama_thn');
+        $mklama_bln = $this->input->post('mklama_bln');
+        $tmt_lama = tgl_sql($this->input->post('tmt_lama'));
+        $gapok_lama = $this->input->post('gapok_lama');
+
+        $mkbaru_thn = $this->input->post('mkbaru_thn');
+        $mkbaru_bln = $this->input->post('mkbaru_bln');
+        $tmt_baru = tgl_sql($this->input->post('tmt_baru'));
+        $gapok_baru = $this->input->post('gapok_baru');
+
+	$no_pertek = $this->input->post('no_pertek');
+        $tgl_pertek = tgl_sql($this->input->post('tgl_pertek'));
+
+        $pejabat_sk = $this->input->post('pejabat_sk');
+        $nomor_sk = $this->input->post('no_sk');
+        $tgl_sk = tgl_sql($this->input->post('tgl_sk'));
+
+        $nama = $this->mpegawai->getnama($nip);
+        $data_req = array(
+                'nip' => $nip,
+                'fid_golru' => $fid_golru,
+                'mklama_thn' => $mklama_thn,
+                'mklama_bln' => $mklama_bln,
+                'tmt_lama' => $tmt_lama,
+                'gapok_lama' => $gapok_lama,
+                'mkbaru_thn' => $mkbaru_thn,
+                'mkbaru_bln' => $mkbaru_bln,
+                'tmt_baru' => $tmt_baru,
+                'gapok_baru' => $gapok_baru,
+                'no_pertek' => $no_pertek,
+                'tgl_pertek' => $tgl_pertek,
+                'pejabat_sk' => $pejabat_sk,
+                'no_sk' => $nomor_sk,
+                'tgl_sk' => $tgl_sk,
+                'created_at' => date('Y-m-d H:i:s'),
+                'created_by' => $this->session->userdata('nama')
+        );
+
+      $send = $this->mpegawai->simpan_rwypmk_terakhir('riwayat_pmk', $data_req);
+
+      if($send) {
+        $data['pesan'] = '<b>Sukses</b>, Riwayat PMK PNS <u>'.$nama.'</u> berhasil ditambahkan.';
+        $data['jnspesan'] = 'alert alert-success';
+      } else {
+        $data['pesan'] = '<b>Gagal</b>, Riwayat PMK PNS <u>'.$nama.'</u> Gagal ditambahkan.';
+        $data['jnspesan'] = 'alert alert-danger';
+      }
+
+    $data['pegrwypmk'] = $this->mpegawai->rwypmk($nip)->result_array();
+    $data['nip'] = $nip;
+    $data['content'] = 'rwypmk';
+    $this->load->view('template', $data);
+  }
+
+    function tampilupdatejabpeta() {
+        $idjnsjab = $this->input->get('idjnsjab');
+        $idunker = $this->input->get('idunker');
+
+	?>
+	<input type='hidden' name='idjnsjab' id='idjnsjab' maxlength='10' value='<?php echo $idjnsjab; ?>' >
+        <input type='hidden' name='idunker' id='idunker' maxlength='20' value='<?php echo $idunker; ?>' >
+
+	<div class='row'>
+          <div class='col-md-12'>
+	<?php
+	
+        if ($idjnsjab == "1") { // Struktural
+            ?>
+            <div class='row'>
+                <div class='col-md-12'>
+                    <div class="form-group input-group">
+                    <span class="input-group-addon" style="width:140px;text-align: left;">Jabatan Struktural</span>
+                        <?php
+                        $jabstruk = $this->mpetajab->jabstruk_peta($idunker)->result_array();
+                        ?>
+                        <select class="form-control" name="id_jab" id="id_jab" required onChange="showUpdateJabPeta1(this.value)" style="font-size: 11px;">
+                          <?php
+                          echo "<option value='' selected>-- Jabatan Struktural --</option>";
+                          foreach($jabstruk as $js)
+                          {
+			    $unor = $this->mpetajab->get_namaunor($js['fid_atasan']);
+                            echo "<option value='".$js['id']."-".$js['fid_jabstruk']."'>".$js['nama_jabatan']." (".$unor.")</option>";
+                          }
+                        ?>
+                        </select>
+                    </div>
+                </div>
+            </div>
+	    <?php	
+        } else if ($idjnsjab == "2") { // Fungsional Umum
+            ?>
+            <div class='row'>
+                <div class='col-md-12'>
+                    <div class="form-group input-group">
+                    <span class="input-group-addon" style="width:140px;text-align: left;">Jabatan Fungsional Umum</span>
+                        <?php
+                        $jabfu = $this->mpetajab->jabfu_peta($idunker)->result_array();
+                        ?>
+                        <select class="form-control" name="id_jab" id="id_jab" required onChange="showUpdateJabPeta1(this.value)" style="font-size: 11px;">
+                          <?php
+                          echo "<option value='' selected>-- Pilih Jabatan --</option>";
+                          foreach($jabfu as $ju)
+                          {
+			    $unor = $this->mpetajab->get_namaunor($ju['fid_atasan']);	
+                            echo "<option value='".$ju['id']."-".$ju['fid_jabfu']."'>".$ju['nama_jabfu']." (".$unor.")</option>";
+                          }
+                        ?>
+                        </select>
+                    </div>
+                    </div>
+                </div>
+            </div>
+
+            <?php
+        } else if ($idjnsjab == "3") { // Fungsional Tertentu
+            ?>
+            <div class='row'>
+                <div class='col-md-12'>
+                    <div class="form-group input-group">
+                    <span class="input-group-addon" style="width:140px;text-align: left;">Jabatan Fungsional Tertentu</span>
+                        <?php
+                        $jabft = $this->mpetajab->jabft_peta($idunker)->result_array();
+                        ?>
+			<small>
+                        <select class="form-control" name="id_jab" id="id_jab" required onChange="showUpdateJabPeta1(this.value)" style="font-size: 11px;">
+                          <?php
+                          echo "<option value='' selected>-- Pilih Jabatan --</option>";
+                          foreach($jabft as $jt)	
+                          {
+			    $unor = $this->mpetajab->get_namaunor($jt['fid_atasan']);
+                            echo "<option value='".$jt['id']."-".$jt['fid_jabft']."'>".$jt['nama_jabft']." (".$unor.")</option>";
+                          }
+                        ?>
+                        </select></small>
+                    </div>
+                </div>
+            </div>
+            <div class='row'>
+             <div class='col-md-4' align="left">
+               <div class="form-group input-group">
+                  <span class="input-group-addon" style="font-size: 11px;">Angka Kredit</span>
+                  <input class="form-control" type="text" name="angka_kredit" id="angka_kredit"  placeholder="" value="" width="10" maxlength="7" required />
+               </div>
+             </div>
+             <div class='col-md-4' align="left">
+               <div class="form-group input-group">
+                  <span class="input-group-addon" style="font-size: 11px;">Tunjangan</span>
+                  <input class="form-control" type="text" name="tunjangan" id="tunjangan"  placeholder="" value="" width="20" maxlength="15" required />
+               </div>
+             </div>
+             <div class='col-md-2' align="left">
+               <small><span class='text-danger'>Hanya Angka, tanpa titik</span></small>
+             </div>
+            </div>
+            <?php
+        }
+	
+	?>
+	  </div> <!-- End Kolom Jabatan -->
+        </div> <!-- End Row Jabatan -->
+	<?php
+    }
+
+  function tampilupdatejabpeta1() {
+	$idjab = $this->input->get('idjab');
+	$data_jabpeta = explode("-", $idjab); // Pisahkan, polanya  idpeta-idjab
+	$id_peta = $data_jabpeta[0];
+
+        $pejab = $this->mpetajab->detailKomponenJabatan($id_peta)->result_array();
+        foreach($pejab as $pj) {
+           $kelas = $pj['kelas'];
+	   $ket = $pj['koord_subkoord'];
+           $jml_kebutuhan = $pj['jml_kebutuhan'];
+           $jml_bezzeting = $pj['jml_bezzeting'];
+	   $tpp = $pj['tpp_pk'] + $pj['tpp_bk'] + $pj['tpp_kk'] + $pj['tpp_tb'] + $pj['tpp_kp'];
+        }
+	?>
+
+        <div class='row'>
+             <div class='col-md-12' align="right">
+		<?php
+                echo "<h5><small><span class='text-info'>Keterangan : ".$ket."</span></small> <code>
+                        Kelas : ".$kelas."</code> <code class='text-primary'>Kebutuhan : ".$jml_kebutuhan."</code> <code class='text-warning'>
+                        Bezzeting : ".$jml_bezzeting."</code> <code class='text-success'>TPP : Rp. ".number_format($tpp,2,",",".")."</code>
+                        </h5><br/>";
+        	?>
+             </div>
+        </div>
+        <div class='row'>
+             <div class='col-md-5' align="left">
+               <div class="input-group input-group-sm">
+                  <span class="input-group-addon">TMT Jabatan</span>
+                  <input class="form-control" type="text" name="tmt" id="tmt"  placeholder="" value="" width="15" maxlength="10" required />
+               </div><small class='text-warning'>FORMAT : tanggal-bulan-tahun</small>
+             </div>
+             <div class='col-md-1' align="left">
+             </div>
+             <div class='col-md-5' align="left">
+               <div class="input-group input-group-sm">
+                  <span class="input-group-addon">TGL Pelantikan</span>
+                  <input class="form-control" type="text" name="tgl_pelantikan" id="tgl_pelantikan"  placeholder="" value="" width="15" maxlength="10" required />
+               </div><small class='text-warning'>FORMAT : tanggal-bulan-tahun, Isi 00-00-0000 jika tidak ada pelantikan</small>
+             </div>
+        </div>
+        <div class='row'>
+             <div class='col-md-8' align="left">
+               <div class="input-group input-group-sm" style='padding-top:10px;'>
+                  <span class="input-group-addon">Pejabat SK</span>
+                  <input class="form-control" type="text" name="pejabat_sk" id="pejabat_sk"  placeholder="" value="" width="200" maxlength="200" required />
+               </div>
+             </div>
+        </div>
+        <div class='row'>
+             <div class='col-md-6' align="left">
+               <div class="input-group input-group-sm" style='padding-top:15px;'>
+                  <span class="input-group-addon">No. SK</span>
+                  <input class="form-control" type="text" name="no_sk" id="no_sk"  placeholder="" value="" width="50" maxlength="50" required />
+               </div>
+             </div>
+             <div class='col-md-5' align="left">
+               <div class="input-group input-group-sm" style='padding-top:15px;'>
+                  <span class="input-group-addon">Tgl. SK</span>
+                  <input class="form-control" type="text" name="tgl_sk" id="tgl_sk"  placeholder="" value="" width="15" maxlength="10" required />
+               </div><small class='text-warning'>FORMAT : tanggal-bulan-tahun</small>
+             </div>
+        </div>
+	<div class='row'>
+	     <div class='col-md-8' align="left">	
+	       <div class="input-group input-group-sm" style='padding-top:10px;'>
+               	<span class="input-group-addon">File SK</span>
+               	<input type="file" class="form-control" name="filesk" class="btn btn-xs btn-info" required/>
+               </div><small class='text-primary'>Dokumen Surat Keputusan, Format file PDF Maksimal 1 Mb</small>
+	     </div>	
+	</div>
+        <div class='row'>
+             <div class='col-md-12' align="right">
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                        <span class="fa fa-ban" aria-hidden="true"></span> Batal</button>
+                <button type="submit" class="btn btn-success">
+                        <span class="fa fa-save" aria-hidden="true"></span> Update Jabatan</button>
+             </div>
+        </div>
+        <?php
+  }
+
+  function update_rwyjabpeta_aksi() {
+        $nip = $this->input->post('nip');
+        $id_unker = $this->input->post('idunker');
+	$nmunker = $this->munker->getnamaunker($id_unker);
+        $id_jnsjab = $this->input->post('id_jnsjab');
+        $nmjnsjab = $this->mpetajab->get_namajnsjab($id_jnsjab);
+
+        $data_jabpeta = explode("-", $this->input->post('id_jab')); // Pisahkan, polanya  idpeta-idjab
+	$id_peta = $data_jabpeta[0];
+	$id_jab = $data_jabpeta[1];
+	$nmjab = $this->mpegawai->namajab($id_jnsjab, $id_jab);
+	$atasan = $this->mpetajab->get_namaunoratasan($id_peta);
+
+	if ($id_jnsjab == '1') { // Struktural
+		$id_eselon = $this->mpegawai->get_ideselon_byjabatan($id_jab);
+		$nm_eselon = $this->mpegawai->getnamaeselon($id_eselon);
+		$id_jabstruk = $id_jab;
+		$id_jabfu = 'NULL';
+		$id_jabft = 'NULL';
+	} else if ($id_jnsjab == '2') {
+		$id_eselon = '0255';
+		$nm_eselon = 'JFU';
+                $id_jabstruk = 'NULL';;
+                $id_jabfu = $id_jab;
+                $id_jabft = 'NULL';
+	} else if ($id_jnsjab == '3') {
+		$id_eselon = '0256';
+                $nm_eselon = 'JFT';
+                $id_jabstruk = 'NULL';;
+                $id_jabfu = 'NULL';
+                $id_jabft = $id_jab;
+        }
+
+	$kelas_jab = $this->mpetajab->get_kelas($id_peta);
+
+        $angka_kredit = $this->input->post('angka_kredit');
+        $tunjangan = $this->input->post('tunjangan');
+
+        $tmt = tgl_sql($this->input->post('tmt'));
+        $tgl_pelantikan = tgl_sql($this->input->post('tgl_pelantikan'));
+
+        $pejabat_sk = $this->input->post('pejabat_sk');
+        $nomor_sk = $this->input->post('no_sk');
+        $tgl_sk = tgl_sql($this->input->post('tgl_sk'));
+
+        $nama = $this->mpegawai->getnama($nip);
+        $datarwy = array(
+                'nip' => $nip,
+                'unit_kerja' => $nmunker,
+                'jabatan' => $nmjab." - ".$atasan,
+                'jns_jab' => $nmjnsjab,
+                'eselon' => $nm_eselon,
+                'kelas' => $kelas_jab,
+                'angka_kredit' => $angka_kredit,
+                'tunjangan' => $tunjangan,
+                'tmt_jabatan' => $tmt,
+                'tgl_pelantikan' => $tgl_pelantikan,
+                'pejabat_sk' => $pejabat_sk,
+                'no_sk' => $nomor_sk,
+                'tgl_sk' => $tgl_sk,
+                'created_at' => date('Y-m-d H:i:s'),
+                'created_by' => $this->session->userdata('nama')
+        );
+	
+        $datapeg = array(
+                'fid_unit_kerja' => $id_unker,
+                'fid_jabatan' => $id_jabstruk,
+		'fid_jabfu'   => $id_jabfu,
+		'fid_jabft'    => $id_jabft,	
+                'fid_jnsjab' => $id_jnsjab,
+		'tmt_jabatan' => $tmt,
+		'fid_eselon' => $id_eselon,
+		'fid_peta_jabatan'	=> $id_peta
+	);
+	
+      	$wherepeg = array(
+      	  'nip'               => $nip
+      	);
+
+    	// Upload SK Pemberhentian
+    	$this->load->library('upload');
+        // membuat nomor acak untuk nama file
+        $karakter = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+        $string='';
+        $pjg = 8;
+        for ($i=0; $i < $pjg; $i++) {
+            $pos = rand(0, strlen($karakter)-1);
+            $string .= $karakter{$pos};
+        }
+
+        $nmfile = $nip."-".$tmt.$string; //nama file nip + '-' + $tmt_jabatan (10 karakter) + nomor acak (8 karakter acak)
+    	$consk['upload_path'] = './filejab/'; //Folder untuk menyimpan hasil upload
+    	$consk['allowed_types'] = 'pdf'; //type yang dapat diakses bisa anda sesuaikan
+    	$consk['overwrite'] = true; // tindih file dengan file baru
+    	$consk['max_size'] = '1024'; //maksimum besar file 5M
+    	$consk['file_name'] = $nmfile; //nama yang terupload nantinya
+	
+	$this->upload->initialize($consk);
+    	// lakukan upload
+    	if ($this->upload->do_upload('filesk')) {
+	  $sendpeg = $this->mpegawai->edit_peg($wherepeg, $datapeg);
+	  $sendrwy = $this->mpegawai->insert_rwyjab('riwayat_jabatan', $datarwy);
+
+	  // Tambahkan nama file pada tabel riwayat_jabatan
+	  $databerkas = array(
+             'berkas'   => $nmfile
+          );
+
+          $where = array(
+            'nip'       => $nip,
+            'tmt_jabatan' => $tmt
+          );
+          $this->mpegawai->edit_rwyjab($where, $databerkas);
+	  // End tambahkan file pada tabel riwayat_jabatan
+	} else {
+	  $data['pesan'] = '<b>Gagal !</b> File SK tidak sesuai ketentuan';
+          $data['jnspesan'] = 'alert alert-danger';
+	}
+
+      if ($sendpeg AND $sendrwy) {
+        $data['pesan'] = '<b>Sukses</b>, Riwayat Jabatan <u>'.$nama.'</u> berhasil ditambahkan.';
+        $data['jnspesan'] = 'alert alert-success';
+      } else {
+        $data['pesan'] = '<b>Gagal</b>, Riwayat Jabatan <u>'.$nama.'</u> Gagal ditambahkan.';
+        $data['jnspesan'] = 'alert alert-danger';
+      }
+
+    $data['pegrwyjab']   = $this->mpegawai->rwyjab($nip)->result_array();
+    $data['pegrwyplt']   = $this->mpegawai->rwyplt($nip)->result_array();
+    $data['pegrwypokja'] = $this->mpegawai->rwypokja($nip)->result_array();
+    $data['nip'] = $nip;
+    $data['content'] = 'rwyjab';
+    $this->load->view('template', $data);
+  }
+
+
 }
 
 /* End of file pegawai.php */

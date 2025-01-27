@@ -131,7 +131,7 @@
                   <tr>
                     <td align='right' width='50'>
                       <form method="POST" name='ftambahhukdis'>                                                    
-                        <input type='hidden' name='nip' id='nip' maxlength='18' value='<?php echo $nip; ?>' />
+                        <input type='hidden' name='nip' id='nip' maxlength='18' value='' />
                         <button type='button' class="btn btn-success btn-sm" onClick='showtambahhukdis(ftambahhukdis.nip.value)' >
                           <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbspTambah Hukdis</button>
                       </form>

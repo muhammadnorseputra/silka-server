@@ -70,7 +70,8 @@
                   echo "<div align='right'>";
                   echo "<h4>File Photo tidak tersedia, silahkan upload !!!</h4>";
                   if ($this->session->userdata('level') != "TAMU") { 
-                    echo "Untuk meng-upload file photo, klik tombol \"Pilih File\", pilih file image yang akan di-upload (harus format .jpg dengan ukuran maksimal 100 KB), dan klik tombol <br/>\"Upload File Photo\".";
+                    echo "Untuk meng-upload file photo, klik tombol \"Pilih File\", pilih file image yang akan di-upload (harus format .jpg dengan ukuran maksimal 100 KB), 
+			dan klik tombol <br/>\"Upload File Photo\".";
                     echo "<br /><br/>";
                   }
                   echo "</div>";
@@ -79,7 +80,7 @@
                     echo "<img class='thumbnail' src='../photononpns/$namafile' width='120' height='160' >";
                     if ($this->session->userdata('level') != "TAMU") { 
                       echo "<div align='right'>";
-                      echo "Untuk mengganti file photo, klik tombol \"Pilih File\", pilih file image yang akan di-upload (harus format .jpg dengan ukuran maksimal 100 KB), dan klik tombol <br/>\"Ganti File Photo\".";
+                      echo "1Untuk mengganti file photo, klik tombol \"Pilih File\", pilih file image yang akan di-upload (harus format .jpg dengan ukuran maksimal 100 KB), dan klik tombol <br/>\"Ganti File Photo\".";
                       echo "<br /><br/>";
                       echo "</div>";
                     }

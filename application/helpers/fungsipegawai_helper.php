@@ -97,9 +97,9 @@ if ( ! function_exists('getMkCpns'))
     }
 }
 
-if ( ! function_exists('getmkcpns'))
+if ( ! function_exists('getmkcpns_pilih'))
 {
-    function getmkcpns($nip,$pilihan)
+    function getmkcpns_pilih($nip,$pilihan)
     {
         $sqlmkcpns = mysql_query("SELECT (((YEAR(NOW())-YEAR(tmt_cpns))*12)+(MONTH(NOW())-MONTH(tmt_cpns))) as maker_cpns FROM cpnspns where nip='$nip'");
         $mkcpns = mysql_result($sqlmkcpns,0,'maker_cpns');

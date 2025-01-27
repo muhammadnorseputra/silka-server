@@ -1,0 +1,608 @@
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+class Petajab extends CI_Controller
+{
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->load->helper('form');
+        $this->load->helper('fungsitanggal');
+        $this->load->helper('fungsipegawai');  
+        $this->load->model('mpegawai'); 
+        $this->load->model('mstatistik');
+        $this->load->model('munker');   
+        $this->load->model('mpetajab'); 
+        $this->load->model('mkinerja');
+        $this->load->model('datacetak');
+
+        // untuk fpdf
+        $this->load->library('fpdf');
+    }
+
+    function tampil() {
+        //if ($this->session->userdata('usulkgb_priv') == "Y") {
+          $data['content'] = 'petajab/tampil';
+          $data['unker'] = $this->munker->dd_unker()->result_array();
+          $data['pesan'] = '';
+          $data['jnspesan'] = '';
+          $this->load->view('template', $data);
+        //}
+    }
+
+    private function infopeta($id, $idjnsjab, $idjab, $idunker, $kelas, $jml) {
+    $jnsjab = $this->mpetajab->get_namajnsjab($idjnsjab);    
+    ?>
+        <div class='row' align='left'>
+                <div class='col-md-12 col-xs-12'>
+                    <?php
+                    $setuju = $this->mpetajab->cek_approve($id);
+                    if ($setuju == "N") {                        
+                        /*echo "<div class='col-md-2'>
+                            <form method='POST' action='../takah/rwytakah'>
+                                <input type='hidden' name='id' id='id' maxlength='18' value='".$id."'>
+                                <input type='hidden' name='idjnsjab' id='idjnsjab' maxlength='18' value='".$idjnsjab."'>
+                                <input type='hidden' name='idunker' id='idunker' maxlength='18' value='".$idunker."'>
+                                <button type='submit' class='btn btn-warning btn-outline btn-xs'>
+                                <span class='fa fa-pencil-square-o' aria-hidden='true'></span> Edit Jabatan
+                                </button>
+                            </form>
+                        </div>";
+                        */
+
+                        //echo "<div class='col-md-1' aling='center'>
+                        //    <button type='button' class='btn btn-outline btn-success btn-xs' data-toggle='modal' data-target='#tampileditjab'><span class='fa fa-edit' aria-hidden='true'></span> Edit</button>
+                        //</div>";
+
+                        //echo "<div class='col-md-2' aling='center'>
+                        //    <button type='button' class='btn btn-outline btn-primary btn-xs' data-toggle='modal' data-target='#tampilgantiatasanjab'><span class='fa fa-edit' aria-hidden='true'></span> Ganti Atasan</button>
+                        //</div>";
+                        
+                        $adabawahan = $this->mpetajab->cek_bawahan($id);
+                        if ($adabawahan == 0) {
+                            echo "<br/><div class='col-md-12 col-xs-2' align=''>
+                                <form method='POST' action='../petajab/hapus_peta'>
+                                    <input type='hidden' name='id' id='id' maxlength='18' value='".$id."'>
+                                    <input type='hidden' name='idjnsjab' id='idjnsjab' maxlength='18' value='".$idjnsjab."'>
+                                    <input type='hidden' name='idunker' id='idunker' maxlength='18' value='".$idunker."'>
+                                    <button type='submit' class='btn btn-danger btn-outline btn-xs'>
+                                    <span class='fa fa-trash-o' aria-hidden='true'></span> Hapus Jabatan
+                                    </button>
+                                </form>
+                            </div>";
+                        }
+
+                        /*echo "<div class='col-md-2'>
+                            <form method='POST' action='../takah/rwytakah'>
+                                <input type='hidden' name='idjnsjab' id='jnsjab' maxlength='18' value='".$jnsjab."'>
+                                <input type='hidden' name='idjab' id='idjab' maxlength='18' value='".$idjab."'>
+                                <input type='hidden' name='idunker' id='idunker' maxlength='18' value='".$idunker."'>
+                                <button type='submit' class='btn btn-success btn-outline btn-xs'>
+                                <span class='fa fa-thumbs-up' aria-hidden='true'></span> Approval
+                                </button>
+                            </form>
+                        </div>";
+                        */
+                    } else if ($setuju == "Y") {
+			/*
+                        echo "<div class='col-md-2 col-xs-12'>
+                            <form method='POST' action='../takah/rwytakah'>
+                                <input type='hidden' name='idjnsjab' id='jnsjab' maxlength='18' value='".$idjnsjab."'>
+                                <input type='hidden' name='idjab' id='idjab' maxlength='18' value='".$idjab."'>
+                                <input type='hidden' name='idunker' id='idunker' maxlength='18' value='".$idunker."'>
+                                <button type='submit' class='btn btn-danger btn-outline btn-xs'>
+                                <span class='fa fa-thumbs-down' aria-hidden='true'></span> No Approval
+                                </button>
+                            </form>
+                        </div>";
+			*/
+                    }                    
+                    ?>
+                </div>
+        </div>
+        <br/>
+
+        <?php     
+        /*
+        // Unt Jab JFU dan JFT, bisa menambahkan PNS nya
+        if ($idjnsjab != "1") {
+            $datajf = $this->mpetajab->getnippemangku($id)->result_array();;
+            foreach($datajf as $jf):
+                $nip = $jf['nip'];
+                $nama = $this->mpegawai->getnama($nip);
+                $pdk = $this->mpegawai->getpendidikan($nip);
+                $idgolru = $this->mpetajab->getidgolru($nip);
+                $golru = $this->mpegawai->getnamagolru($idgolru);
+                $pangkat = $this->mpegawai->getnamapangkat($idgolru);
+                //$tmtgolru = $this->mpegawai->gettmtkpterakhir($nip);
+                $tmtjab = $this->mpegawai->gettmtjabterakhir($nip);
+
+                $pemangku = $nama." (NIP. ".$nip.")";    
+                $lokasifile = './photo/';
+                $filename = "$nip.jpg";
+
+                if (file_exists ($lokasifile.$filename)) {
+                    $photo = "../photo/$nip.jpg";
+                } else {
+                    $photo = "../photo/nophoto.jpg";
+                }
+
+                echo "
+                <small>
+                <div class='row'>";
+                echo "<div class='col-md-2' align='right'>
+                        <img src='".$photo."' width='65' height='90' alt='' class='img-thumbnail'>
+                    </div>";
+                echo "<cite class='text-muted'>
+                    <div class='col-md-10'>
+                        <div class='row'>
+                            <div class='col-md-12'><b>".$nama." (NIP. ".$nip.")</b></div>                 
+                        </div>
+                        <div class='row'>
+                            <div class='col-md-2'>Pendidikan</div>
+                            <div class='col-md-10'>: ".$pdk."</div>
+                        </div>
+                        <div class='row'>
+                            <div class='col-md-2'>Pangkat / Golru</div>
+                            <div class='col-md-10'>: ".$golru." (".$pangkat.")</div>
+                        </div>
+                        <div class='row'>
+                            <div class='col-md-2'>TMT Jabatan</div>
+                            <div class='col-md-10'>: ".tgl_indo($tmtjab)."</div>
+                        </div>";
+                echo "
+                    </div>
+                    </cite>";
+                    
+                echo "<div class='col-md-2'>
+                            <form method='POST' action='../petajab/hapus_pemangku'>
+                                <input type='hidden' name='id' id='id' maxlength='18' value='".$id."'>
+                                <input type='hidden' name='nip' id='nip' maxlength='18' value='".$nip."'>
+                                <button type='submit' class='btn btn-warning btn-outline btn-xs'>
+                                <span class='fa fa-trash' aria-hidden='true'></span> Hapus Pemangku : ".$nama."
+                                </button>
+                            </form>
+                        </div>";
+                echo" </div>
+                </small>
+                <br/>";
+            endforeach;
+
+        } else if ($idjnsjab == "1") {
+            $nip = $this->mpetajab->getnip($idjnsjab, $idjab, $idunker);
+            if ($nip) {
+                $nama = $this->mpegawai->getnama($nip);
+                $pdk = $this->mpegawai->getpendidikan($nip);
+                $idgolru = $this->mpetajab->getidgolru($nip);
+                $golru = $this->mpegawai->getnamagolru($idgolru);
+                $pangkat = $this->mpegawai->getnamapangkat($idgolru);
+                //$tmtgolru = $this->mpegawai->gettmtkpterakhir($nip);
+                $tmtjab = $this->mpegawai->gettmtjabterakhir($nip);
+
+                $pemangku = $nama." (NIP. ".$nip.")";    
+                $lokasifile = './photo/';
+                $filename = "$nip.jpg";
+
+                if (file_exists ($lokasifile.$filename)) {
+                    $photo = "../photo/$nip.jpg";
+                } else {
+                    $photo = "../photo/nophoto.jpg";
+                }
+
+		echo "
+                <small>
+                <div class='row'>
+                    <cite class='text-muted'>
+                    <div class='col-md-10'>
+                        <div class='row'>
+                            <div class='col-md-12'><b>IDENTITAS PEMANGKU</b></div>                 
+                        </div>
+                        <div class='row'>
+                            <div class='col-md-2 col-xs-2'>NIP.</div>
+                            <div class='col-md-10 col-xs-10'>: ".$nip."</div>                        
+                        </div>
+                        <div class='row'>
+                            <div class='col-md-2 col-xs-2'>Nama</div>
+                            <div class='col-md-10 col-xs-10'>: ".$nama."</div>
+                        </div>
+                        <div class='row'>
+                            <div class='col-md-2 col-xs-2'>Pendidikan</div>
+                            <div class='col-md-10 col-xs-10'>: ".$pdk."</div>
+                        </div>
+                        <div class='row'>
+                            <div class='col-md-2 col-xs-3'>Pangkat/Golru</div>
+                            <div class='col-md-10 col-xs-9'>: ".$golru." (".$pangkat.")</div>
+                        </div>
+                        <div class='row'>
+                            <div class='col-md-2 col-xs-3'>TMT Jabatan</div>
+                            <div class='col-md-10 col-xs-9'>: ".tgl_indo($tmtjab)."</div>
+                        </div>";
+                echo "
+                    </div>
+                    </cite>
+                    <div class='col-md-2' align='right'>
+                        <img src='".$photo."' width='75' height='110' alt='' class='img-thumbnail'>
+                    </div>
+                </div>
+                </small>
+                <br/>";
+            } else {
+                echo "<code><b> <cite class='text-muted'>TIDAK ADA PEMANGKU JABATAN</cite></b></code><br/><br/>";
+            }
+        }
+        */         
+        /*
+        echo "<blockquote>
+                <small>
+                    <cite class='text-muted'>Kelas : ".$kelas."</cite>
+                </small>
+                <small>
+                    <cite class='text-muted'>Jenis Jabatan : ".$jnsjab."</cite>
+                </small>
+                <small>
+                    <cite class='text-muted'>Kebutuhan : ".$jml."</cite>
+                </small>
+                <small>
+                    <cite class='text-muted'>Ketersediaan : ".$nama." NIP. (".$nip.")</cite>
+                </small>
+            </blockquote>";
+            
+        <div class="well well-sm" >
+                <img src='<?php echo $photo; ?>' width='120' height='160' alt='<?php echo $v['nip']; ?>.jpg' class="img-thumbnail">
+
+        */
+        
+    }
+
+    function tambahpns() {
+
+    }
+
+    function hapus_peta(){
+        $idpeta = addslashes($this->input->post('id'));
+        $idjnsjab = addslashes($this->input->post('idjnsjab'));
+        $idunker = addslashes($this->input->post('idunker'));
+        $where = array('id' => $idpeta,
+                       'fid_jnsjab' => $idjnsjab,
+                       'fid_unit_kerja' => $idunker
+                 );
+
+        $nmunker = $this->munker->getnamaunker($idunker);
+        if ($this->mpetajab->hapus_peta($where)) {
+            $wherepemangku = array('fid_peta' => $idpeta);
+            $this->mpetajab->hapus_petajab_pemangku($wherepemangku);
+            $data['pesan'] = '<b>Sukses</b>, Peta jabatan <u>'.$nmunker.'</u> BERHASIL diupdate.';
+            $data['jnspesan'] = 'alert alert-success';            
+        } else {
+            $data['pesan'] = '<b>GAGAL</b>, Peta jabatan <u>'.$nmunker.'</u> GAGAL diupdate.';
+            $data['jnspesan'] = 'alert alert-warning';
+        }
+
+        $data['content'] = 'petajab/tampil';
+        $data['unker'] = $this->munker->dd_unker()->result_array();
+        $this->load->view('template', $data);
+      }
+
+      private function setPoisisButton($id)
+      {
+	$setuju = $this->mpetajab->cek_approve($id);
+        if ($setuju == "N") {
+        //if($this->session->userdata('level') === 'USER'):
+            return '<button type="button" class="btn btn-primary btn-xs btn-outline" onclick="updatePosisi(\''.$id.'\')">Update<br/>Atasan</button>';
+        //endif;
+	}
+      }
+
+      private function setKomponenButton($id)
+      {
+	$setuju = $this->mpetajab->cek_approve($id);
+	if ($setuju == "N") {
+        //if($this->session->userdata('level') === 'USER'):
+            return '<button type="button" class="btn btn-warning btn-xs btn-outline" onclick="updateKomponen(\''.$id.'\')">Update<br/>Komponen</button>';
+        //endif;
+	}
+      }
+
+      function caripeta() {
+        $idunker = $this->input->get('idunker');
+        ?>        
+        <br/>
+        <div class='row'>
+        <div class='col-md-8 col-xs-12' align='left'>
+
+            <?php
+            $kaunit = $this->mpetajab->getkepalaunit($idunker)->result_array();
+            //var_dump($kaunit);
+            foreach($kaunit as $v):
+                $jnsjabkaunit = $this->mpetajab->get_namajnsjab($v['fid_jnsjab']);
+		if ($jnsjabkaunit == "STRUKTURAL") {
+			$nmkaunit = $this->mpegawai->namajab("1", $v['fid_jabstruk']);
+                        //$nmkaunit = $this->mpegawai->namaunor($v['fid_jabstruk']);
+		} else if ($jnsjabkaunit == "FUNGSIONAL UMUM") {
+			$nmkaunit = $this->mpegawai->namajab("2", $v['fid_jabfu']);
+                } else if ($jnsjabkaunit == "FUNGSIONAL TERTENTU") {
+			$nmkaunit = $this->mpegawai->namajab("3", $v['fid_jabft']);
+                }
+                //$nmkaunit = $this->mpegawai->namajab("1", $v['fid_jabstruk']);
+                
+		////$jmlstokkaunit = $this->mpetajab->getnip_jml($v['fid_jnsjab'], $v['fid_jabstruk'], $idunker);
+                ?>
+                <div class="panel panel-danger" align='left'>
+                    <div class="panel-heading">
+                    <?php
+			$tpp = $v['tpp_pk'] + $v['tpp_bk'] + $v['tpp_kk'] + $v['tpp_tb'] + $v['tpp_kp'];
+                        echo $nmkaunit."<br/><span class='text-muted'><code class='text-muted'><b>".$jnsjabkaunit."</b></code> <code>
+			Kelas : ".$v['kelas']."</code> <code class='text-primary'>Kebutuhan : ".$v['jml_kebutuhan']."</code> <code class='text-warning'>
+			Bezzeting : ".$v['jml_bezzeting']."</code> <code class='text-success'>TPP : Rp. ".number_format($tpp,2,",",".")."</code>
+			</span></a>";
+
+			// Cek apakah Sub Koordinator
+                        echo "<br/><small>".$v['koord_subkoord']."</small>";
+                    ?>
+                    </div>
+                    <!-- .panel-heading -->
+
+                    <div class="panel-body">    
+                    <?php  
+
+            echo "
+			<span class='text-primary'><b>KOMPONEN TPP</b></span>
+                	<div class='row'>
+                    		<div class='col-md-2 col-xs-12'>Prestasi Kerja : Rp. ".number_format($v['tpp_pk'],0,",",".")."</div>
+                    		<div class='col-md-2 col-xs-12'>Beban Kerja : Rp. ".number_format($v['tpp_bk'],0,",",".")."</div>
+                    		<div class='col-md-2 col-xs-12'>Kondisi Kerja : Rp. ".number_format($v['tpp_kk'],0,",",".")."</div>
+                    		<div class='col-md-2 col-xs-12'>Tempat Bertugas : Rp. ".number_format($v['tpp_tb'],0,",",".")."</div>
+                    		<div class='col-md-2 col-xs-12'>Kelangkaan Profesi : Rp. ".number_format($v['tpp_kp'],0,",",".")."</div>
+                    		<div class='col-md-2 col-xs-12'>".$this->setKomponenButton($v['id'])."</div>
+				<!-- <div class='col-md-2 col-xs-12'>".$this->setPoisisButton($v['id'])." ".$this->setKomponenButton($v['id'])."</div> -->
+                	</div>";
+
+                        $this->infopeta($v['id'], $v['fid_jnsjab'], $v['fid_jabstruk'], $v['fid_unit_kerja'], $v['kelas'], $v['jml_kebutuhan']);
+                    ?>
+                        <div class="panel-group" id="accordionl2">                            
+                            <?php
+                                // Level 2
+                                $lv2 = $this->mpetajab->getbawahan($idunker, $v['id'])->result_array();
+                                //var_dump($lv2);
+                                foreach($lv2 as $l2):
+                                    $jnsjabl2 = $this->mpetajab->get_namajnsjab($l2['fid_jnsjab']);
+                                    if ($l2['fid_jnsjab'] == "1") {
+                                        $idjab = $l2['fid_jabstruk'];
+                                        $panel = "panel-info";
+                                    } else if ($l2['fid_jnsjab'] == "2") {
+                                        $idjab = $l2['fid_jabfu'];
+                                        $panel = "panel-warning";
+                                    } else if ($l2['fid_jnsjab'] == "3") {
+                                        $idjab = $l2['fid_jabft'];
+                                        $panel = "panel-default";
+                                    }
+                                    $nmjablv2 = $this->mpegawai->namajab($l2['fid_jnsjab'], $idjab);
+                                    //$jmlstokv2 = $this->mpetajab->getnip_jml($l2['fid_jnsjab'], $idjab, $idunker);
+
+                                    echo "<div class='panel ".$panel."'>";
+                                    //echo "<div class='panel panel-default'>";
+				    $tppl2 = $l2['tpp_pk'] + $l2['tpp_bk'] + $l2['tpp_kk'] + $l2['tpp_tb'] + $l2['tpp_kp'];
+                                    echo "<div class='panel-heading'>
+                                                    <a data-toggle='collapse' data-parent='#accordionl2' href='#lv".$l2['id']."' aria-expanded='false' class='collapsed'>".$nmjablv2."<br/><span class='text-muted'>
+							<code class='text-muted'><b>".$jnsjabl2."</b></code> <code>Kelas : ".$l2['kelas']."</code> <code class='text-primary'>Kebutuhan : ".$l2['jml_kebutuhan']."</code> <code class='text-warning'>Bezzeting : ".$l2['jml_bezzeting']."</code> 
+							<code class='text-success'>TPP : Rp. ".number_format($tppl2,2,",",".")."</code></span></a>";
+				    // Cek apakah Sub Koordinator
+                                    echo "<br/><span class='text-default'><small>".$l2['koord_subkoord']."</small></span>";
+				    echo "</div>"; // End Panel Heading
+
+                                    echo "<div id='lv".$l2['id']."' class='panel-collapse collapse' aria-expanded='false'>
+                                          <div class='panel-body'>";
+				    echo "
+                        		<span class='text-primary'><b>KOMPONEN TPP</b></span>
+                        		<div class='row'>
+                                		<div class='col-md-2 col-xs-12'>Prestasi Kerja : Rp. ".number_format($l2['tpp_pk'],0,",",".")."</div>
+                                		<div class='col-md-2 col-xs-12'>Beban Kerja : Rp. ".number_format($l2['tpp_bk'],0,",",".")."</div>
+                                		<div class='col-md-2 col-xs-12'>Kondisi Kerja : Rp. ".number_format($l2['tpp_kk'],0,",",".")."</div>
+                                		<div class='col-md-2 col-xs-12'>Tempat Bertugas : Rp. ".number_format($l2['tpp_tb'],0,",",".")."</div>
+                                		<div class='col-md-2 col-xs-12'>Kelangkaan Profesi : Rp. ".number_format($l2['tpp_kp'],0,",",".")."</div>
+                                        <div class='col-md-2 col-xs-12'>".$this->setPoisisButton($l2['id'])." ".$this->setKomponenButton($l2['id'])."</div>
+                        	        </div>";
+                                    $this->infopeta($l2['id'], $l2['fid_jnsjab'], $l2['fid_jabstruk'], $v['fid_unit_kerja'], $l2['kelas'], $l2['jml_kebutuhan']);
+
+                                            // PANEL LV3
+                                            echo "<div class='panel-group' id='accordionl3'>";
+                                                $lv3 = $this->mpetajab->getbawahan($idunker, $l2['id'])->result_array();
+                                                foreach($lv3 as $l3):
+                                                    $jnsjabl3 = $this->mpetajab->get_namajnsjab($l3['fid_jnsjab']);
+                                                    if ($l3['fid_jnsjab'] == "1") {
+                                                        $idjab = $l3['fid_jabstruk'];
+                                                        $panel = "panel-info";
+                                                    } else if ($l3['fid_jnsjab'] == "2") {
+                                                        $idjab = $l3['fid_jabfu'];
+                                                        $panel = "panel-warning";
+                                                    } else if ($l3['fid_jnsjab'] == "3") {
+                                                        $idjab = $l3['fid_jabft'];
+                                                        $panel = "panel-success";
+                                                    }
+                                                    $nmjablv3 = $this->mpegawai->namajab($l3['fid_jnsjab'], $idjab);
+                                                    //$jmlstokv3 = $this->mpetajab->getnip_jml($l3['fid_jnsjab'], $idjab, $idunker);
+                                                    //echo $nmjablv2;
+                                                    echo "<div class='panel ".$panel."'>";
+						    $tppl3 = $l3['tpp_pk'] + $l3['tpp_bk'] + $l3['tpp_kk'] + $l3['tpp_tb'] + $l3['tpp_kp'];
+                                                    echo "<div class='panel-heading'>
+                                                          <a data-toggle='collapse' data-parent='#accordionl3' href='#lv".$l3['id']."' aria-expanded='false' class='collapsed'>".$nmjablv3."<br/><span class='text-muted'>
+							<code class='text-muted'><b>".$jnsjabl3."</b></code> <code>Kelas : ".$l3['kelas']."</code> <code class='text-primary'>Kebutuhan : ".$l3['jml_kebutuhan']."</code> <code class='text-warning'>Bezzeting : ".$l3['jml_bezzeting']."</code>
+						    	<code class='text-success'>TPP : Rp. ".number_format($tppl3,2,",",".")."</code>
+						    </span></a>";
+                                                    
+						    // Cek apakah Sub Koordinator
+						    echo "<br/><span class='text-default'><small>".$l3['koord_subkoord']."</small></span>";
+	
+						    echo "</div>"; // End Panel Heading
+                                                    echo "<div id='lv".$l3['id']."' class='panel-collapse collapse' aria-expanded='false'>
+                                                          <div class='panel-body'>";
+                                                    echo "
+                                        		<span class='text-primary'><b>KOMPONEN TPP</b></span>
+                                        		<div class='row'>
+                                                		<div class='col-md-2 col-xs-12'>Prestasi Kerja : Rp. ".number_format($l3['tpp_pk'],0,",",".")."</div>
+                                                		<div class='col-md-2 col-xs-12'>Beban Kerja : Rp. ".number_format($l3['tpp_bk'],0,",",".")."</div>
+                                                		<div class='col-md-2 col-xs-12'>Kondisi Kerja : Rp. ".number_format($l3['tpp_kk'],0,",",".")."</div>
+                                                		<div class='col-md-2 col-xs-12'>Tempat Bertugas : Rp. ".number_format($l3['tpp_tb'],0,",",".")."</div>
+                                                		<div class='col-md-2 col-xs-12'>Kelangkaan Profesi : Rp. ".number_format($l3['tpp_kp'],0,",",".")."</div>
+                                                        <div class='col-md-2 col-xs-12'>".$this->setPoisisButton($l3['id'])." ".$this->setKomponenButton($l3['id'])."</div>
+                                        		</div>";
+						    $this->infopeta($l3['id'], $l3['fid_jnsjab'], $l3['fid_jabstruk'], $v['fid_unit_kerja'], $l3['kelas'], $l3['jml_kebutuhan']);        
+
+                                                    // PANEL LV4
+                                                    echo "<div class='panel-group' id='accordionl4'>";
+                                                        $lv4 = $this->mpetajab->getbawahan($idunker, $l3['id'])->result_array();
+                                                        foreach($lv4 as $l4):
+                                                            $jnsjabl4 = $this->mpetajab->get_namajnsjab($l4['fid_jnsjab']);
+                                                            if ($l4['fid_jnsjab'] == "1") {
+                                                                $idjab = $l4['fid_jabstruk'];
+                                                                $panel = "panel-info";
+                                                            } else if ($l4['fid_jnsjab'] == "2") {
+                                                                $idjab = $l4['fid_jabfu'];
+                                                                $panel = "panel-warning";
+                                                            } else if ($l4['fid_jnsjab'] == "3") {
+                                                                $idjab = $l4['fid_jabft'];
+                                                                $panel = "panel-success";
+                                                            }
+                                                            $nmjablv4 = $this->mpegawai->namajab($l4['fid_jnsjab'], $idjab);
+                                                            //$jmlstokv4 = $this->mpetajab->getnip_jml($l4['fid_jnsjab'], $idjab, $idunker);
+                                                            
+                                                            echo "<div class='panel ".$panel."'>";
+							    $tppl4 = $l4['tpp_pk'] + $l4['tpp_bk'] + $l4['tpp_kk'] + $l4['tpp_tb'] + $l4['tpp_kp'];
+                                                            echo "<div class='panel-heading'>
+                                                                        <a data-toggle='collapse' data-parent='#accordionl4' href='#lv".$l4['id']."' aria-expanded='false' class='collapsed'>".$nmjablv4."<br/><span class='text-muted'>
+									<code class='text-muted'><b>".$jnsjabl4."</b></code> <code>Kelas : ".$l4['kelas']."</code> <code class='text-primary'>Kebutuhan : ".$l4['jml_kebutuhan']."</code> <code class='text-warning'>Bezzeting : ".$l4['jml_bezzeting']."</code>
+									<code class='text-success'>TPP : Rp. ".number_format($tppl4,2,",",".")."</code>
+									</span></a>";
+							    // Cek apakah Sub Koordinator
+                                    			    echo "<br/><span class='text-default'><small>".$l4['koord_subkoord']."</small></span>";
+							    echo "</div>"; // End Panel Heading
+							
+                                                            echo "<div id='lv".$l4['id']."' class='panel-collapse collapse' aria-expanded='false'>
+                                                                  <div class='panel-body'>";
+							    echo "
+                                        			<span class='text-primary'><b>KOMPONEN TPP</b></span>
+                                        				<div class='row'>
+                                                			<div class='col-md-2 col-xs-12'>Prestasi Kerja : Rp. ".number_format($l4['tpp_pk'],0,",",".")."</div>
+                                                			<div class='col-md-2 col-xs-12'>Beban Kerja : Rp. ".number_format($l4['tpp_bk'],0,",",".")."</div>
+                                                			<div class='col-md-2 col-xs-12'>Kondisi Kerja : Rp. ".number_format($l4['tpp_kk'],0,",",".")."</div>
+                                                			<div class='col-md-2 col-xs-12'>Tempat Bertugas : Rp. ".number_format($l4['tpp_tb'],0,",",".")."</div>
+                                                			<div class='col-md-2 col-xs-12'>Kelangkaan Profesi : Rp. ".number_format($l4['tpp_kp'],0,",",".")."</div>
+                                                            <div class='col-md-2 col-xs-12'>".$this->setPoisisButton($l4['id'])." ".$this->setKomponenButton($l4['id'])."</div>
+                                        			</div>";
+                                                            $this->infopeta($l4['id'], $l4['fid_jnsjab'], $idjab, $v['fid_unit_kerja'], $l4['kelas'], $l4['jml_kebutuhan']);        
+
+                                                            // PANEL LV5
+                                                            echo "<div class='panel-group' id='accordionl5'>";
+                                                                $lv5 = $this->mpetajab->getbawahan($idunker, $l4['id'])->result_array();
+                                                                foreach($lv5 as $l5):
+                                                                    $jnsjabl5 = $this->mpetajab->get_namajnsjab($l5['fid_jnsjab']);
+                                                                    if ($l5['fid_jnsjab'] == "1") {
+                                                                        $idjab = $l5['fid_jabstruk'];
+                                                                        $panel = "panel-info";
+                                                                    } else if ($l5['fid_jnsjab'] == "2") {
+                                                                        $idjab = $l5['fid_jabfu'];
+                                                                        $panel = "panel-warning";
+                                                                    } else if ($l5['fid_jnsjab'] == "3") {
+                                                                        $idjab = $l5['fid_jabft'];
+                                                                        $panel = "panel-default";
+                                                                    }
+                                                                    $nmjablv5 = $this->mpegawai->namajab($l5['fid_jnsjab'], $idjab);
+                                                                    //$jmlstokv5 = $this->mpetajab->getnip_jml($l5['fid_jnsjab'], $idjab, $idunker);
+                                                                    
+                                                                    echo "<div class='panel ".$panel."'>";
+								    $tppl5 = $l5['tpp_pk'] + $l5['tpp_bk'] + $l5['tpp_kk'] + $l5['tpp_tb'] + $l5['tpp_kp'];
+                                                                    echo "<div class='panel-heading'>
+                                                                                <a data-toggle='collapse' data-parent='#accordion5' href='#lv".$l5['id']."' aria-expanded='false' class='collapsed'>".$nmjablv5."<br/><span class='text-muted'><code class='text-muted'><b>".$jnsjabl5."</b></code> <code>Kelas : ".$l5['kelas']."</code> <code class='text-primary'>Kebutuhan : ".$l5['jml_kebutuhan']."</code> <code class='text-warning'>Bezzeting : ".$l5['jml_bezzeting']."</code>
+										<code class='text-success'>TPP : Rp. ".number_format($tppl5,2,",",".")."</code>
+										</span></a>";
+								    // Cek apakah Sub Koordinator
+                                    				    echo "<br/><span class='text-default'><small>".$l5['koord_subkoord']."</small></span>";
+								    echo "</div>"; // End Panel Heading
+
+                                                                    echo "<div id='lv".$l5['id']."' class='panel-collapse collapse' aria-expanded='false'>
+                                                                          <div class='panel-body'>";
+								    echo "
+                                        				<span class='text-primary'><b>KOMPONEN TPP</b></span>
+                                        				<div class='row'>
+                                                			<div class='col-md-2 col-xs-12'>Prestasi Kerja : Rp. ".number_format($l5['tpp_pk'],0,",",".")."</div>
+                                                			<div class='col-md-2 col-xs-12'>Beban Kerja : Rp. ".number_format($l5['tpp_bk'],0,",",".")."</div>
+                                                			<div class='col-md-2 col-xs-12'>Kondisi Kerja : Rp. ".number_format($l5['tpp_kk'],0,",",".")."</div>
+                                                			<div class='col-md-2 col-xs-12'>Tempat Bertugas : Rp. ".number_format($l5['tpp_tb'],0,",",".")."</div>
+                                                			<div class='col-md-2 col-xs-12'>Kelangkaan Profesi : Rp. ".number_format($l5['tpp_kp'],0,",",".")."</div>
+                                                            <div class='col-md-2 col-xs-12'>".$this->setPoisisButton($l5['id'])." ".$this->setKomponenButton($l5['id'])."</div>
+                                        			    </div>";
+                                                                    $this->infopeta($l5['id'], $l5['fid_jnsjab'], $idjab, $v['fid_unit_kerja'], $l5['kelas'], $l4['jml_kebutuhan']);        
+
+                                                                    echo "</div>"; // end <div class='panel-body'> LV5
+                                                                    echo "</div>"; // end lv".$l5['id']."'
+                                                                    echo "</div>"; // end panel LV5
+
+                                                                endforeach;
+                                                            
+                                                            echo "</div>"; 
+                                                            // END LEVEL 5
+
+                                                            echo "</div>"; // end <div class='panel-body'> LV4
+                                                            echo "</div>"; // end lv".$l4['id']."'
+                                                            echo "</div>"; // end panel LV4
+
+                                                        endforeach;
+                                                    
+                                                    echo "</div>"; 
+                                                    // END LEVEL 4 
+
+
+                                                    echo "</div>"; // end <div class='panel-body'> LV3
+                                                    echo "</div>"; // end lv".$l3['id']."'
+                                                    echo "</div>"; // end panel LV3
+
+                                                endforeach;
+                                            
+                                            echo "</div>"; 
+                                                                           <a data-toggle='collapse' data-parent='#accordion5' href='#lv".$l5['id']."' aria-expanded='false' class='collapsed'>".$nmjablv5."<br/><span class='text-muted'><code class='text-muted'><b>".$jnsjabl5."</b></code> <code>Kelas : ".$l5['kelas']."</code> <code class='text-primary'>Kebutuhan : ".$l5['jml_kebutuhan']."</code> <code class='text-warning'>Bezzeting : ".$l5['jml_bezzeting']."</code>
+										<code class='text-success'>TPP : Rp. ".number_format($tppl5,2,",",".")."</code>
+										</span></a>";
+								    // Cek apakah Sub Koordinator
+                                    				    echo "<br/><span class='text-default'><small>".$l5['koord_subkoord']."</small></span>";
+								    echo "</div>"; // End Panel Heading
+
+                                                                    echo "<div id='lv".$l5['id']."' class='panel-collapse collapse' aria-expanded='false'>
+                                                                          <div class='panel-body'>";
+								    echo "
+                                        				<span class='text-primary'><b>KOMPONEN TPP</b></span>
+                                        				<div class='row'>
+                                                			<div class='col-md-2 col-xs-12'>Prestasi Kerja : Rp. ".number_format($l5['tpp_pk'],0,",",".")."</div>
+                                                			<div class='col-md-2 col-xs-12'>Beban Kerja : Rp. ".number_format($l5['tpp_bk'],0,",",".")."</div>
+                                                			<div class='col-md-2 col-xs-12'>Kondisi Kerja : Rp. ".number_format($l5['tpp_kk'],0,",",".")."</div>
+                                                			<div class='col-md-2 col-xs-12'>Tempat Bertugas : Rp. ".number_format($l5['tpp_tb'],0,",",".")."</div>
+                                                			<div class='col-md-2 col-xs-12'>Kelangkaan Profesi : Rp. ".number_format($l5['tpp_kp'],0,",",".")."</div>
+                                                            <div class='col-md-2 col-xs-12'>".$this->setPoisisButton($l5['id'])." ".$this->setKomponenButton($l5['id'])."</div>
+                                        			    </div>";
+                                                                    $this->infopeta($l5['id'], $l5['fid_jnsjab'], $idjab, $v['fid_unit_kerja'], $l5['kelas'], $l4['jml_kebutuhan']);        
+
+                                                                    echo "</div>"; // end <div class='panel-body'> LV5
+                                                                    echo "</div>"; // end lv".$l5['id']."'
+                                                                    echo "</div>"; // end panel LV5
+
+                                                                endforeach;
+                                                            
+                                                            echo "</div>"; 
+                                                            // END LEVEL 5
+
+                                                            echo "</div>"; // end <div class='panel-body'> LV4
+                                                            echo "</div>"; // end lv".$l4['id']."'
+                                                            echo "</div>"; // end panel LV4
+
+                                                        endforeach;
+                                                    
+                                                    echo "</div>"; 
+                                                    // END LEVEL 4 
+
+
+                                                    echo "</div>"; // end <div class='panel-body'> LV3
+                                                    echo "</div>"; // end lv".$l3['id']."'
+                                                    echo "</div>"; // end panel LV3
+
+                                                endforeach;
+                                            
+                                            echo "</div>"; 
+           

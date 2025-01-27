@@ -15,7 +15,7 @@
 </script>
 
 <center>  
-  <div class='panel panel-default' style="width: 55%; background-color:Beige;">
+  <div class='panel panel-default' style="width: 65%; background-color:Beige;">
     <div class='panel-body'>
       <form method='POST' action='../kgb/tampilpengantar'>
         <!--<input type='text' name='nip' id='nip' maxlength='18' value='$nip'>-->

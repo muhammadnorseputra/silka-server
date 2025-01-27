@@ -164,31 +164,31 @@ function showtambahdikfung(nip)
               <ul class="nav nav-tabs">
               <!-- Untuk Semua Tab.. pastikan a href=”#nama_id” sama dengan nama id di “Tap Pane” dibawah-->
               <!-- Untuk Tab pertama berikan li class=”active” agar pertama kali halaman di load tab langsung active-->
-                <li class="active"><a href="#struk" data-toggle="tab">STRUKTURAL</a></li>
+                <li><a href="#struk" data-toggle="tab">STRUKTURAL</a></li>
                 <li><a href="#fung" data-toggle="tab">FUNGSIONAL</a></li>
                 <li><a href="#tek" data-toggle="tab">TEKNIS</a></li>
-                <li><a href="#ws" data-toggle="tab">WORKSHOP / SEMINAR / SEJENISNYA</a></li>
+                <li class="active"><a href="#ws" data-toggle="tab">PENGEMBANGAN KOMPETENSI LAINNYA</a></li>
 	      </ul>
 
               <!-- Tab panes, ini content dari tab di atas -->
               <div class="tab-content">
-                <div class="tab-pane face in active" id="struk">
+                <div class="tab-pane" id="struk">
                 <br />
                 <?php
                     //cek priviledge session user -- edit_profil_priv
-                    if ($this->session->userdata('level') == "ADMIN" || $this->session->userdata('nama') == "197912292007011018") { 
+                    //if ($this->session->userdata('level') == "ADMIN" || $this->session->userdata('nama') == "197912292007011018") { 
                     ?>
                     <div id='dikjst'>
                     <table class='table table-condensed'>
                     <tr>
                     <td align='right' width='50'>
-                      <button class="btn btn-primary" data-toggle="modal" data-target="#entridik">+ Tambah Diklat Struktural</button>
+                      <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#entridik">+ Tambah Diklat Struktural</button>
                     </td>
                     </tr>
                     </table>
                     </div> <!-- tutup div=dikfung-->      
                     <?php
-                    }
+                    //}
                     ?>
                     
                 <!-- Untuk Tab pertama berikan div class=”active” agar pertama kali halaman di load content langsung active-->
@@ -202,10 +202,9 @@ function showtambahdikfung(nip)
                           <th width='350'><center><u>Instansi Penyelenggara</u><br />Tempat Pelaksanaan</center></th>
                           <th width='100'><center>Lama</center></th>
                           <th width='350'><center>STTPL</center></th>
-                          <?php if($this->session->userdata('level') === 'ADMIN'): ?>
-                          <th><center>Hapus</center></th>
-                          <th><center>Edit</center></th>
-                          <?php endif; ?>
+                          <?php //if($this->session->userdata('level') === 'ADMIN'): ?>
+                          <th width='100' colspan='2'><center>Aksi</center></th>
+                          <?php //endif; ?>
                         </tr>
                         <?php
                           $no=1;
@@ -213,7 +212,11 @@ function showtambahdikfung(nip)
                         ?>
                         <tr>
                           <td align='center'><?php echo $no;?></td>
-                          <td><?php echo $v['nama_diklat_struktural']; ?></td>
+                          <td>
+				<?php
+					echo $v['nama_diklat_struktural']; 
+				?>
+			  </td>
                           <td><?php echo $v['tahun']; ?></td>
                           <td><?php echo '<u>'.$v['instansi_penyelenggara'].'</u><br />'.$v['tempat']; ?></td>
                           <?php
@@ -225,31 +228,33 @@ function showtambahdikfung(nip)
                             echo '<td>'.$v['lama_jam'].' Jam</td>';
                           }
                           ?>
-                          <td width='300'><?php echo 'No. STTPL : '.$v['no_sk'].'<br />Tanggal : '.tgl_indo($v['tgl_sk']).'<br />Pejabat : '.$v['pejabat_sk']; ?></td>
-                          <?php if($this->session->userdata('level') === 'ADMIN'): ?>
-                          <td>
+                          <td width='300'>
+				<?php echo 'No. STTPL : '.$v['no_sk'].'<br />Tanggal : '.tgl_indo($v['tgl_sk']).'<br />Pejabat : '.$v['pejabat_sk']; ?>
+			  </td>
+                          <?php //if($this->session->userdata('level') === 'ADMIN'): ?>
+                          <td align='center'>
                           	<form method='POST' action='../pegawai/hapusrwydik_aksi'>
 	                    		<?php
 	                    		echo "<input type='hidden' name='nip' id='nip' value='$nip'>";
 	                    		echo "<input type='hidden' name='id' id='id' value='".$v['id']."'>";
 	                    		?>
-	                    		<button type="submit" class="btn btn-danger btn-xs">
+	                    		<button type="submit" class="btn btn-warning btn-xs">
 	                    			<span class="glyphicon glyphicon-trash" aria-hidden="true"></span><br/>Hapus
 	                    		</button>
 	                    		</form>
                           </td>
-                          <td>
+                          <td align='center'>
                         	<form method='POST' action='../pegawai/editrwydik'>
 	                    		<?php
 	                    		echo "<input type='hidden' name='nip' id='nip' value='$nip'>";
 	                    		echo "<input type='hidden' name='id' id='id' value='".$v['id']."'>";
 	                    		?>
-	                    		<button type="submit" class="btn btn-primary btn-xs">
+	                    		<button type="submit" class="btn btn-danger btn-xs">
 	                    			<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span><br/>Edit
 	                    		</button>
 	                    		</form>
                         </td>
-                          <?php endif; ?>
+                          <?php //endif; ?>
                         </tr>
                         <?php
                           $no++;
@@ -485,7 +490,7 @@ function showtambahdikfung(nip)
                 </div> <!-- akhir konten tab teknis -->
               
 		<!-- awal konten tab workshop -->                
-                <div class="tab-pane" id="ws">
+                <div class="tab-pane face in active" id="ws">
                 <br />
                     <?php
                     //cek priviledge session user -- edit_profil_priv
@@ -498,7 +503,7 @@ function showtambahdikfung(nip)
                       <form method="POST" name='tambahws'>
                           <input type='hidden' name='nip' id='nip' maxlength='18' value='<?php echo $nip; ?>' />
                           <button type='button' class="btn btn-success btn-sm" onClick='showtambahws(tambahws.nip.value)' >
-                          <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Tambah Workshop / Seminar / Lainnya
+                          <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Tambah Pengembangan Kompetensi Lainnya
                           </button>
                       </form>
                     </td>
@@ -510,11 +515,11 @@ function showtambahdikfung(nip)
                     ?>
 
                   <div class="panel panel-info">
-                    <div class="panel-heading"><b>WORKSHOP / SEMINAR / DAN SEJENISNYA</b></div>
+                    <div class="panel-heading"><b>PENGEMBANGAN KOMPETENSI LAINNYA</b></div>
                       <table class='table table-condensed table-hover'>
                         <tr class='info'>
                           <th width='20'><center>#</center></th>
-                          <th width='300'><center>Nama Workshop / Seminar</center></th>
+                          <th width='300'><center>Nama Kegiatan</center></th>
                           <th width='30'><center>Tahun</center></th>
                           <th width='250'><center><u>Instansi Penyelenggara</u><br />Tempat Pelaksanaan</center></th>
                           <th width='100'><center>Lama<br/>Tanggal</center></th>
@@ -527,7 +532,13 @@ function showtambahdikfung(nip)
                         ?>
                         <tr>
                           <td align='center'><?php echo $no;?></td>
-                          <td><?php echo $v['nama_workshop']; ?></td>
+                          <td><?php
+                                $nmjns = $this->mpegawai->getnama_jnsworkshop($v['fid_jenis_workshop']); 
+				$nmrd = $this->mpegawai->getnama_rumpundiklat($v['fid_rumpun_diklat']);
+				echo "<span class='text text-primary'>".$nmjns."</span><br/>".$v['nama_workshop'];
+                                echo "<br/><small><span class='text text-success'>RUMPUN : ".$nmrd."</span></small>";
+			      ?>
+			  </td>
                           <td><?php echo $v['tahun']; ?></td>
                           <td><?php echo '<u>'.$v['instansi_penyelenggara'].'</u><br />'.$v['tempat']; ?></td>
                           <?php

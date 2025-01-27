@@ -1,0 +1,789 @@
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Cuti extends CI_Controller {
+
+    // function construct, disini digunakan untuk memanggil model mawal.php
+    public function __construct()
+    {
+      parent::__construct();
+      $this->load->helper('form');
+      $this->load->helper('fungsitanggal');
+      $this->load->helper('fungsipegawai');      
+      $this->load->helper('fungsiterbilang');
+      $this->load->model('mpegawai');
+      $this->load->model('mpppk');
+      $this->load->model('mstatistik');
+      $this->load->model('munker');
+      $this->load->model('mcuti');
+      $this->load->model('datacetak');
+
+      // untuk pagination
+      $this->load->helper(array('url'));
+
+      // untuk login session
+      if (!$this->session->userdata('nama'))
+      {
+        redirect('login');
+      }
+
+      // untuk fpdf
+      $this->load->library('fpdf');
+
+      // untuk barcode
+      //$this->load->library('zend');
+      //$this->zend->load('Zend/Barcode');
+    }
+  
+  function tampilpengantar()
+  {
+    if ($this->session->userdata('usulcuti_priv') == "Y") { 
+      $data['cuti'] = $this->mcuti->tampilpengantar()->result_array();      
+      $data['pesan'] = '';    
+      $data['jnspesan'] = '';
+      $data['content'] = 'cuti/tampilpengantarcuti';
+      $this->load->view('template',$data);
+    }
+  }
+
+  function tampilproses()
+  {
+    if ($this->session->userdata('usulcuti_priv') == "Y") { 
+      $data['cuti'] = $this->mcuti->tampilproses()->result_array();      
+      $data['pesan'] = '';    
+      $data['jnspesan'] = '';
+      $data['content'] = 'cuti/tampilprosescuti';
+      $this->load->view('template',$data);
+    }
+  }
+
+  // tampilkan detail usul cuti dalam 1 pengantar
+  function detailpengantar() { //$nip = $this->input->post('nip');
+    $idpengantar = $this->input->post('id_pengantar');
+    $kelompok_cuti = $this->mcuti->getkelompok($idpengantar);
+      
+    $get_jnsasn = $this->mcuti->get_jnsasn($idpengantar);
+    if ($get_jnsasn == "PNS") {
+	$data['cuti'] = $this->mcuti->detailpengantar($idpengantar, $kelompok_cuti)->result_array();
+	 $data['jmldata'] = count($this->mcuti->detailpengantar($idpengantar, $kelompok_cuti)->result_array());
+    } else if ($get_jnsasn == "PPPK") {
+	$data['cuti'] = $this->mcuti->detailpengantar_pppk($idpengantar)->result_array();
+	$data['jmldata'] = count($this->mcuti->detailpengantar_pppk($idpengantar)->result_array());
+    }	
+    $data['nopengantar'] = $this->mcuti->getnopengantar($idpengantar);
+    $data['idpengantar'] = $idpengantar;
+    $data['pesan'] = '';    
+    $data['jnspesan'] = '';
+      
+    if ($kelompok_cuti == 'CUTI LAINNYA') {
+      $data['content'] = 'cuti/detailpengantarcuti';   
+    } else if ($kelompok_cuti == 'CUTI TUNDA') {
+      $data['content'] = 'cuti/detailpengantarcutitunda';   
+    }
+    
+    $this->load->view('template', $data); 
+  }
+
+  // tampilkan detail usul cuti yg telah dikirim ke BKPPD, dgn status selain INBOXSKPD, CETAKUSUL
+  // tanpa paging
+  /*
+  function tampilinbox() {
+    if ($this->session->userdata('usulcuti_priv') == "Y") { 
+      $data['cuti'] = $this->mcuti->tampilinbox()->result_array();
+      $data['jmldata'] = count($this->mcuti->tampilinbox()->result_array());
+      $data['pesan'] = '';    
+      $data['jnspesan'] = '';
+      $data['content'] = 'tampilinbox';
+      $this->load->view('template',$data);
+    }    
+  }
+  */
+
+
+  // tampilkan detail usul cuti yg telah dikirim ke BKPPD, dgn status selain INBOXSKPD, CETAKUSUL
+  // tampil inbox dengan paging
+  function tampilinbox() {
+    if ($this->session->userdata('usulcuti_priv') == "Y") { 
+      $data['jmldata'] = $this->mcuti->jmltampilinbox();  
+
+      // untuk paging versi dumet
+      $this->load->library('pagination');
+      $config['base_url'] = base_url().'cuti/tampilinbox';
+      $config['total_rows'] = $this->mcuti->jmltampilinbox();
+      $config['per_page'] = $per_page = 4;
+      $config['uri_segment'] = 3;
+      $config['first_link'] = 'Awal';
+      $config['last_link'] = 'Akhir';
+      $config['next_link'] = 'Selanjutnya';
+      $config['prev_link'] = 'Sebelumnya';
+
+      //$config['cur_tag_open'] = ' <strong>';
+      //$config['cur_tag_close'] = '</strong>';
+      //Tambahan untuk styling
+        $config['full_tag_open'] = "<ul class='pagination'>";
+        $config['full_tag_close'] ="</ul>";
+        $config['num_tag_open'] = '<li>';
+        $config['num_tag_close'] = '</li>';
+        $config['cur_tag_open'] = "<li class='disabled'><li class='active'><a href='#'>";
+        $config['cur_tag_close'] = "<span class='sr-only'></span></a></li>";
+        $config['next_tag_open'] = "<li>";
+        $config['next_tagl_close'] = "</li>";
+        $config['prev_tag_open'] = "<li>";
+        $config['prev_tagl_close'] = "</li>";
+        $config['first_tag_open'] = "<li>";
+        $config['first_tagl_close'] = "</li>";
+        $config['last_tag_open'] = "<li>";
+        $config['last_tagl_close'] = "</li>";
+
+      $this->pagination->initialize($config);
+      $data['paging'] = $this->pagination->create_links();
+      $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+      
+      $data['cuti'] = $this->mcuti->tampilinbox($per_page,$page)->result_array();
+      $data['pesan'] = '';    
+      $data['jnspesan'] = '';
+      $data['content'] = 'cuti/tampilinbox';     
+
+      $this->load->view('template',$data);
+    }
+  }    
+
+  // tampilkan detail usul proses cuti (status BKPPD) dalam 1 pengantar
+  function detailproses() {
+    if ($this->session->userdata('prosescuti_priv') == "Y") { 
+      $idpengantar = $this->input->post('id_pengantar');
+      $kelompok_cuti = $this->mcuti->getkelompok($idpengantar);
+        
+      $data['nopengantar'] = $this->mcuti->getnopengantar($idpengantar);
+      $get_jnsasn = $this->mcuti->get_jnsasn($idpengantar);
+      if ($get_jnsasn == "PNS") {		
+      	$data['cuti'] = $this->mcuti->detailproses($idpengantar, $kelompok_cuti)->result_array();
+      	$data['jmldata'] = count($this->mcuti->detailproses($idpengantar, $kelompok_cuti)->result_array());
+      } else if ($get_jnsasn == "PPPK") {
+	$data['cuti'] = $this->mcuti->detailproses_pppk($idpengantar, $kelompok_cuti)->result_array();
+        $data['jmldata'] = count($this->mcuti->detailproses_pppk($idpengantar, $kelompok_cuti)->result_array());
+      }		
+
+      $data['idpengantar'] = $idpengantar;
+      //$data['jmldata'] = count($this->mcuti->detailproses($idpengantar, $kelompok_cuti)->result_array());
+      $data['pesan'] = '';    
+      $data['jnspesan'] = '';
+        
+      if ($kelompok_cuti == 'CUTI LAINNYA') {
+        $data['content'] = 'cuti/detailprosescuti';   
+      } else if ($kelompok_cuti == 'CUTI TUNDA') {
+        $data['content'] = 'cuti/detailprosescutitunda';   
+      }
+      
+      $this->load->view('template', $data);
+    } 
+  }
+
+  function detailusul() {
+    $thn_cuti = $this->input->post('thn_cuti');
+    $fid_jns_cuti = $this->input->post('fid_jns_cuti');
+    $idpengantar = $this->input->post('fid_pengantar');
+    $get_jnsasn = $this->mcuti->get_jnsasn($idpengantar);
+    $kelompok_cuti = $this->mcuti->getkelompok($idpengantar);
+    $nip = $this->input->post('nip');
+
+    if ($get_jnsasn == "PNS") {
+        $data['cuti'] = $this->mcuti->detailusul($nip, $idpengantar, $thn_cuti, $fid_jns_cuti)->result_array();
+        $data['jmldata'] = count($this->mcuti->detailusul($nip, $idpengantar, $thn_cuti, $fid_jns_cuti)->result_array());
+    } else if ($get_jnsasn == "PPPK") {
+        $data['cuti'] = $this->mcuti->detailusul_pppk($nip, $idpengantar, $thn_cuti, $fid_jns_cuti)->result_array();
+        $data['jmldata'] = count($this->mcuti->detailusul($nip, $idpengantar, $thn_cuti, $fid_jns_cuti)->result_array());
+    }
+    $data['content'] = 'cuti/detailusulcuti';
+    $data['idpengantar'] = $idpengantar;
+
+    /*
+    if ($kelompok_cuti == 'CUTI LAINNYA') {
+      $data['cuti'] = $this->mcuti->detailusul($nip, $idpengantar, $thn_cuti, $fid_jns_cuti)->result_array();  
+      $data['content'] = 'cuti/detailusulcuti';   
+    } else if ($kelompok_cuti == 'CUTI TUNDA') {
+      $data['cuti'] = $this->mcuti->detailusultunda($nip, $idpengantar)->result_array();
+      $data['content'] = 'cuti/detailusulcutitunda';   
+    }
+    */
+
+    //$data['cuti'] = $this->mcuti->detailusul($nip, $idpengantar)->result_array();
+    //$data['content'] = 'detailusulcuti'; 
+    $this->load->view('template', $data); 
+  }
+  
+  function prosesusul() {
+    $idpengantar = $this->input->post('fid_pengantar');
+    $thn_cuti = $this->input->post('thn_cuti');
+    $fid_jns_cuti = $this->input->post('fid_jns_cuti');
+    $nip = $this->input->post('nip');
+    $data['idpengantar'] = $idpengantar;
+    $get_jnsasn = $this->mcuti->get_jnsasn($idpengantar);
+    if ($get_jnsasn == "PNS") {
+        $data['cuti'] = $this->mcuti->detailusul($nip, $idpengantar, $thn_cuti, $fid_jns_cuti)->result_array();
+        $data['jmldata'] = count($this->mcuti->detailusul($nip, $idpengantar, $thn_cuti, $fid_jns_cuti)->result_array());
+    } else if ($get_jnsasn == "PPPK") {
+        $data['cuti'] = $this->mcuti->detailusul_pppk($nip, $idpengantar, $thn_cuti, $fid_jns_cuti)->result_array();
+        $data['jmldata'] = count($this->mcuti->detailusul($nip, $idpengantar, $thn_cuti, $fid_jns_cuti)->result_array());
+    }
+
+    //$data['cuti'] = $this->mcuti->detailusul($nip, $idpengantar, $thn_cuti, $fid_jns_cuti)->result_array();
+
+    // untuk menampilkan riwayat SKP dan riwayat cuti
+    $data['rwyskp'] = $this->mpegawai->dtlskp($nip, $thn_cuti-1)->result_array();
+    $data['rwycuti'] = $this->mpegawai->rwycuti($nip)->result_array();       
+    $data['rwycutitunda'] = $this->mpegawai->rwycutitunda($nip)->result_array();
+
+    $data['content'] = 'cuti/detailprosesusul'; 
+    $this->load->view('template', $data); 
+  }
+
+  function prosesusul_tunda() {
+    $idpengantar = $this->input->post('fid_pengantar');
+    $nip = $this->input->post('nip');
+    $data['idpengantar'] = $idpengantar;
+    $data['cuti'] = $this->mcuti->detailusultunda($nip, $idpengantar)->result_array();
+    $data['content'] = 'cuti/detailprosesusultunda'; 
+    $this->load->view('template', $data); 
+  }
+
+  function tambahpengantar(){           
+    $data['unker'] = $this->munker->dd_unker()->result_array();
+    //$data['golru'] = $this->mpegawai->golru()->result_array();
+    $data['content'] = 'cuti/tambahpengantarcuti';
+    $this->load->view('template', $data);
+  }
+
+  function tambahusul() {
+    $data['idpengantar'] = $this->input->post('id_pengantar');
+    $kelompok_cuti = $this->mcuti->getkelompok($data['idpengantar']);    
+    
+    $data['nopengantar'] = $this->mcuti->getnopengantar($data['idpengantar']);
+    $data['tglpengantar'] = $this->mcuti->gettglpengantar($data['idpengantar']);
+    
+    if ($kelompok_cuti == 'CUTI LAINNYA') {
+      $data['jnscuti'] = $this->mcuti->jnscuti()->result_array();
+      $data['content'] = 'cuti/tambahusulcuti';
+    } else if ($kelompok_cuti == 'CUTI TUNDA') {
+      $data['content'] = 'cuti/tambahusulcutitunda';
+    }
+
+    $this->load->view('template', $data);
+  }
+
+  function editusul() {
+    $nip = $this->input->post('nip');
+    $thn_cuti = $this->input->post('thn_cuti');
+    $fid_jns_cuti = $this->input->post('fid_jns_cuti');
+    $idpengantar = $this->input->post('fid_pengantar');    
+    $data['nopengantar'] = $this->mcuti->getnopengantar($idpengantar);
+    $data['nama'] = $this->mpegawai->getnama($nip);
+    $data['tglpengantar'] = $this->mcuti->gettglpengantar($idpengantar);
+    $data['nip'] = $nip;
+    $data['fid_pengantar'] = $idpengantar;
+    $data['cuti'] = $this->mcuti->detailusul($nip, $idpengantar, $thn_cuti, $fid_jns_cuti)->result_array();
+    $data['jnscuti'] = $this->mcuti->jnscuti()->result_array();
+    $data['content'] = 'cuti/editusulcuti';
+    $this->load->view('template', $data);
+  }
+
+  function updatebtl() {
+    $nip = $this->input->post('nip');
+    $thn_cuti = $this->input->post('thn_cuti');
+    $fid_jns_cuti = $this->input->post('fid_jns_cuti');
+    $idpengantar = $this->input->post('fid_pengantar');
+
+    $data['nopengantar'] = $this->mcuti->getnopengantar($idpengantar);
+    $data['nama'] = $this->mpegawai->getnama($nip);
+    $data['tglpengantar'] = $this->mcuti->gettglpengantar($idpengantar);
+    $data['nip'] = $nip;
+    $data['fid_pengantar'] = $idpengantar;
+    $data['cuti'] = $this->mcuti->detailusul($nip, $idpengantar, $thn_cuti, $fid_jns_cuti)->result_array();
+    $data['jnscuti'] = $this->mcuti->jnscuti()->result_array();
+    $data['content'] = 'cuti/updateusulbtl';
+    $this->load->view('template', $data);
+  }
+
+  function detailtms() {
+    $idpengantar = $this->input->post('fid_pengantar');
+    $thn_cuti = $this->input->post('thn_cuti');
+    $fid_jns_cuti = $this->input->post('fid_jns_cuti');
+    $kelompok_cuti = $this->mcuti->getkelompok($idpengantar);
+    $nip = $this->input->post('nip');
+
+    $data['idpengantar'] = $idpengantar;
+    $data['cuti'] = $this->mcuti->detailusul($nip, $idpengantar, $thn_cuti, $fid_jns_cuti)->result_array();  
+    $data['content'] = 'cuti/detailusultms';   
+    $this->load->view('template', $data); 
+  }
+
+
+  // untuk ajax data cuti dgn metode get
+  function getdatacuti() {
+    $nip = $this->input->get('nip');
+    $idpengantar = $this->input->get('idpengantar');
+    $jnsasn = $this->mcuti->get_jnsasn($idpengantar);
+
+    $kel = $this->input->get('kel');
+    $thnusul = $this->input->get('thn');	
+    // cek apakah nip/nipppk berada pada unit kerja sesuai hak user, dgn metode getnama_session
+    if ($jnsasn == "PNS") {
+	$nama = $this->mpegawai->getnama_session($nip);
+	var_dump(
+    } else if ($jnsasn == "PPPK") {
+	$nama = $this->mpppk->getnama_lengkap($nip);
+    }	
+    // cek apakah NIP pernah diusulkan tahun ini date('Y')
+    //$pernahusul = $this->mcuti->cektelahusul($nip, $thnusul, $kel);
+
+    //cek SKP dan filenya
+    $tahun = $thnusul-1;    
+    $nmfile = $nip."-".$tahun;
+    $skpada = $this->mpegawai->cekskpthn($nip, $tahun);
+
+    //$tmtcpns = $this->mpegawai->gettmtcpns($nip);
+
+    if ($nama) {
+      $get_jnsasn = $this->mcuti->get_jnsasn($idpengantar);
+      if ($get_jnsasn == "PNS") {
+        $lokasifile = './photo/';
+	$filename = "$nip.jpg";
+      } else if ($get_jnsasn == "PPPK") {
+	$lokasifile = './photononpns/';
+        $filename = $this->mpppk->getphoto($nip);
+      }	
+
+      //$lokasifile = './photo/';
+      //$filename = "$nip.jpg";
+
+      if (file_exists ($lokasifile.$filename)) {
+	if ($get_jnsasn == "PNS") {
+        	$photo = "../photo/$nip.jpg";
+	} else if ($get_jnsasn == "PPPK") {
+		$photo = "../photononpns/$filename";
+	}
+      } else {
+        $photo = "../photo/nophoto.jpg";
+      }
+
+      echo "<center><img src='$photo' width='75' height='90' alt='$nip.jpg' class='img-thumbnail'><br />$nama";
+ 	
+      /*
+      if ($pernahusul) {
+        // echo "<center><b><span style='color: #FF0000'>ASN pernah diusulkan pada pengantar<br />Nomor : ".$this->mcuti->getnopengantarbynip($nip,date('Y'))."<br />Tanggal : ".tgl_indo($this->mcuti->gettglpengantarbynip($nip,date('Y')))."</span></b></center>";
+    	   echo "<center><img src='$photo' width='60' height='80' alt='$nip.jpg' class='img-thumbnail'><br />$nama";      
+    	   echo "<center><b><span style='color: #FF0000'>Usul CUTI TAHUNAN Tahun ".$thnusul." sedang diproses</span></b></center>";
+        // cek apakah data riwayat SKP ada	
+      } 
+	else if (($skpada == 0) AND ($tmtcpns != $tahun)) {
+          echo "<center><img src='$photo' width='60' height='80' alt='$nip.jpg' class='img-thumbnail'><br />$nama";
+          echo "<center><b><span style='color: #FF0000'>Data SKP Tahun ".$tahun." tidak ditemukan dalam riwayat SKP</span></b></center>";
+        // cek jika file SKP tidak ada
+      } else if ((!file_exists('./fileskp/'.$nmfile.'.pdf')) AND (!file_exists('./fileskp/'.$nmfile.'.PDF')) AND ($tmtcpns != $tahun)) {
+          echo "<center><img src='$photo' width='60' height='80' alt='$nip.jpg' class='img-thumbnail'><br />$nama";
+          echo "<center><b><span style='color: #FF0000'>File Berkas SKP Tahun ".$tahun." belum diupload</span></b></center>";
+      } else {
+          echo "<center><img src='$photo' width='60' height='80' alt='$nip.jpg' class='img-thumbnail'><br />$nama";
+          echo "<input type='hidden' name='nipsimpan' size='20' value='$nip' />";
+          echo "<br />      
+              <button type='submit' class='btn btn-success btn-sm'>
+              <span class='glyphicon glyphicon-floppy-disk' aria-hidden='true'></span>&nbspSimpan
+              </button>
+              </center>";        
+      } 
+      */
+    } else {
+        echo "<center><b><span style='color: #FF0000'>ASN tidak ditemukan,<br/>atau berada diluar kewenangan anda.</span></b></center>";
+    }    
+    
+  }
+
+  // untuk ajax data cuti dgn metode post
+  /*
+  function postdatacuti() {
+    $nip = $this->input->post('nip');    // kalau menggunakan metode post untuk ajax
+    //$nip = $this->input->get('nip');    
+    $nama = $this->mpegawai->getnama($nip);    
+    echo "<center><img src='../photo/$nip.jpg' width='90' height='120' alt='$nip.jpg'>";
+    echo "<br />$nama</center>";
+  }
+  */
+
+  // untuk ajax tambahan keterangan sesuai jenis cuti dgn metode post  
+  function showketcuti() {
+    $idjc = $this->input->get('idjnscuti');
+    $idpengantar = $this->input->get('idpengantar');
+    $thnusul = $this->input->get('thn');
+    $nip = $this->input->get('nip');
+    $kel = $this->input->get('kel');
+    $jnscuti = $this->mcuti->getnamajeniscuti($idjc);
+
+    $jnsasn = $this->mcuti->get_jnsasn($idpengantar);
+    if ($jnsasn == "PNS") {
+	$nama = $this->mpegawai->getnama_session($nip);
+    	if ($nip == "" OR $thnusul == "" OR $jnscuti == "") {
+      		echo "<div align='center'><span class='text-warning'><b>Lengkapi data NIP, Tahun Cuti, dan Jenis Cuti</b></span></div>";	
+    	} else if ($jnscuti == 'CUTI TAHUNAN') {
+      		$sp = $this->mpegawai->getstatpeg($nip);
+      		if ($sp == "PNS") {
+      			echo "<input type='hidden' name='hari_tunda' size='10' maxlength='2' value='0' />";
+      			//echo "+ cuti tunda : <input type='text' name='hari_tunda' size='10' maxlength='2' value='0' onkeyup='validAngka(this)' /> hari";
+      
+      			// cek apakah nip berada pada unit kerja sesuai hak user, dgn metode getnama_session
+      			$nama = $this->mpegawai->getnama_session($nip);
+      			// cek apakah NIP pernah diusulkan tahun ini date('Y')
+      			$pernahusul = $this->mcuti->cektelahusul($nip, $thnusul, $kel);
+      			$tahun = $thnusul-1;
+      			$skpada = $this->mpegawai->cekskpthn($nip, $tahun);
+      			$nmfile = $nip."-".$tahun;
+      			$tmtcpns = $this->mpegawai->gettmtcpns($nip);
+    
+      			if ($pernahusul) {
+        			echo "<div align='center'><b><span style='color: #FF0000'>Usul CUTI TAHUNAN Tahun ".$thnusul." sedang diproses</span></b></center>";
+      			} 
+      			//	else if (($skpada == 0) AND ($tmtcpns != $tahun)) {
+      			//    echo "<br/><b><span style='color: #FF0000'>DATA SKP TAHUN ".$tahun."<br/>TIDAK DITEMUKAN DALAM RIWAYAT SKP</span></b></center>";
+      			//} else if ((!file_exists('./fileskp/'.$nmfile.'.pdf')) AND (!file_exists('./fileskp/'.$nmfile.'.PDF')) AND ($tmtcpns != $tahun)) {
+      			//    echo "<br/><b><span style='color: #FF0000'>FILE BERKAS SKP TAHUN ".$tahun."<br/>BELUM DIUPLOAD</span></b></center>";
+      			//} 
+			else {
+          			echo "<input type='hidden' name='nipsimpan' size='20' value='$nip' />";
+          			echo "<br /><div align='center'>
+              				<button type='submit' class='btn btn-success btn-sm'>
+              				<span class='glyphicon glyphicon-floppy-disk' aria-hidden='true'></span>&nbspSimpan Usul
+              			</button></div>";
+      			}
+      		} else if ($sp == "CPNS"){
+			echo "<br/><div align='center'><span class='text-danger'><b>STATUS MASIH CPNS</b></span></div>";
+      		}
+	
+    	} else if ($jnscuti == 'CUTI SAKIT') {
+      		echo "<br/><div align='center'>Keterangan sakit : <input type='text' name='ketjnscuti' size='50' maxlength='' value='' required />";
+      		echo "<input type='hidden' name='nipsimpan' size='20' value='$nip' />";
+      		echo "<br /><br/>
+	    		<button type='submit' class='btn btn-success btn-sm'>
+            		<span class='glyphicon glyphicon-floppy-disk' aria-hidden='true'></span>&nbspSimpan Usul
+            		</button></div>";
+    	} else if ($jnscuti == 'CUTI BERSALIN') {
+      		echo "<br/><div align='center'>Untuk persalinan yang ke : <input type='text' name='ketjnscuti' size='10' maxlength='2' onkeyup='validAngka(this)' required />";  
+      			echo "<input type='hidden' name='nipsimpan' size='20' value='$nip' />";
+      		echo "<br /><br />
+            		<button type='submit' class='btn btn-success btn-sm'>
+            		<span class='glyphicon glyphicon-floppy-disk' aria-hidden='true'></span>&nbspSimpan Usul
+            		</button></div>";
+    	} else if ($jnscuti == 'CUTI BESAR') {
+      		$mkcpnsthn = getmkcpns_pilih($nip, "TAHUN");
+      		$mkcpnsbln = getmkcpns_pilih($nip, "BULAN");
+      		//echo $mkcpnsthn," ",$mkcpnsbln;
+      		if ($mkcpnsthn >= '5') {
+      			echo "<br/><div align='center'>Telah bekerja secara terus menerus selama : ".$mkcpnsthn." Tahun, ".$mkcpnsbln." Bulan";
+	      		//echo "<input type='text' name='ketjnscuti' size='5' maxlength='' value='$mkcpnsthn' required disabled /> tahun";  
+      			echo "<input type='hidden' name='nipsimpan' size='20' value='$nip' />";
+      			echo "<br /><br />
+            			<button type='submit' class='btn btn-success btn-sm'>
+            			<span class='glyphicon glyphicon-floppy-disk' aria-hidden='true'></span>&nbspSimpan Usul
+            			</button></div>";
+      		} else {
+			echo "<br/><div align='center'><span class='text-danger'><b>MASA KERJA KURANG DARI 5 TAHUN</b></span></div>";
+      		}
+    	} else {
+      		echo "<input type='hidden' name='nipsimpan' size='20' value='$nip' />";
+      		echo "<br /><div align='center'>
+            		<button type='submit' class='btn btn-success btn-sm'>
+            		<span class='glyphicon glyphicon-floppy-disk' aria-hidden='true'></span>&nbspSimpan Usul
+            		</button></div>";
+    	}
+    } else if ($jnsasn == "PPPK") {
+	$nama = $this->mpppk->getnama_lengkap($nip);
+	if ($nip == "" OR $thnusul == "" OR $jnscuti == "") {
+                echo "<div align='center'><span class='text-warning'><b>Lengkapi data NIPPPK, Tahun Cuti, dan Jenis Cuti</b></span></div><br/>";
+        } else if ($nama) {
+		echo "<br/><div align='center'>KETERANGAN ALASAN CUTI<br/>
+		      <input type='text' name='ket_jns_cuti' size='70' maxlength='100' value='' required />";
+                echo "<input type='hidden' name='nipsimpan' size='20' value='$nip' />";
+                echo "<br /><br /><div align='center'>
+                        <button type='submit' class='btn btn-success btn-sm'>
+                        <span class='glyphicon glyphicon-floppy-disk' aria-hidden='true'></span>&nbspSIMPAN USUL CUTI
+                        </button></div>";
+	} else {
+        	echo "<center><b><span style='color: #FF0000'>ASN tidak ditemukan,<br/>atau berada diluar kewenangan anda.</span></b></center>";
+    	}
+    }	
+  }
+
+  public function cetakusul()  
+  {
+    $res['data'] = $this->datacetak->datacetakusulcuti();
+    $this->load->view('/cuti/cetakusulcutibaru',$res);    
+  }
+
+  // cetak pengantar khusu cuti lainnya tidak digabung dengan cuti tunda
+  //public function cetakpengantar()  
+  //{
+  // $fid_unit_kerja = $this->input->post('fid_unit_kerja');
+  // //$res['namaunker'] = $this->munker->getnamaunker($fid_unit_kerja);
+  //  $res['data'] = $this->datacetak->datacetakpengantarcuti();
+  //  $this->load->view('cetakpengantarcuti',$res);    
+  //}
+
+  // cetak pengant untuk cuti lainnya dan cuti tunda
+  public function cetakpengantar()  
+  {
+    $id_pengantar = $this->input->post('id_pengantar');
+    $fid_unit_kerja = $this->input->post('fid_unit_kerja');
+
+    $kelompok_cuti = $this->mcuti->getkelompok($id_pengantar);
+    if ($kelompok_cuti == 'CUTI LAINNYA') {
+      $res['data'] = $this->datacetak->datacetakpengantarcuti();
+      $this->load->view('/cuti/cetakpengantarcuti',$res);    
+    } else if ($kelompok_cuti == 'CUTI TUNDA') {
+      $res['data'] = $this->datacetak->datacetakpengantarcutitunda();
+      $this->load->view('/cuti/cetakpengantarcutitunda',$res);    
+    }
+  }
+
+  public function cetaksk()  
+  {
+    $res['data'] = $this->datacetak->datacetakskcuti();
+    $this->load->view('/cuti/cetakskcuti',$res);    
+  }
+
+  public function cetaksk_skpd()  
+  {
+    $res['data'] = $this->datacetak->datacetakskcuti();
+    $this->load->view('/cuti/cetakskcuti_skpd',$res);    
+  }
+
+  public function cetaksk_tunda()  
+  {
+    $res['data'] = $this->datacetak->datacetakskcuti_tunda();
+    $this->load->view('/cuti/cetakskcuti_tunda',$res);    
+  }
+
+  public function kirim_kebkppd()  
+  {
+    $id_pengantar = $this->input->post('id_pengantar');
+    $fid_unit_kerja = $this->input->post('fid_unit_kerja');
+    $kelompok_cuti = $this->mcuti->getkelompok($id_pengantar);
+    $tgl_kirim = $this->mlogin->datetime_saatini();
+
+    // update status cuti : INBOXBKPPD => 3 berdasarkan id_pengantar
+    $id_statcuti = 3;  // status cuti : INBOXBKPPD
+    $datacuti = array(      
+      'fid_status'      => $id_statcuti,
+      'tgl_kirim_usul'  => $tgl_kirim
+    );
+
+    $wherecuti = array(
+    'fid_pengantar'   => $id_pengantar
+    );
+
+    // update status pengantar : BKPPD => 3 berdasarkan id_pengantar dan fid_unit_kerja
+    $id_statpengantar = 3;  // status pengantar : BKPPD
+    $datapengantar = array(      
+      'fid_status'      => $id_statpengantar
+    );
+
+    $wherepengantar = array(
+    'id_pengantar'   => $id_pengantar,
+    'fid_unit_kerja'   => $fid_unit_kerja
+    );
+    
+    // rubah fid_status cuti sesuai data array diatas, 3 => INBOXBKPPD
+    $jnsasn = $this->mcuti->get_jnsasn($id_pengantar);
+    if ($jnsasn == "PNS") {
+    	if ($this->mcuti->edit_usul($wherecuti, $datacuti)) {
+        	// rubah status pengantar menjadi : 3 => BKPPD
+        	$this->mcuti->edit_pengantar($wherepengantar, $datapengantar);
+
+        	// kirim konfirmasi pesan dan jenis pesan yang ada pada file tampilpengantarcuti.php
+        	$data['pesan'] = '<b>Sukses</b>, Usul Cuti <u>'.$this->mcuti->getnopengantar($id_pengantar).'</u> berhasil dikirim.';
+        	$data['jnspesan'] = 'alert alert-success';
+    	} else {
+        	$data['pesan'] = '<b>Gagal !</b>, Usul Cuti <u>'.$this->mcuti->getnopengantar($id_pengantar).'</u> gagal dikirim.';
+        	$data['jnspesan'] = 'alert alert-danger';
+    	}   
+    } else if ($jnsasn == "PPPK") {
+        if ($this->mcuti->edit_usul_pppk($wherecuti, $datacuti)) {
+                // rubah status pengantar menjadi : 3 => BKPPD
+                $this->mcuti->edit_pengantar($wherepengantar, $datapengantar);
+
+                // kirim konfirmasi pesan dan jenis pesan yang ada pada file tampilpengantarcuti.php
+                $data['pesan'] = '<b>Sukses</b>, Usul Cuti <u>'.$this->mcuti->getnopengantar($id_pengantar).'</u> berhasil dikirim.';
+                $data['jnspesan'] = 'alert alert-success';
+        } else {
+                $data['pesan'] = '<b>Gagal !</b>, Usul Cuti <u>'.$this->mcuti->getnopengantar($id_pengantar).'</u> gagal dikirim.';
+                $data['jnspesan'] = 'alert alert-danger';
+        }
+    }
+
+
+    $data['cuti'] = $this->mcuti->tampilpengantar()->result_array();
+    $data['content'] = 'cuti/tampilpengantarcuti';
+    $this->load->view('template', $data);
+
+    //$data['nopengantar'] = $this->mcuti->getnopengantar($id_pengantar);
+    //$data['cuti'] = $this->mcuti->detailpengantar($id_pengantar, $kelompok_cuti)->result_array();
+    //$data['idpengantar'] = $id_pengantar;
+    //$data['jmldata'] = count($this->mcuti->detailpengantar($id_pengantar, $kelompok_cuti)->result_array());
+    //$data['content'] = 'detailpengantarcuti'; 
+    //$this->load->view('template', $data);
+  }
+
+  public function kirimtunda_kebkppd()  
+  {
+    $id_pengantar = $this->input->post('id_pengantar');
+    $fid_unit_kerja = $this->input->post('fid_unit_kerja');
+    $kelompok_cuti = $this->mcuti->getkelompok($id_pengantar);
+    $tgl_kirim = $this->mlogin->datetime_saatini();
+
+    // update status cuti : INBOXBKPPD => 3 berdasarkan id_pengantar
+    $id_statcuti = 3;  // status cuti : INBOXBKPPD
+    $datacuti = array(      
+      'fid_status'      => $id_statcuti,
+      'tgl_kirim_usul'  => $tgl_kirim
+    );
+
+    $wherecuti = array(
+    'fid_pengantar'   => $id_pengantar
+    );
+
+    // update status pengantar : BKPPD => 3 berdasarkan id_pengantar dan fid_unit_kerja
+    $id_statpengantar = 3;  // status pengantar : BKPPD
+    $datapengantar = array(      
+      'fid_status'      => $id_statpengantar
+    );
+
+    $wherepengantar = array(
+    'id_pengantar'   => $id_pengantar,
+    'fid_unit_kerja'   => $fid_unit_kerja
+    );
+
+
+    
+    // rubah fid_status cuti sesuai data array diatas, 3 => INBOXBKPPD
+    if ($this->mcuti->edit_usultunda($wherecuti, $datacuti)) {
+
+        // rubah status pengantar menjadi : 3 => BKPPD
+        $this->mcuti->edit_pengantar($wherepengantar, $datapengantar);
+
+        // kirim konfirmasi pesan dan jenis pesan yang ada pada file tampilpengantarcuti.php
+        $data['pesan'] = '<b>Sukses</b>, Usul Cuti Tunda <u>'.$this->mcuti->getnopengantar($id_pengantar).'</u> berhasil dikirim.';
+        $data['jnspesan'] = 'alert alert-success';
+    } else {
+        $data['pesan'] = '<b>Gagal !</b>, Usul Cuti Tunda <u>'.$this->mcuti->getnopengantar($id_pengantar).'</u> gagal dikirim.';
+        $data['jnspesan'] = 'alert alert-danger';
+    }   
+
+    $data['cuti'] = $this->mcuti->tampilpengantar()->result_array();
+    $data['content'] = 'cuti/tampilpengantarcuti';
+    $this->load->view('template', $data);
+  }
+
+  /*public function kirimusul()  
+  {
+    $nip = $this->input->post('nip');
+    $thn_cuti = $this->input->post('thn_cuti');
+    $fid_jns_cuti = $this->input->post('fid_jns_cuti');
+    $fid_pengantar = $this->input->post('fid_pengantar');
+    $kelompok_cuti = $this->mcuti->getkelompok($fid_pengantar);
+    $id_jnscuti = 3;  // status cuti : INBOXBKPPD
+
+    // update status cuti : INBOXBKPPD => 3
+    $data = array(      
+      'fid_status'      => $id_jnscuti
+    );
+
+    $where = array(
+    'nip'             => $nip,
+    'fid_jns_cuti'    => $fid_jns_cuti,
+    'fid_pengantar'   => $fid_pengantar,
+    'thn_cuti'        => $thn_cuti
+    );
+    
+    // rubah fid_status sesuai data array diatas
+    if ($this->mcuti->edit_usul($where, $data)) {
+        // kirim konfirmasi pesan dan jenis pesan yang ada pada file tampilpengantarcuti.php
+        $data['pesan'] = '<b>Sukses</b>, Usul Cuti <u>'.$this->mpegawai->getnama($nip).'</u> berhasil dikirim ke BKPPD.';
+        $data['jnspesan'] = 'alert alert-success';
+    } else {
+        $data['pesan'] = '<b>Gagal !</b>, Pengantar Cuti <u>'.$this->mpegawai->getnama($nip).'</u> gagal dikirim ke BKPPD.';
+        $data['jnspesan'] = 'alert alert-danger';
+    }   
+
+    $data['nopengantar'] = $this->mcuti->getnopengantar($fid_pengantar);
+    $data['cuti'] = $this->mcuti->detailpengantar($fid_pengantar, $kelompok_cuti)->result_array();
+    $data['idpengantar'] = $fid_pengantar;
+    $data['jmldata'] = count($this->mcuti->detailpengantar($fid_pengantar, $kelompok_cuti)->result_array());
+    $data['content'] = 'detailpengantarcuti'; 
+    $this->load->view('template', $data);
+  }
+  */
+
+  function tambahusul_aksi() {
+    $nip = addslashes($this->input->post('nipsimpan')); // diambil dari getdatacuti() hasil dari ajax
+    $id_pengantar = $this->input->post('id_pengantar');
+    $kelompok_cuti = $this->mcuti->getkelompok($id_pengantar);
+    $id_jnscuti = $this->input->post('id_jnscuti');    
+    $jnscuti = $this->mcuti->getnamajeniscuti($id_jnscuti);
+    if (($jnscuti == 'CUTI SAKIT') OR ($jnscuti == 'CUTI BERSALIN') OR ($jnscuti == 'CUTI BESAR')) {
+      $ketjnscuti = addslashes($this->input->post('ketjnscuti'));      
+    } else {
+      $ketjnscuti = '';
+    }
+
+    if ($jnscuti == 'CUTI TAHUNAN') {
+      $hari_tunda = $this->input->post('hari_tunda');      
+    } else {
+      $hari_tunda = '0';
+    }
+
+    $tahun = addslashes($this->input->post('tahun'));
+    $tglmulai = tgl_sql($this->input->post('tglmulai'));
+    $tglselesai = tgl_sql($this->input->post('tglselesai'));
+    $jml_hk = $this->input->post('jml_hk');
+
+    $jml = $this->hitung_jmlharicuti($jml_hk, $tglmulai, $tglselesai);
+    //$jml = addslashes($this->input->post('jml'));
+    //$satuan_jml = addslashes($this->input->post('satuan_jml'));
+    $satuan_jml = "HARI";
+
+    $alamat = addslashes($this->input->post('alamat'));
+    $catatan_pej_kepeg = addslashes($this->input->post('catatan_pej_kepeg'));
+    $catatan_atasan = addslashes($this->input->post('catatan_atasan'));
+    $keputusan_pej = addslashes($this->input->post('keputusan_pej'));
+    $dokumen = $this->input->post('dokumen');
+    $id_status = 1; // untuk status cuti INBOXSKPD (pada tabel ref_statuscuti)
+
+    $user_usul = $this->session->userdata('nip');
+    $tgl_usul = $this->mlogin->datetime_saatini();
+
+    $data = array(
+      'nip'               => $nip,
+      'fid_pengantar'     => $id_pengantar,
+      'fid_jns_cuti'      => $id_jnscuti,
+      'ket_jns_cuti'      => $ketjnscuti,
+      'thn_cuti'          => $tahun,
+      'jml'               => $jml,
+      'tambah_hari_tunda' => $hari_tunda,
+      'satuan_jml'        => $satuan_jml,
+      'tgl_mulai'         => $tglmulai,
+      'tgl_selesai'       => $tglselesai,
+      'jml_hk'            => $jml_hk,
+      'alamat'            => $alamat,
+      'catatan_pej_kepeg' => $catatan_pej_kepeg,
+      'catatan_atasan'    => $catatan_atasan,
+      'keputusan_pej'     => $keputusan_pej,
+      'dokumen'           => $dokumen,
+      'fid_status'        => $id_status,
+      'user_usul'         => $user_usul,
+      'tgl_usul'          => $tgl_usul
+      );
+
+    // cek apakah sudah pernah usul, untuk menghindari refresh/reload pada page tambahusul_aksi
+    if ($this->mcuti->cektelahusul($nip, $tahun, 'CUTI LAINNYA') == 0) {
+      if ($this->mcuti->input_usul($data))
+        {
+          // kirim konfirmasi pesan dan jenis pesan yang ada pada file tampilpengantarcuti.php
+          $data['pesan'] = '<b>Sukses</b>, Usul Cuti <u>'.$this->mpegawai->getnama($data['nip']).'</u> berhasil ditambah.';
+          $data['jnspesan'] = 'alert alert-success';
+        } else {

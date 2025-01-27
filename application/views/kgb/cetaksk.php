@@ -134,7 +134,7 @@ class PDF extends FPDF
 
             $this->setFont('Arial','',10);
             $this->setXY(120,$y+20);
-            $this->cell(60,5,"KEPADA :",0,1,'L',1); 
+            $this->cell(60,5,"KEPADA YTH. ",0,1,'L',1); 
             $this->setXY(120,$y+25);
             $this->MULTICELL(80,4,"KEPALA BADAN PENGELOLAAN KEUANGAN, PENDAPATAN DAN ASET DAERAH",0,'L',1); 
             $this->setXY(120,$y+33);
@@ -146,32 +146,36 @@ class PDF extends FPDF
             $this->cell(60,5,"Paringin",0,1,'L',1); 
             $this->setFont('Arial','',11);
 
-            $this->setXY(50,$y+55);
+            $this->setXY(50,$y+50);
             $this->MULTICELL(140,5,"Dengan ini diberitahukan bahwa berhubung dengan dipenuhinya masa kerja dan syarat-syarat lainnya kepada : ",'','J',1); 
 
-            $this->setXY(50,$y+65); $this->cell(55,5,"1. Nama dan Tanggal Lahir",0,1,'L',1); 
-            $this->setXY(110,$y+65); $this->cell(3,5,": ",0,1,'L',1);
-            $this->setXY(113,$y+65); $this->cell(80,5,$opeg->mpegawai->getnama($key->nip),0,1,'L',1);
-            $this->setXY(113,$y+70); $this->cell(50,5,tgl_indo($key->tgl_lahir),0,1,'L',1);
-            $this->setXY(50,$y+75); $this->cell(55,5,"2. Nomor Induk Pegawai (NIP)",0,1,'L',1);             
-            $this->setXY(110,$y+75); $this->cell(3,5,": ",0,1,'L',1);            
-            $this->setXY(113,$y+75); $this->cell(80,5,$key->nip,0,1,'L',1);
-            $this->setXY(50,$y+80); $this->cell(55,5,"3. Pangkat / Jabatan",0,1,'L',1);
-            $this->setXY(110,$y+80); $this->cell(3,4,": ",0,1,'L',1);
+            $this->setXY(50,$y+60); $this->cell(55,5,"1. Nama dan Tanggal Lahir",0,1,'L',1); 
+            $this->setXY(110,$y+60); $this->cell(3,5,": ",0,1,'L',1);
+            $this->setXY(113,$y+60); $this->cell(80,5,$opeg->mpegawai->getnama($key->nip),0,1,'L',1);
+            $this->setXY(113,$y+65); $this->cell(50,5,tgl_indo($key->tgl_lahir),0,1,'L',1);
+            $this->setXY(50,$y+70); $this->cell(55,5,"2. Nomor Induk Pegawai (NIP)",0,1,'L',1);             
+            $this->setXY(110,$y+70); $this->cell(3,5,": ",0,1,'L',1);            
+            $this->setXY(113,$y+70); $this->cell(80,5,$key->nip,0,1,'L',1);
+            $this->setXY(50,$y+75); $this->cell(55,5,"3. Pangkat / Jabatan",0,1,'L',1);
+            $this->setXY(110,$y+75); $this->cell(3,4,": ",0,1,'L',1);
             $this->setFont('Arial','',9);
-	    $this->setXY(113,$y+80); $this->cell(80,4,$opeg->mpegawai->getnamapangkat($key->fid_golru_skr)." (".$opeg->mpegawai->getnamagolru($key->fid_golru_skr).")",0,1,'L',1);
+	    $this->setXY(113,$y+75); $this->cell(80,4,$opeg->mpegawai->getnamapangkat($key->fid_golru_skr)." (".$opeg->mpegawai->getnamagolru($key->fid_golru_skr).")",0,1,'L',1);
 
             if ($key->fid_jnsjab == 1) { $idjab = $key->fid_jabatan;
             }else if ($key->fid_jnsjab == 2) { $idjab = $key->fid_jabfu;
             }else if ($key->fid_jnsjab == 3) { $idjab = $key->fid_jabft;
             }
 
-            $this->setFont('Arial','',9);
-            $this->setXY(113,$y+84);
+            $this->setFont('Arial','',8);
+            $this->setXY(113,$y+79);
 	    		if($opeg->mpegawai->namajab($key->fid_jnsjab, $idjab) == '=SEMENTARA=') {
 	    			$this->MULTICELL(80,4,'-','','L',1);
 	    		} else {
-	    			$this->MULTICELL(80,4,strtoupper($opeg->mpegawai->namajab($key->fid_jnsjab, $idjab)),'','L',1);	
+				$jab = $opeg->mpegawai->namajab($key->fid_jnsjab, $idjab);
+				$jmlcj = strlen($jab);
+				//if ($jmlcj >= 50) {
+				$this->MULTICELL(90,3,strtoupper($opeg->mpegawai->namajab($key->fid_jnsjab, $idjab)),'','L',1);
+	    			//$this->MULTICELL(90,3,"KEPALA DINAS PEMBERDAYAAN PEREMPUAN DAN PERLINDUNGAN ANAK, PENGENDALIAN PENDUDUK DAN KELUARGA BERENCANA SERTA PEMBERDAYAAN MASYARAKAT DAN DESA",'','L',1);	
 	    		}
 	    		
             $lenjab = strlen($opeg->mpegawai->namajab($key->fid_jnsjab, $idjab));
@@ -184,13 +188,14 @@ class PDF extends FPDF
             }
 
             $this->setFont('Arial','',11);
-            $this->setXY(50,$y+93); // 93 => 90 (default)
+            $this->setXY(50,$y+88); // 93 => 90 (default)
 	    $this->cell(55,4,"4. Unit Kerja",0,1,'L',1); 
-            $this->setXY(110,$y+93); // 93 => 90 (default)
+            $this->setXY(110,$y+88); // 93 => 90 (default)
 	    $this->cell(3,4,": ",0,1,'L',1);            
-            $this->setFont('Arial','',9);
-            $this->setXY(113,$y+93); // 93 => 90 (default)
-	    $this->MULTICELL(90,4,$ounker->munker->getnamaunker($key->fid_unit_kerja),'','L',1); 
+            $this->setFont('Arial','',8);
+            $this->setXY(113,$y+88); // 93 => 90 (default)
+            $this->MULTICELL(90,3,$ounker->munker->getnamaunker($key->fid_unit_kerja),'','L',1);
+	    //$this->MULTICELL(90,3,"DINAS PEMBERDAYAAN PEREMPUAN DAN PERLINDUNGAN ANAK, PENGENDALIAN PENDUDUK DAN KELUARGA BERENCANA SERTA PEMBERDAYAAN MASYARAKAT DAN DESA",'','L',1); 
             $lenunker = strlen($ounker->munker->getnamaunker($key->fid_unit_kerja));
             if ($lenunker <= 38) {
                 $y = $y+4; 
@@ -293,7 +298,8 @@ class PDF extends FPDF
             $this->setXY(35,$y+55); $this->cell(50,5,"Unit Kerja",0,1,'L',1); 
             $this->setXY(85,$y+55); $this->cell(2.5,5,":",0,1,'L',1); 
             $this->setFont('Arial','',10);
-            $this->setXY(87.5,$y+55); $this->MULTICELL(105,5,$munker->munker->getnamaunker($key->fid_unit_kerja),'','L',1); 
+            $this->setXY(87.5,$y+55); $this->MULTICELL(105,5,$munker->munker->getnamaunker($key->fid_unit_kerja),'','L',1);
+            //$this->setXY(87.5,$y+55); $this->MULTICELL(105,5,"DINAS PEMBERDAYAAN PEREMPUAN DAN PERLINDUNGAN ANAK, PENGENDALIAN PENDUDUK DAN KELUARGA BERENCANA SERTA PEMBERDAYAAN MASYARAKAT DAN DESA",'','L',1); 
             $this->setFont('Arial','',11);
 
             $this->setXY(30,$y+70);
@@ -363,17 +369,26 @@ class PDF extends FPDF
             $this->setXY(90,$y+205);
             $this->MULTICELL(110,5,' '.$key->pejabat_sk.',','','C',1);
             $this->setFont('Arial','U',11);
-            $this->setXY(110,$y+230); $this->cell(70,5,'RIBOWO, S.Pd, M.AP',0,1,'C',1);
+            $this->setXY(110,$y+230); $this->cell(70,5,'H. ABIJI, S.Pd, M.AP',0,1,'C',1);
             $this->setFont('Arial','',11);
             $this->setXY(110,$y+235); $this->cell(70,5,'Pembina Utama Muda (IV/c)',0,1,'C',1);
-            $this->setXY(110,$y+240); $this->cell(70,5,'NIP. 19661002 199001 1 002',0,1,'C',1);		
+            $this->setXY(110,$y+240); $this->cell(70,5,'NIP. 196908131994121002',0,1,'C',1);
+	
+            $this->setFont('Arial','',8);
+            $this->setXY(10,$y+281); $this->cell(165,3,'- UU ITE No. 11 Tahun 2008 Pasal 5 Ayat 1',0,1,'R',1);
+            $this->setFont('Arial','I',8);
+            $this->setXY(10,$y+284); $this->cell(165,3,'"Informasi Elektronik dan/atau Dokumen Elektronik hasil cetaknya merupakan alat bukti hukum yang sah"',0,1,'R',1);
+            $this->setFont('Arial','',8);
+            $this->setXY(10,$y+287); $this->cell(165,3,'- Dokumen ini telah ditandatangani secara elektronik menggunakan sertifikat elektronik yang diterbnitkan BSrE',0,1,'R',1);
+            $this->Image('assets/tte_logo.png', 175, 325,'25','10','png');
+
 	} else {     	    
 	    if ($key->nama_eselon == 'II/A') {
                 $this->setXY(100,$y+205);
-			$this->setFont('Arial','',12);
+		$this->setFont('Arial','',12);
                 $this->MULTICELL(90,5,'BUPATI BALANGAN,','','C',1);
                 $this->setXY(110,$y+235);
-			$this->cell(70,5,'H. Abdul Hadi, S.Ag, M.I.Kom',0,1,'C',1);
+		$this->cell(70,5,'H. Abdul Hadi, S.Ag, M.I.Kom',0,1,'C',1);
             } else if (($key->nama_eselon == 'II/B') OR ($nmjab == 'CAMAT') OR ($nmjab == 'DIREKTUR')) {
                 $this->setXY(100,$y+205);
                 $this->MULTICELL(90,5,'SEKRETARIS DAERAH','','C',1);
@@ -385,22 +400,43 @@ class PDF extends FPDF
                 $this->setXY(110,$y+240); $this->cell(70,5,'Pembina Utama Madya',0,1,'C',1); 
                 $this->setXY(110,$y+245); $this->cell(70,5,'NIP. 197604171994121001',0,1,'C',1);                 
             } else {
-                $this->setXY(100,$y+205);
+                $this->setXY(100,$y+200);
                 $this->MULTICELL(90,5,' '.$key->pejabat_sk.',','','C',1);
                 $this->setFont('Arial','U',11);
-                $this->setXY(110,$y+235); $this->cell(70,5,'H. SUFRIANNOR, S.Sos, M.AP',0,1,'C',1); 
+                $this->setXY(110,$y+225); $this->cell(70,5,'H. SUFRIANNOR, S.Sos, M.AP',0,1,'C',1); 
                 $this->setFont('Arial','',11);
-                $this->setXY(110,$y+240); $this->cell(70,5,'Pembina Utama Muda (IV/c)',0,1,'C',1); 
-                $this->setXY(110,$y+245); $this->cell(70,5,'NIP. 19681012 198903 1 009',0,1,'C',1); 
-            }
-	}
+                $this->setXY(110,$y+230); $this->cell(70,5,'Pembina Utama Muda (IV/c)',0,1,'C',1); 
+                $this->setXY(110,$y+235); $this->cell(70,5,'NIP. 19681012 198903 1 009',0,1,'C',1); 
+
+                /* PLH. SEKRERARIS */
+                /*$this->setXY(100,$y+205);
+                $this->MULTICELL(90,5,'Plh. '.$key->pejabat_sk.',','','C',1);
+                $this->setFont('Arial','U',11);
+                $this->setXY(110,$y+235); $this->cell(70,5,'RUSMIN NURIADIN, S.Ag, S.Sos, MH',0,1,'C',1); 
+                $this->setFont('Arial','',11);
+                $this->setXY(110,$y+240); $this->cell(70,5,'PEMBINA TK I (IV/B)',0,1,'C',1); 
+                $this->setXY(110,$y+245); $this->cell(70,5,'NIP. 19680321 199101 1 001',0,1,'C',1);
+		*/
+	
+		$y = 50;
+                $this->setFont('Arial','',8);
+                $this->setXY(10,$y+276); $this->cell(165,3,'- UU ITE No. 11 Tahun 2008 Pasal 5 Ayat 1',0,1,'R',1);
+                $this->setFont('Arial','I',8);
+                $this->setXY(10,$y+279); $this->cell(165,3,'"Informasi Elektronik dan/atau Dokumen Elektronik hasil cetaknya merupakan alat bukti hukum yang sah"',0,1,'R',1);
+                $this->setFont('Arial','',8);
+                $this->setXY(10,$y+282); $this->cell(165,3,'- Dokumen ini telah ditandatangani secara elektronik menggunakan sertifikat elektronik yang diterbnitkan BSrE',0,1,'R',1);
+                $this->Image('assets/tte_logo.png', 175, 325,'25','10','png');
+        
+	    }
+	}	
 
 	    // Tampilkan QR Code dalam bentuk file png, ukuran 35 x 35
-            $this->Image('assets/qrcodekgb/'.$key->qrcode.'.png', 50, 260,'30','30','png');
-
+            $this->Image('assets/qrcodekgb/'.$key->qrcode.'.png', 20, 250,'30','30','png');
 
             $this->setFont('Arial','U',8);
-            $this->setXY(20,$y+255); $this->cell(70,5,'Tembusan :',0,1,'L',1); 
+	    $y = 45;
+            $this->setXY(20,$y+255); 
+	    $this->cell(70,5,'Tembusan :',0,1,'L',1); 
             $this->setFont('Arial','',8);
             if ($ounker->munker->getnamaunker($key->fid_unit_kerja) == 'INSPEKTORAT') {
                 $jabatan = 'Inspektur;';
@@ -410,8 +446,8 @@ class PDF extends FPDF
                 $jabatan = 'Sekretaris DPRD;';
             } else if ($ounker->munker->getnamaunker($key->fid_unit_kerja) == 'SEKRETARIAT KOMISI PEMILIHAN UMUM') {
                 $jabatan = 'Sekretaris KPU Kabupaten Balangan;';
-            } else if ($ounker->munker->getnamaunker($key->fid_unit_kerja) == 'RUMAH SAKIT UMUM DAERAH BALANGAN') {
-                $jabatan = 'Direktur RSUD Balangan;';
+            } else if ($ounker->munker->getnamaunker($key->fid_unit_kerja) == 'RUMAH SAKIT UMUM DAERAH DATU KANDANG HAJI BALANGAN') {
+                $jabatan = 'Direktur RSUD Datu Kandang Haji Balangan;';
             } else if ($ounker->munker->getnamaunker($key->fid_unit_kerja) == 'KECAMATAN PARINGIN') {
                 $jabatan = 'Camat Paringin;';
             } else if ($ounker->munker->getnamaunker($key->fid_unit_kerja) == 'KECAMATAN PARINGIN SELATAN') {
@@ -423,7 +459,7 @@ class PDF extends FPDF
             } else if ($ounker->munker->getnamaunker($key->fid_unit_kerja) == 'KECAMATAN JUAI') {
                 $jabatan = 'Camat Juai;';
             } else if ($ounker->munker->getnamaunker($key->fid_unit_kerja) == 'KECAMATAN HALONG') {
-                $jabatan = 'Camat Halong;';
+                $jabatan = 'Camat Halo\ng;';
             } else if ($ounker->munker->getnamaunker($key->fid_unit_kerja) == 'KECAMATAN AWAYAN') {
                 $jabatan = 'Camat Awayan;';
             } else if ($ounker->munker->getnamaunker($key->fid_unit_kerja) == 'KECAMATAN TEBING TINGGI') {
@@ -442,21 +478,31 @@ class PDF extends FPDF
             //$this->setXY(20,$y+255); $this->cell(70,5,'Tembusan :',0,1,'L',1); 
             //$this->setFont('Arial','',8);            
             //$this->setXY(25,$y+260); $this->cell(70,5,'1. Kepala '.$ounker->munker->getnamaunker($key->fid_unit_kerja).';',0,1,'L',1); 
-            $this->setXY(25,$y+259); $this->multicell(180,5,'1. '.$jabatan,0,'L',1); 
-            $this->setXY(25,$y+263); $this->cell(70,5,'2. Bendahara Gaji Kantor / Instansi yang bersangkutan;',0,1,'L',1); 
-            $this->setXY(25,$y+267); $this->cell(70,5,'3. PNS yang bersangkutan.',0,1,'L',1);             
+            $this->setXY(25,$y+259); $this->multicell(180,3,'1. '.$jabatan,0,'L',1); 
+            $this->setXY(25,$y+262); $this->cell(70,3,'2. Bendahara Gaji SKPD yang bersangkutan;',0,1,'L',1); 
+            $this->setXY(25,$y+265); $this->cell(70,3,'3. PNS yang bersangkutan.',0,1,'L',1);
+
+	    //atur posisi 1.5 cm dari bawah
+	    $y = 45;	
+            $this->SetXY(20, $y+274);
+            //buat garis horizontal
+            $this->Line(20,$this->GetY()+5,200,$this->GetY()+5);
+            //Arial italic 9
+            $this->SetFont('Arial','I',9);
+            $this->Cell(0,5,'SILKa Online ::: copyright BKPSDM Kabupaten Balangan ' . date('Y'),0,0,'L');	
+            
         }        
 	}
 
 	function Footer()
 	{
 		//atur posisi 1.5 cm dari bawah
-		$this->SetY(-15);
+		//$this->SetY(-15);
 		//buat garis horizontal
-		$this->Line(10,$this->GetY(),200,$this->GetY());
+		//$this->Line(10,$this->GetY(),200,$this->GetY());
 		//Arial italic 9
-		$this->SetFont('Arial','I',9);
-        $this->Cell(0,10,'SILKa Online ::: copyright BKPSDM Kabupaten Balangan ' . date('Y'),0,0,'L');		
+		//$this->SetFont('Arial','I',9);
+        	//$this->Cell(0,10,'SILKa Online ::: copyright BKPSDM Kabupaten Balangan ' . date('Y'),0,0,'L');		
 	}
 }
  

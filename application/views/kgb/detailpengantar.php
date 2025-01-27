@@ -57,7 +57,8 @@
   <div class="panel panel-success">  
   <div class="panel-heading" align="left">
   <b>Pengantar KGB Nomor : <?php echo $nopengantar; ?></b><br />
-  <?php echo "Jumlah Data : ", $jmldata, " Usul"; ?>
+  <?php echo $this->mkgb->getunker_pengantar($idpengantar); ?>
+  <?php echo "<br/>Jumlah Data : ", $jmldata, " Usul"; ?>
   </div>
   <!-- untuk scrollbar -->
   <div style="padding:3px;overflow:auto;width:100%;height:300px;border:1px solid white" >

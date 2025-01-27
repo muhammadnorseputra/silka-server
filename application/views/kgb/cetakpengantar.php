@@ -142,10 +142,12 @@ class PDF extends FPDF
         $this->setXY(25,$y+95);
         $this->MULTICELL(165,5,'Demikian permohonan ini disampaikan untuk dapat dipergunakan sebagaimana mestinya.','','J',1);
 
-        $this->setXY(105,$y+110);
+        $this->setXY(105,$y+105);
         $this->setFont('Arial','B',11);
 
-        if ($key->status == 'DEFINITIF') {
+	if (!$key->status) {
+	    $this->MULTICELL(100,5,'',0,'C',0);	
+        } else if ($key->status == 'DEFINITIF') {
             $this->MULTICELL(100,5,$key->jabatan_spesimen,0,'C',0); 
         } else if ($key->status == 'PLT') {
             $this->MULTICELL(100,5,'Plt. '.$key->jabatan_spesimen,0,'C',0); 
@@ -155,14 +157,16 @@ class PDF extends FPDF
             $this->MULTICELL(100,5,'a.n. '.$key->jabatan_spesimen,0,'C',0); 
             $this->setXY(105,$y+120);
             $this->MULTICELL(100,5,$opeg->mpegawai->namajabnip($key->nip_spesimen),0,'C',0);             
-        } 
+        } else {
+	    $this->MULTICELL(100,5,'',0,'C',0);	
+	}
         
         $this->setFont('Arial','',11);
 
         $this->setFont('Arial','U',11);
-        $this->setXY(120,$y+140); $this->cell(70,5,$opeg->mpegawai->getnama($key->nip_spesimen),0,1,'C',1); 
+        $this->setXY(120,$y+130); $this->cell(70,5,$opeg->mpegawai->getnama($key->nip_spesimen),0,1,'C',1); 
         $this->setFont('Arial','',11);
-        $this->setXY(120,$y+145); $this->cell(70,5,'NIP. '.$key->nip_spesimen,0,1,'C',1); 
+        $this->setXY(120,$y+135); $this->cell(70,5,'NIP. '.$key->nip_spesimen,0,1,'C',1); 
 
         
 	}

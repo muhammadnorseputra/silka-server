@@ -212,7 +212,7 @@ class Kgb extends CI_Controller {
       if ($pernahusul) {
               //echo "<center><b><span style='color: #FF0000'>ASN pernah diusulkan pada pengantar<br />Nomor : ".$this->mcuti->getnopengantarbynip($nip,date('Y'))."<br />Tanggal : ".tgl_indo($this->mcuti->gettglpengantarbynip($nip,date('Y')))."</span></b></center>";
         //echo "<center><img src='".base_url()."photo/$nip.jpg' width='75' height='100' alt='$nip.jpg' class='img-thumbnail'><br />$nama";
-        echo "<center><span style='color: #FF0000'>Usul KGB PNS ybs sedang diproses</span></center>";
+        echo "<center><span style='color: #FF0000'><mark style='background-color: pink'>SEDANG DALAM PROSES USULAN KGB</mark></span></center>";
       //} 
 	//else if ($skpada == 0) {
         //echo "<center><img src='".base_url()."photo/$nip.jpg' width='75' height='100' alt='$nip.jpg' class='img-thumbnail'><br />$nama";
@@ -1298,14 +1298,14 @@ class Kgb extends CI_Controller {
           } else if ($status == 'INBOXBKPPD') {          
             echo "<h5><span class='label label-default'>Inbox BKPPD</span></h5>";
           } else if ($status == 'BTL') {
-            echo "<h5><span class='label label-warning'>B T L</span></h5>";
+            echo "<span class='label label-warning'>B T L</span><br/><small>".$v['alasan']."</small>";
           } else if ($status == 'TMS') {
-            echo "<h5><span class='label label-danger'>T M S</span></h5>";
+            echo "<span class='label label-danger'>T M S</span><br/><small>".$v['alasan']."</small>";
           } else if ($status == 'SETUJU') {
             echo "<h5><span class='label label-success'>Setuju</span></h5>";
           } else if ($status == 'CETAKSK') {
             echo "<h5><span class='label label-info'>Cetak SK</span></h5>";
-            //echo "<small>Diproses. ".tglwaktu_indo($v['tgl_proses'])."</small>";
+            echo "<small>Diproses. ".tglwaktu_indo($v['tgl_proses'])."</small>";
             
             $cenvertedTime = new DateTime($v['tgl_proses']);
             $saatini = new DateTime();  
@@ -1449,8 +1449,6 @@ class Kgb extends CI_Controller {
     $ket = "Rp. ".indorupiah($gaji).",-<br/>MK Gol : ".$mk_thn." Tahun ".$mk_bln." Bulan<br />
     <h5><span class='".$warnalabel."'>TMT : 01 ".bulan($tmt_bln)." ".$tmt_thn."</span></h5>";
 
-    
-
     return $ket;
   }
 
@@ -1517,10 +1515,8 @@ class Kgb extends CI_Controller {
             endforeach;
           }
 
-
           //echo "<td>Rp. ".indorupiah($gapok).",- pada Golru ".$this->mpegawai->getnamagolru($fid_golru)."<br/>MK Gol : ".$mkgol_thn." Tahun ".$mkgol_bln." Bulan<br />TMT : ".tgl_indo($tmt)."</td>";
           //echo "<td>".$v['nip']."</td>";
-
 
           $sqlpernahusul = $this->mkgb->cektelahusul($v['nip'], date('Y'));
           $ket_usul = $this->mkgb->getdatapernahusul($v['nip'], date('Y'));
@@ -1642,9 +1638,10 @@ class Kgb extends CI_Controller {
   function statistika()
     {
       if ($this->session->userdata('proseskgb_priv') == "Y") { 
+	$thn = date('Y'); 	
         $data['grafik'] = $this->mkgb->getjmlprosesbystatusgraphkgb();
         $data['thnkgb'] = $this->mkgb->gettahunrwykgb()->result_array(); 
-        $data['rwyperbulan'] = $this->mkgb->getjmlrwyperbulan(); 
+        $data['rwyperbulan'] = $this->mkgb->getjmlrwyperbulan($thn); 
         $data['content'] = 'kgb/statistika';
         $this->load->view('template',$data);
       }
@@ -1826,15 +1823,20 @@ class Kgb extends CI_Controller {
         echo "</td>";
 
         echo "<td align='center'>";
-        echo "<form method='POST' action='".base_url()."kgb/admin_updateusul'>";          
-        echo "<input type='hidden' name='nip' id='nip' value='$v[nip]'>";
-        echo "<input type='hidden' name='id_pengantar' id='id_pengantar' value='$v[fid_pengantar]'>";
-        echo "<input type='hidden' name='tmt_gaji_lama' id='tmt_gaji_lama' value='$v[tmt_gaji_lama]'>"; 
+	if ($status != 'SELESAISETUJU') {
+          echo "<form method='POST' action='".base_url()."kgb/admin_updateusul'>";          
+          echo "<input type='hidden' name='nip' id='nip' value='$v[nip]'>";
+          echo "<input type='hidden' name='id_pengantar' id='id_pengantar' value='$v[fid_pengantar]'>";
+          echo "<input type='hidden' name='tmt_gaji_lama' id='tmt_gaji_lama' value='$v[tmt_gaji_lama]'>"; 
 
-        echo "<button type='submit' class='btn btn-warning btn-xs'>";
-        echo "<span class='glyphicon glyphicon-new-window' aria-hidden='true'></span><br />Update Usul";
-        echo "</button>";
-        echo "</form>";
+          echo "<button type='submit' class='btn btn-warning btn-xs'>";
+          echo "<span class='glyphicon glyphicon-new-window' aria-hidden='true'></span><br />Update Usul";
+          echo "</button>";
+          echo "</form>";
+	} else {
+	  echo "Tidak bisa turun status karena sudah SELESAI";
+	}	
+
         echo '</td>';        
         echo "</tr>";
 

@@ -11,6 +11,16 @@
             });
 </script>
 
+<?php
+$get_jnsasn = $this->mcuti->get_jnsasn($idpengantar);
+if ($get_jnsasn == "PNS") {
+	$ket = "PNS";
+	$cljns = "success";
+} else if ($get_jnsasn == "PPPK") {
+	$ket = "PPPK";
+	$cljns = "warning";
+}
+?>
 <center>  
   <div class="panel panel-default" style="width: 80%">
     <div class="panel-body">
@@ -27,12 +37,20 @@
       <?php
         echo "</form>";          
       ?>
-      <div class="panel panel-info">
+      <div class="panel panel-<?php echo $cljns; ?>">
         <div class='panel-heading' align='left'><span class="glyphicon glyphicon-file" aria-hidden="true"></span>
-        <b>PROSES USUL CUTI</b>
+        <b>PROSES USUL CUTI <?php echo $ket; ?></b>
         </div>
         <?php
           foreach($cuti as $v):
+
+          if ($get_jnsasn == "PNS") {
+             $ni = $v['nip'];
+	     $file_photo = "../photo/".$ni.".jpg";	
+          } else if ($get_jnsasn == "PPPK") {
+             $ni = $v['nipppk'];
+	     $file_photo = "../photononpns/".$v['photo'];
+          }
         ?>
         <table class="table">
           <tr>
@@ -41,20 +59,22 @@
                 <tr>
                   <td align='right' width='120'><b>No. Pengantar</b> :</td>
                   <td width='300'><?php echo $v['no_pengantar']; ?></td>
-                  <td align='right' width='120'><b>Tgl. Pengantar</b> :</td>
+                  <td align='right' width='130'><b>Tgl. Pengantar</b> :</td>
                   <td  colspan='2'><?php echo tgl_indo($v['tgl_pengantar']); ?></td>
                   <td rowspan='6' colspan='2'>
                     <?php
                     $lokasifile = './photo/';
-                    $filename = $v['nip'].".jpg";
+                    $filename = $ni.".jpg";
 
-                    if (file_exists ($lokasifile.$filename)) {
-                      $photo = "../photo/".$v['nip'].".jpg";
+                    //if (file_exists ($lokasifile.$filename)) {
+		    if (file_exists ($file_photo)) {
+                      $photo = $file_photo;
+		      //$photo = "../photo/".$v['nip'].".jpg";	
                     } else {
                       $photo = "../photo/nophoto.jpg";
                     }
                     ?>
-                    <center><img class='img-thumbnail' src='<?php echo $photo; ?>' width='120' height='160' alt=''>
+                    <center><img class='img-thumbnail' src='<?php echo $file_photo; ?>' width='120' height='160' alt=''>
 			
 		    <?php
                     // Tampilkan QR Code
@@ -66,44 +86,87 @@
                 </tr>
                 <tr>
                   <td align='right'><b>NIP</b> :</td>
-                  <td><?php echo $v['nip']; ?></td>
+                  <td>
+		  <?php	echo $ni; ?>
+		  </td>
                   <td align='right'><b>Nama</b> :</td>
-                  <td colspan='2'><?php echo $this->mpegawai->getnama($v['nip']); ?></td>
+                  <td colspan='2'>
+		  <?php 
+    			if ($get_jnsasn == "PNS") {
+				echo $this->mpegawai->getnama($ni);
+			} else if ($get_jnsasn == "PPPK") {
+                                echo $this->mpppk->getnama_lengkap($ni);
+                        }
+		  ?>
+		  </td>
                 </tr>
                 <?php 
+		if ($get_jnsasn == "PNS") {
                     if ($v['fid_jnsjab'] == 1) { $idjab = $v['fid_jabatan'];
                     }else if ($v['fid_jnsjab'] == 2) { $idjab = $v['fid_jabfu'];
                     }else if ($v['fid_jnsjab'] == 3) { $idjab = $v['fid_jabft'];
                     }
+		}
                 ?>
                 <tr>
                   <td align='right'><b>Jabatan</b> :</td>
-                  <td colspan='4'><?php echo $this->mpegawai->namajab($v['fid_jnsjab'],$idjab), '<br /><u>', $v['nama_unit_kerja'],'</u>'; ?></td>
+                  <td colspan='4'>
+		  <?php
+			if ($get_jnsasn == "PNS") {
+				echo $this->mpegawai->namajab($v['fid_jnsjab'],$idjab), '<br /><u>', $v['nama_unit_kerja'],'</u>';
+			} else if ($get_jnsasn == "PPPK") {
+				echo $this->mpegawai->namajab(3,$v['fid_jabft']), '<br /><u>', $v['nama_unit_kerja'],'</u>';
+			}
+		  ?>
+		  </td>
                 </tr>
                 <tr>
                   <td align='right'><b>Jenis Cuti</b> :</td>
                   <td><?php echo $v['nama_jenis_cuti']; ?></td>
-                  <td align='center' colspan='3'><b>Keterangan</b> : <?php echo $v['ket_jns_cuti']; ?></td>
+		  <td align='right'><b>Tanggal Cuti</b> :</td>
+                  <td colspan='2'><?php echo tgl_indo($v['tgl_mulai']).' s/d '.tgl_indo($v['tgl_selesai'])." (".$v['jml']." HARI KERJA)"; ?></td>
                 </tr>                
                 <tr>
                   <td align='right'><b>Tahun</b> :</td>
                   <td><?php echo $v['thn_cuti']; ?>
                   <?php
-                  if ($v['tambah_hari_tunda'] != 0) {
+		  /*
+                  if (($get_jnsasn == "PNS") AND ($v['tambah_hari_tunda'] != 0)) {
                     $jmltotal = $v['jml'] + $v['tambah_hari_tunda'];
                     echo "&nbsp&nbsp&nbsp&nbsp&nbsp<b>Jumlah</b> : ". $jmltotal." (".$v['jml']." ".$v['satuan_jml']." + ".$v['tambah_hari_tunda']." Cuti Tunda)";
                   } else {
                     $jmltotal = $v['jml'];
                     echo "&nbsp&nbsp&nbsp&nbsp&nbsp<b>Jumlah</b> : ". $jmltotal." ".$v['satuan_jml'];
                   }
+		  */
                   ?>
                   </td>
-                  <td align='right'><b>Tanggal Cuti</b> :</td>
-                  <td colspan='2'><?php echo tgl_indo($v['tgl_mulai']).' s/d '.tgl_indo($v['tgl_selesai']); ?></td>
+                  <td align='right'><b>Jumlah Hari Kerja</b> :</td>
+                  <td colspan='2'><?php echo $v['jml_hk']; ?> Hari per Minggu</td>
+                </tr>
+		<tr>
+                  <td align='right'><b>Keterangan</b> :</td>
+		  <td colspan='3'><?php echo $v['ket_jns_cuti']; ?></td>
                 </tr>
                 <tr>
                   <td align='right'><b>Alamat</b> :</td>
-                  <td colspan='4'><?php echo $v['alamat']; ?></td>                  
+                  <td colspan='3'><?php echo $v['alamat']; ?></td>                  
+                </tr>
+		<tr>
+                  <td align='right'><b>Dokumen</b> :</td>
+                  <td colspan='3'>
+                        <?php
+                        $file = $v['dokumen'];
+                        $file_headers = @get_headers($file);
+                        if(!$file_headers || $file_headers[0] == 'HTTP/1.1 404 Not Found') {
+                                echo "<span class='text-danger'>File dokumen tidak ditemukan</span>";
+                        }
+                        else {
+                                $exists = true;
+                                echo "<a href='".$v['dokumen']."' target='_blank' rel='noopener noreferrer'>Klik Disini</a>";
+                        }
+                        ?>
+                  </td>
                 </tr>
                 <tr>
                 <td align='center' colspan='2'><u><b>Catatan Pejabat Kepegawaian</b></u></td>
@@ -145,14 +208,12 @@
                 <?php  
                 }
                 ?>
-
                 <tr>
                   <td colspan='6'>
                     <!-- awal data riwayat -->
                     <ul class="nav nav-tabs">
                       <!-- Untuk Semua Tab.. pastikan a href=”#nama_id” sama dengan nama id di “Tap Pane” dibawah-->
                       <!-- Untuk Tab pertama berikan li class=”active” agar pertama kali halaman di load tab langsung active-->
-
 
                       <li class="active"><a href="#cuti" data-toggle="tab">Riwayat Cuti</a></li>
                       <li><a href="#skp" data-toggle="tab">Penilaian Prestasi Kerja Tahun <?php echo $v['thn_cuti']-1; ?></a></li>                      
@@ -164,9 +225,9 @@
                         <table class="table table-condensed">
                           <tr>
                             <td align='center'>
-                              <div class="panel panel-info" style="height: 215px; width: 100%">
+                              <div class="panel panel-<?php echo $cljns; ?>" style="overflow:auto; height: 200px; width: 100%">
                                 <table class='table table-condensed table-hover'>
-                                  <tr class='info'>
+                                  <tr class='<?php echo $cljns; ?>'>
                                     <th><center>Tahun</center></th>
                                     <th><center>Jenis Cuti</center></th>
                                     <th><center>Lama (+ Tunda)</center></th>
@@ -199,9 +260,9 @@
                               </div>
                             </td>
                             <td align='center'>
-                              <div class="panel panel-info" style="height: 215px; width: 90%">
+                              <div class="panel panel-<?php echo $cljns; ?>" style="height: 200px; width: 90%">
                                 <table class='table table-condensed table-hover'>
-                                  <tr class='info'>
+                                  <tr class='<?php echo $cljns; ?>'>
                                     <th colspan='2'><center>Cuti Tunda</center></th>
                                   </tr>
                                   <?php
@@ -353,33 +414,34 @@
             if ($this->mcuti->getstatuscuti($v['fid_status']) == 'INBOXBKPPD') {
             ?>
               <table class="table table-condensed">
-                <tr class='danger'>
-                  <td colspan='7' align='center'><b>APPROVAL</b></td>
-                </tr>
-                <tr class='danger'>
-                  <td align='right' rowspan='3'>
-                    <form method='POST' action='../cuti/prosesusulbtl'>
+                <tr class='warning'>
+                  <td align='right' rowspan='3' width='30%'>
+                    <!--
+		    <form method='POST' action='../cuti/prosesusulbtl'>
                     <textarea id="alasanbtl" name="alasanbtl" rows="3" cols="35" required></textarea>
+		    -->
                   </td>                  
                   <td align='center' rowspan='3'>
                   <?php
-                    //echo "<form method='POST' action='../cuti/detailusul'>";
-                    echo "<input type='hidden' name='nip' id='nip' value='$v[nip]'>";
+		    /*	
+                    echo "<input type='hidden' name='nip' id='nip' value='$ni'>";
                     echo "<input type='hidden' name='fid_pengantar' id='fid_pengantar' value='$v[fid_pengantar]'>";
                     echo "<button type='submit' class='btn btn-warning btn-xs'>";
                     echo "<span class='glyphicon glyphicon-hand-down' aria-hidden='true'></span><br />B T L<br/>(Ke SKPD)";
                     echo "</button>";
                     echo "</form>";
+		    */
                   ?>
                   </td>
+		
                   <td align='right' rowspan='3'>
                     <form method='POST' action='../cuti/prosesusultms'>
-                    <textarea id="alasantms" name="alasantms" rows="3" cols="35" required></textarea>
+                    <textarea id="alasantms" name="alasantms" rows="3" cols="50" required></textarea>
                   </td>                  
                   <td align='left' rowspan='3'>
                   <?php
                     //echo "<form method='POST' action='../cuti/detailusul'>";          
-                    echo "<input type='hidden' name='nip' id='nip' value='$v[nip]'>";
+                    echo "<input type='hidden' name='nip' id='nip' value='$ni'>";
                     echo "<input type='hidden' name='fid_pengantar' id='fid_pengantar' value='$v[fid_pengantar]'>";
                     echo "<button type='submit' class='btn btn-danger btn-xs'>";
                     echo "<span class='glyphicon glyphicon-thumbs-down' aria-hidden='true'></span><br />T M S<br/>(Selesai)";
@@ -391,10 +453,10 @@
                   <td align='left'>
                     <form method='POST' action='../cuti/prosesusulsetuju'>
                     <input type='text' name='no_sk' id='no_sk' size='23' required></td> 
-                  <td align='center' rowspan='2'>
+                  <td align='center' rowspan='3'>
                   <?php
                     //echo "<form method='POST' action='../cuti/detailusul'>";          
-                    echo "<input type='hidden' name='nip' id='nip' value='$v[nip]'>";
+                    echo "<input type='hidden' name='nip' id='nip' value='$ni'>";
                     echo "<input type='hidden' name='fid_pengantar' id='fid_pengantar' value='$v[fid_pengantar]'>";
                     echo "<button type='submit' class='btn btn-success btn-xs'>";
                     echo "<span class='glyphicon glyphicon-thumbs-up' aria-hidden='true'></span><br />Setuju<br/>(Cetak SK)";
@@ -403,13 +465,24 @@
                   ?>
                   </td>
                 </tr>
-                <tr class='danger'>
+                <tr class='warning'>
                   <td align='right'>Tgl. SK</td> 
                   <td align='left'><input type='text' name='tgl_sk' id='tgl_sk' class="tanggal" size='12' value='<?php echo date('d-m-Y'); ?>' required></td> 
                 </tr>
-                <tr class='danger'>
+                <tr class='warning'>
                   <td align='right'>Pejabat SK</td> 
-                  <td colspan='2' align='left'><input type='text' name='pejabat_sk' id='pejabat_sk' value='KEPALA BADAN KEPEGAWAIAN DAN PENGEMBANGAN SUMBER DAYA MANUSIA' size='35' required></td> 
+                  <td colspan='2' align='left'>
+			<?php
+                        echo "<select name='pejabat_sk' id='pejabat_sk'>";
+                        echo "<option value='KEPALA BADAN KEPEGAWAIAN DAN PENGEMBANGAN SUMBER DAYA MANUSIA' selected>KEPALA BKPSDM</option>";
+                        echo "<option value='SEKRETARIS DAERAH'>SEKRETARIS DAERAH</option>";
+                        echo "<option value='KEPALA DINAS PENDIDIKAN DAN KEBUDAYAAN'>KEPALA DINAS PENDIDIKAN DAN KEBUDAYAAN</option>";
+			echo "</select>";
+                        ?>
+			<!--
+			<input type='text' name='pejabat_sk' id='pejabat_sk' value='KEPALA BADAN KEPEGAWAIAN DAN PENGEMBANGAN SUMBER DAYA MANUSIA' size='35' required>
+			-->
+		  </td> 
                   </form>
                 </tr>
               </table>
@@ -429,7 +502,7 @@
         if (($status == "SETUJU") OR ($status == "CETAKSK")) {
           echo "<form method='POST' action='../cuti/cetaksk' target='_blank'>";          
           echo "<input type='hidden' name='id_pengantar' id='id_pengantar' value='$v[fid_pengantar]'>";
-          echo "<input type='hidden' name='nip' id='nip' size='18' value='$v[nip]'>";
+          echo "<input type='hidden' name='nip' id='nip' size='18' value='$ni'>";
           echo "<input type='hidden' name='thn_cuti' id='thn_cuti' size='5' value='$v[thn_cuti]'>";
           echo "<input type='hidden' name='fid_jns_cuti' id='fid_jns_cuti' size='10' value='$v[fid_jns_cuti]'>";
       ?>

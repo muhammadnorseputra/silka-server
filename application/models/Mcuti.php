@@ -19,9 +19,12 @@ class Mcuti extends CI_Model {
 
    public function tampilproses()
   {
-    //$sess_nip = $this->session->userdata('nip');     
+    $sess_nip = $this->session->userdata('nip');     
     //tampilkan cuti pengantar dgn status = 3 (BKPPD)
-    $q = $this->db->query("select cp.* from cuti_pengantar as cp where fid_status='3' order by cp.tgl_pengantar desc");
+    //$q = $this->db->query("select cp.* from cuti_pengantar as cp where fid_status='3' order by cp.tgl_pengantar desc");
+    $q = $this->db->query("select cp.* from cuti_pengantar as cp, ref_unit_kerjav2 as u, ref_instansi_userportal as i
+                where cp.fid_unit_kerja = u.id_unit_kerja and u.fid_instansi_userportal = i.id_instansi
+                and i.nip_user like '%$sess_nip%' and cp.fid_status in ('3') order by cp.tgl_pengantar desc");
     return $q;
   }
 
@@ -66,7 +69,12 @@ class Mcuti extends CI_Model {
   	//$q = $this->db->query("select * from cuti where fid_pengantar='$idpengantar'");
     $sess_nip = $this->session->userdata('nip');
     if ($kelompok_cuti == 'CUTI LAINNYA') {
-      $q = $this->db->query("select p.nip, p.gelar_depan, p.nama, p.gelar_belakang, p.fid_jnsjab, p.fid_jabatan, p.fid_jabfu, p.fid_jabft, u.nama_unit_kerja, c.thn_cuti, c.jml, c.tambah_hari_tunda, c.satuan_jml, jc.nama_jenis_cuti, c.tgl_mulai, c.tgl_selesai, c.tgl_usul, c.fid_pengantar, cp.fid_unit_kerja, cp.id_pengantar, c.fid_jns_cuti, c.fid_status from pegawai as p, cuti as c, cuti_pengantar as cp, ref_jenis_cuti as jc, ref_unit_kerjav2 as u, ref_instansi_userportal as i where c.nip = p.nip and c.fid_jns_cuti = jc.id_jenis_cuti and p.fid_unit_kerja = u.id_unit_kerja and u.fid_instansi_userportal = i.id_instansi and c.fid_pengantar = cp.id_pengantar and c.fid_pengantar='$idpengantar' and cp.kelompok_cuti='$kelompok_cuti' order by c.thn_cuti desc, jc.id_jenis_cuti");
+      $q = $this->db->query("select p.nip, p.gelar_depan, p.nama, p.gelar_belakang, p.fid_jnsjab, p.fid_jabatan, p.fid_jabfu, p.fid_jabft, 
+	u.nama_unit_kerja, c.thn_cuti, c.jml, c.tambah_hari_tunda, c.satuan_jml, jc.nama_jenis_cuti, c.tgl_mulai, c.tgl_selesai, c.tgl_usul, c.fid_pengantar, 
+	cp.fid_unit_kerja, cp.id_pengantar, c.fid_jns_cuti, c.fid_status
+	from pegawai as p, cuti as c, cuti_pengantar as cp, ref_jenis_cuti as jc, ref_unit_kerjav2 as u, ref_instansi_userportal as i 
+	where c.nip = p.nip and c.fid_jns_cuti = jc.id_jenis_cuti and p.fid_unit_kerja = u.id_unit_kerja and u.fid_instansi_userportal = i.id_instansi 
+	and c.fid_pengantar = cp.id_pengantar and c.fid_pengantar='$idpengantar' and cp.kelompok_cuti='$kelompok_cuti' order by c.thn_cuti desc, jc.id_jenis_cuti");
     } else if ($kelompok_cuti == 'CUTI TUNDA') {
       $q = $this->db->query("select p.nip, p.gelar_depan, p.nama, p.gelar_belakang, p.fid_jnsjab, p.fid_jabatan, p.fid_jabfu, p.fid_jabft, cp.id_pengantar, cp.fid_unit_kerja, u.nama_unit_kerja, c.tahun, c.jml_hari, c.tgl_usul, c.fid_pengantar, c.fid_status from pegawai as p, cuti_tunda as c, cuti_pengantar as cp, ref_unit_kerjav2 as u, ref_instansi_userportal as i where c.nip = p.nip and p.fid_unit_kerja = u.id_unit_kerja and u.fid_instansi_userportal = i.id_instansi and i.nip_user like '%$sess_nip%' and c.fid_pengantar = cp.id_pengantar and c.fid_pengantar='$idpengantar' and cp.kelompok_cuti='$kelompok_cuti' order by c.tahun desc");  
     }
@@ -103,7 +111,12 @@ class Mcuti extends CI_Model {
     //$q = $this->db->query("select * from cuti where fid_pengantar='$idpengantar'");
     $sess_nip = $this->session->userdata('nip');
     if ($kelompok_cuti == 'CUTI LAINNYA') {
-      $q = $this->db->query("select p.nip, p.gelar_depan, p.nama, p.gelar_belakang, p.fid_jnsjab, p.fid_jabatan, p.fid_jabfu, p.fid_jabft, u.nama_unit_kerja, c.thn_cuti, c.jml, c.satuan_jml, c.tambah_hari_tunda, c.satuan_jml, jc.nama_jenis_cuti, c.tgl_mulai, c.tgl_selesai, c.user_usul, c.tgl_usul, c.tgl_kirim_usul, c.fid_pengantar, cp.fid_unit_kerja, cp.id_pengantar, c.fid_jns_cuti, c.fid_status, c.qrcode from pegawai as p, cuti as c, cuti_pengantar as cp, ref_jenis_cuti as jc, ref_unit_kerjav2 as u where c.nip = p.nip and c.fid_jns_cuti = jc.id_jenis_cuti and p.fid_unit_kerja = u.id_unit_kerja and c.fid_pengantar = cp.id_pengantar and c.fid_pengantar='$idpengantar' and cp.kelompok_cuti='$kelompok_cuti' and cp.fid_status = '3' order by c.thn_cuti desc, jc.id_jenis_cuti");
+      $q = $this->db->query("select p.nip, p.gelar_depan, p.nama, p.gelar_belakang, p.fid_jnsjab, p.fid_jabatan, p.fid_jabfu, p.fid_jabft, 
+	u.nama_unit_kerja, c.thn_cuti, c.jml, c.satuan_jml, c.tambah_hari_tunda, c.satuan_jml, jc.nama_jenis_cuti, c.tgl_mulai, c.tgl_selesai, 
+	c.user_usul, c.tgl_usul, c.tgl_kirim_usul, c.fid_pengantar, cp.fid_unit_kerja, cp.id_pengantar, c.fid_jns_cuti, c.fid_status, c.qrcode 
+	from pegawai as p, cuti as c, cuti_pengantar as cp, ref_jenis_cuti as jc, ref_unit_kerjav2 as u where c.nip = p.nip and c.fid_jns_cuti = jc.id_jenis_cuti 
+	and p.fid_unit_kerja = u.id_unit_kerja and c.fid_pengantar = cp.id_pengantar and c.fid_pengantar='$idpengantar' and cp.kelompok_cuti='$kelompok_cuti' 
+	and cp.fid_status = '3' order by c.thn_cuti desc, jc.id_jenis_cuti");
     } else if ($kelompok_cuti == 'CUTI TUNDA') {
       $q = $this->db->query("select p.nip, p.gelar_depan, p.nama, p.gelar_belakang, p.fid_jnsjab, p.fid_jabatan, p.fid_jabfu, p.fid_jabft, cp.fid_unit_kerja, u.nama_unit_kerja, c.* from pegawai as p, cuti_tunda as c, cuti_pengantar as cp, ref_unit_kerjav2 as u, ref_instansi_userportal as i where c.nip = p.nip and p.fid_unit_kerja = u.id_unit_kerja and u.fid_instansi_userportal = i.id_instansi and c.fid_pengantar = cp.id_pengantar and c.fid_pengantar='$idpengantar' and cp.kelompok_cuti='$kelompok_cuti' order by c.tahun desc");  
     }
@@ -115,7 +128,12 @@ class Mcuti extends CI_Model {
   {
     //$q = $this->db->query("select * from cuti where fid_pengantar='$idpengantar'");
     $sess_nip = $this->session->userdata('nip');
-    $q = $this->db->query("select p.nip, c.*, p.fid_jnsjab, p.fid_jabatan, p.fid_jabfu, p.fid_jabft, u.nama_unit_kerja, jc.nama_jenis_cuti, cp.no_pengantar, cp.tgl_pengantar FROM pegawai as p, cuti as c, cuti_pengantar as cp, ref_jenis_cuti as jc, ref_unit_kerjav2 as u, ref_instansi_userportal as i WHERE c.nip = p.nip and c.fid_jns_cuti = jc.id_jenis_cuti and c.fid_pengantar = cp.id_pengantar and p.fid_unit_kerja = u.id_unit_kerja and u.fid_instansi_userportal = i.id_instansi and c.fid_pengantar='".$idpengantar."' and c.nip='".$nip."' and c.thn_cuti='".$thn."' and c.fid_jns_cuti='".$fid_jns."' and i.nip_user like '%$sess_nip%' order by c.thn_cuti desc, jc.id_jenis_cuti");
+    $q = $this->db->query("select p.nip, c.*, p.fid_jnsjab, p.fid_jabatan, p.fid_jabfu, p.fid_jabft, u.nama_unit_kerja, 
+	jc.nama_jenis_cuti, cp.no_pengantar, cp.tgl_pengantar FROM pegawai as p, cuti as c, cuti_pengantar as cp, 
+	ref_jenis_cuti as jc, ref_unit_kerjav2 as u, ref_instansi_userportal as i WHERE c.nip = p.nip 
+	and c.fid_jns_cuti = jc.id_jenis_cuti and c.fid_pengantar = cp.id_pengantar and p.fid_unit_kerja = u.id_unit_kerja 
+	and u.fid_instansi_userportal = i.id_instansi and c.fid_pengantar='".$idpengantar."' and c.nip='".$nip."' 
+	and c.thn_cuti='".$thn."' and c.fid_jns_cuti='".$fid_jns."' and i.nip_user like '%$sess_nip%' order by c.thn_cuti desc, jc.id_jenis_cuti");
 
     return $q;
   }
@@ -169,7 +187,8 @@ class Mcuti extends CI_Model {
 
   function cek_selainsetujubtltms($id_pengatar)
   {    
-    $q = $this->db->query("select c.* from cuti as c, cuti_pengantar as cp, ref_statuscuti as sc where c.fid_pengantar = cp.id_pengantar and cp.id_pengantar = '".$id_pengatar."' and c.fid_status=sc.id_statuscuti and sc.nama_statuscuti not in ('TMS','BTL','CETAKSK')");    
+    $q = $this->db->query("select c.* from cuti as c, cuti_pengantar as cp, ref_statuscuti as sc where c.fid_pengantar = cp.id_pengantar 
+	and cp.id_pengantar = '".$id_pengatar."' and c.fid_status=sc.id_statuscuti and sc.nama_statuscuti not in ('TMS','BTL','CETAKSK')");    
 
     $jml = $q->num_rows();
     if ($jml == 0) {
@@ -207,7 +226,9 @@ class Mcuti extends CI_Model {
   }
 
   function input_riwayatcuti($id_pengantar, $thn_cuti, $fid_status) {
-    $q = $this->db->query("insert into riwayat_cuti(nip, fid_jns_cuti, thn_cuti, jml, satuan_jml, tambah_hari_tunda, tgl_mulai, tgl_selesai, alamat, no_sk, tgl_sk, pejabat_sk) select nip, fid_jns_cuti, thn_cuti, jml, satuan_jml, tambah_hari_tunda, tgl_mulai, tgl_selesai, alamat, no_sk, tgl_sk, pejabat_sk from cuti where fid_pengantar = '".$id_pengantar."' and thn_cuti='".$thn_cuti."' and fid_status='".$fid_status."'");
+    $q = $this->db->query("insert into riwayat_cuti(nip, fid_jns_cuti, thn_cuti, jml, satuan_jml, tambah_hari_tunda, 
+	tgl_mulai, tgl_selesai, alamat, no_sk, tgl_sk, pejabat_sk) select nip, fid_jns_cuti, thn_cuti, jml, satuan_jml, tambah_hari_tunda, tgl_mulai, tgl_selesai, 
+	alamat, no_sk, tgl_sk, pejabat_sk from cuti where fid_pengantar = '".$id_pengantar."' and thn_cuti='".$thn_cuti."' and fid_status='".$fid_status."'");
 
     return $q;
   }
@@ -297,13 +318,17 @@ class Mcuti extends CI_Model {
 
   public function cetakusulcuti($nip, $tahun, $fid_jns_cuti, $fid_pengantar)
   {
-    $q = $this->db->query("select p.nip, p.fid_golru_skr, p.fid_jnsjab, p.fid_jabatan, p.fid_jabfu, p.fid_jabft, p.fid_unit_kerja, c.*, cp.tgl_pengantar from cuti as c, cuti_pengantar as cp, pegawai as p where p.nip=c.nip and c.fid_pengantar='".$fid_pengantar."' and cp.id_pengantar=c.fid_pengantar and c.nip='".$nip."' and c.thn_cuti='".$tahun."' and c.fid_jns_cuti='".$fid_jns_cuti."'");    
+    $q = $this->db->query("select p.nip, p.fid_golru_skr, p.fid_jnsjab, p.fid_jabatan, p.fid_jabfu, p.fid_jabft, p.fid_unit_kerja, 
+		c.*, cp.tgl_pengantar from cuti as c, cuti_pengantar as cp, pegawai as p where p.nip=c.nip and c.fid_pengantar='".$fid_pengantar."' 
+		and cp.id_pengantar=c.fid_pengantar and c.nip='".$nip."' and c.thn_cuti='".$tahun."' and c.fid_jns_cuti='".$fid_jns_cuti."'");    
     return $q;    
   }
 
   public function cetakskcuti($nip, $tahun, $fid_jns_cuti, $fid_pengantar)
   {
-    $q = $this->db->query("select p.nip, p.fid_golru_skr, p.fid_jnsjab, p.fid_jabatan, p.fid_jabfu, p.fid_jabft, p.fid_unit_kerja, e.nama_eselon, c.*, cp.tgl_pengantar from cuti as c, cuti_pengantar as cp, pegawai as p, ref_eselon as e where p.fid_eselon=e.id_eselon and p.nip=c.nip and c.fid_pengantar='".$fid_pengantar."' and cp.id_pengantar=c.fid_pengantar and c.nip='".$nip."' and c.thn_cuti='".$tahun."' and c.fid_jns_cuti='".$fid_jns_cuti."'");    
+    $q = $this->db->query("select p.nip, p.fid_golru_skr, p.fid_jnsjab, p.fid_jabatan, p.fid_jabfu, p.fid_jabft, p.fid_unit_kerja, e.nama_eselon, 
+	c.*, cp.tgl_pengantar from cuti as c, cuti_pengantar as cp, pegawai as p, ref_eselon as e where p.fid_eselon=e.id_eselon and p.nip=c.nip 
+	and c.fid_pengantar='".$fid_pengantar."' and cp.id_pengantar=c.fid_pengantar and c.nip='".$nip."' and c.thn_cuti='".$tahun."' and c.fid_jns_cuti='".$fid_jns_cuti."'");    
     return $q;    
   }
 
@@ -316,7 +341,11 @@ class Mcuti extends CI_Model {
 
   public function cetakpengantar($id, $tgl, $id_unker)
   {
-    $q = $this->db->query("select p.nip, p.fid_golru_skr, p.fid_jnsjab, p.fid_jabatan, p.fid_jabfu, p.fid_jabft, cp.fid_unit_kerja, cp.*, c.tgl_mulai, c.tgl_selesai, c.fid_jns_cuti, c.jml, c.tambah_hari_tunda, c.satuan_jml, rs.nip as 'nip_spesimen', rs.status, rs.jabatan_spesimen from cuti as c, pegawai as p, cuti_pengantar as cp, ref_unit_kerjav2 as u, ref_spesimen as rs where p.nip=c.nip and c.fid_pengantar=cp.id_pengantar and cp.fid_unit_kerja=u.id_unit_kerja and cp.id_pengantar='".$id."' and cp.tgl_pengantar='".$tgl."' and cp.fid_unit_kerja='".$id_unker."' and rs.fid_unit_kerja = u.id_unit_kerja");    
+    $q = $this->db->query("select p.nip, p.fid_golru_skr, p.fid_jnsjab, p.fid_jabatan, p.fid_jabfu, p.fid_jabft, cp.fid_unit_kerja, 
+	cp.*, c.tgl_mulai, c.tgl_selesai, c.fid_jns_cuti, c.jml, c.tambah_hari_tunda, c.satuan_jml, rs.nip as 'nip_spesimen', 
+	rs.status, rs.jabatan_spesimen from cuti as c, pegawai as p, cuti_pengantar as cp, ref_unit_kerjav2 as u, ref_spesimen as rs 
+	where p.nip=c.nip and c.fid_pengantar=cp.id_pengantar and cp.fid_unit_kerja=u.id_unit_kerja and cp.id_pengantar='".$id."' 
+	and cp.tgl_pengantar='".$tgl."' and cp.fid_unit_kerja='".$id_unker."' and rs.fid_unit_kerja = u.id_unit_kerja");    
     return $q;    
   }
 
@@ -342,7 +371,8 @@ class Mcuti extends CI_Model {
 
   function getstatuspengantar_byidpengantar($idpengantar)
   {
-    $sqlspc = mysql_query("select spc.nama_statuspengantarcuti from ref_statuspengantarcuti as spc, cuti_pengantar as cp WHERE cp.id_pengantar='".$idpengantar."' and cp.fid_status = spc.id_statuspengantarcuti");
+    $sqlspc = mysql_query("select spc.nama_statuspengantarcuti from ref_statuspengantarcuti as spc, cuti_pengantar as cp 
+	WHERE cp.id_pengantar='".$idpengantar."' and cp.fid_status = spc.id_statuspengantarcuti");
     $nama_spc = mysql_result($sqlspc,0,'nama_statuspengantarcuti');       
     return $nama_spc;
   }
@@ -453,13 +483,14 @@ WHERE p.fid_unit_kerja = u.id_unit_kerja and p.fid_unit_kerja = '".$idunker."' o
   {
     //$data = $this->db->query("select sc.nama_statuscuti, COUNT(c.nip) as jumlah from ref_statuscuti as sc, cuti_tunda as c where c.fid_status = sc.id_statuscuti and sc.nama_statuscuti in ('INBOXSKPD', 'CETAKUSUL', 'INBOXBKPPD', 'CETAKSK') group by sc.id_statuscuti");
 
-    $data = $this->db->query("select nama_statuscuti from ref_statuscuti where nama_statuscuti in ('INBOXSKPD', 'CETAKUSUL', 'INBOXBKPPD', 'CETAKSK')");
+    $data = $this->db->query("select nama_statuscuti from ref_statuscuti where nama_statuscuti in ('INBOXSKPD', 'CETAKUSUL', 'INBOXBKPPD', 'CETAKSK') order by nama_statuscuti");
     return $data->result();
   }
 
-  public function getjmlrwyperbulan()
+  public function getjmlrwyperbulan($thn)
   {
-    $query = $this->db->query("select MONTH(tgl_mulai), count(nip) as 'jumlah' from riwayat_cuti where thn_cuti = '2022' group by MONTH(tgl_mulai) order by MONTH(tgl_mulai)");
+    $query = $this->db->query("select MONTH(tgl_mulai), count(nip) as 'jumlah' from riwayat_cuti where thn_cuti = '$thn' group by MONTH(tgl_mulai) 
+		order by MONTH(tgl_mulai)");
          
         if($query->num_rows() > 0){
             foreach($query->result() as $data){
@@ -585,6 +616,29 @@ WHERE p.fid_unit_kerja = u.id_unit_kerja and p.fid_unit_kerja = '".$idunker."' o
       return $count;
     }
   }
+
+  public function jml_cuti_tahun_sekarang_pppk($thn, $nip)
+  {
+    $q = $this->db->select('SUM(jml) AS jml_hari, thn_cuti')
+                  ->from('riwayat_cuti_pppk')
+                  ->where(array('thn_cuti' => $thn, 'nipppk' => $nip, 'fid_jns_cuti' => '1'))
+                  ->get();
+    if($q->num_rows() > 0){
+      $rows = $q->result();
+      foreach($rows as $row){
+        $jml = $row->jml_hari;
+        if($jml != '')
+        {
+          $count = $jml;
+        }
+        else
+        {
+          $count = 0;
+        }
+      }
+      return $count;
+    }
+  }
   
   /* 
   * RIWAYAT CUTI FOR CETAK PDF SK CUTI 
@@ -671,6 +725,305 @@ WHERE p.fid_unit_kerja = u.id_unit_kerja and p.fid_unit_kerja = '".$idunker."' o
 
     return $q;
   }
+
   // END KHUSUS ADMIN, Update Pengatar dan Usul Cuti
+
+
+  function get_jnsasn($id_pengantar)
+  {
+    $qgetjns = $this->db->query("select jenis from cuti_pengantar WHERE id_pengantar='".$id_pengantar."'");
+
+    if ($qgetjns->num_rows()>0)
+    {
+      $row=$qgetjns->row();
+      $jenis = $row->jenis;
+      return $jenis;
+    }
+  }  
+
+  function cek_liburcutibersama($tgl)
+  {
+    $q = $this->db->query("select * from ref_liburcutibersama where tgl='$tgl'");
+    return $q->num_rows();
+    
+    /*if ($q->num_rows() > 0)
+	return true;
+    else 
+	return false;
+    */    
+  }  
+
+  function liburcutibersama($tahun)
+  {
+    $q = $this->db->query("select * from ref_liburcutibersama where tgl like '$tahun%' order by tgl ASC");
+    return $q;
+  }
+
+  function inputpppk_usul($data){
+    $this->db->insert('cuti_pppk',$data);
+    return true;
+  }
+
+  // cek apakah nip pernah diusulkan cuti tahunan dan cuti besar dan status usulannya belum SELESAIBTL:9 atau SELESAITMS:10
+  function cektelahusul_pppk($nip, $tahun)
+  {
+    // cek apakah belum pernah mengambil CUTI TAHUNAN:1 atau CUTI BESAR:2 pada tahun $tahun
+    $q = $this->db->query("select fid_pengantar from cuti_pppk where nipppk='".$nip."' 
+	and fid_status not in ('8', '9', '10') and thn_cuti='".$tahun."' and fid_jns_cuti not in ('1', '2')");
+    return $q->num_rows();
+  }
+
+  function getjmldetailpengantar_pppk($idpengantar, $kelompok_cuti)
+  {
+    //$sess_nip = $this->session->userdata('nip');
+    $q = $this->db->query("select * from cuti_pppk where fid_pengantar='$idpengantar'");
+    //$this->db->whare(array('fid_pengantar' => $idpengantar));
+    //$q = $this->db->get('cuti');
+
+    return $q->num_rows();
+  }
+
+  public function detailpengantar_pppk($idpengantar)
+  {
+    //$q = $this->db->query("select * from cuti where fid_pengantar='$idpengantar'");
+    $sess_nip = $this->session->userdata('nip');
+    $q = $this->db->query("select p.nipppk, p.gelar_depan, p.nama, p.gelar_blk, p.fid_jabft, u.nama_unit_kerja, c.thn_cuti, c.jml, c.satuan_jml, jc.nama_jenis_cuti, c.tgl_mulai, c.tgl_selesai,
+	c.tgl_usul, c.fid_pengantar, cp.fid_unit_kerja, cp.id_pengantar, c.fid_jns_cuti, c.fid_status
+        from pppk as p, cuti_pppk as c, cuti_pengantar as cp, ref_jenis_cuti as jc, ref_unit_kerjav2 as u, ref_instansi_userportal as i
+        where c.nipppk = p.nipppk and c.fid_jns_cuti = jc.id_jenis_cuti and p.fid_unit_kerja = u.id_unit_kerja and u.fid_instansi_userportal = i.id_instansi
+        and c.fid_pengantar = cp.id_pengantar and c.fid_pengantar='$idpengantar' order by c.thn_cuti desc, jc.id_jenis_cuti");	
+    return $q;
+  }
+
+  public function detailusul_pppk($nipppk, $idpengantar, $thn, $fid_jns)
+  {
+    $sess_nip = $this->session->userdata('nip');
+    $q = $this->db->query("select p.nipppk, c.*, p.fid_jabft, u.nama_unit_kerja,
+        jc.nama_jenis_cuti, cp.no_pengantar, cp.tgl_pengantar, p.photo FROM pppk as p, cuti_pppk as c, cuti_pengantar as cp,
+        ref_jenis_cuti as jc, ref_unit_kerjav2 as u, ref_instansi_userportal as i WHERE c.nipppk = p.nipppk
+        and c.fid_jns_cuti = jc.id_jenis_cuti and c.fid_pengantar = cp.id_pengantar and p.fid_unit_kerja = u.id_unit_kerja
+        and u.fid_instansi_userportal = i.id_instansi and c.fid_pengantar='".$idpengantar."' and c.nipppk='".$nipppk."'
+        and c.thn_cuti='".$thn."' and c.fid_jns_cuti='".$fid_jns."' and i.nip_user like '%$sess_nip%' order by c.thn_cuti desc, jc.id_jenis_cuti");
+
+    return $q;
+  }
+
+  public function cetakusulcuti_pppk($nip, $tahun, $fid_jns_cuti, $fid_pengantar)
+  {
+    $q = $this->db->query("select p.nipppk as 'nip', p.fid_golru_pppk, p.fid_jabft, p.fid_unit_kerja,
+                c.*, cp.tgl_pengantar from cuti_pppk as c, cuti_pengantar as cp, pppk as p where p.nipppk=c.nipppk 
+		and c.fid_pengantar='".$fid_pengantar."' and cp.id_pengantar=c.fid_pengantar and c.nipppk='".$nip."' 
+		and c.thn_cuti='".$tahun."' and c.fid_jns_cuti='".$fid_jns_cuti."'");
+    return $q;
+  }
+
+  function edit_usul_pppk($where, $data){
+    $this->db->where($where);
+    $this->db->update('cuti_pppk',$data);
+    return true;
+  }
+
+  public function cetakpengantar_pppk($id, $tgl, $id_unker)
+  {
+    $q = $this->db->query("select p.nipppk, p.fid_golru_pppk, p.fid_jabft, cp.fid_unit_kerja,
+        cp.*, c.tgl_mulai, c.tgl_selesai, c.fid_jns_cuti, c.jml, c.satuan_jml, rs.nip as 'nip_spesimen',
+        rs.status, rs.jabatan_spesimen from cuti_pppk as c, pppk as p, cuti_pengantar as cp, ref_unit_kerjav2 as u, ref_spesimen as rs
+        where p.nipppk=c.nipppk and c.fid_pengantar=cp.id_pengantar and cp.fid_unit_kerja=u.id_unit_kerja and cp.id_pengantar='".$id."'
+        and cp.tgl_pengantar='".$tgl."' and cp.fid_unit_kerja='".$id_unker."' and rs.fid_unit_kerja = u.id_unit_kerja");
+    return $q;
+  }
+
+  public function detailproses_pppk($idpengantar, $kelompok_cuti)
+  {
+    //$q = $this->db->query("select * from cuti where fid_pengantar='$idpengantar'");
+    $sess_nip = $this->session->userdata('nip');
+    $q = $this->db->query("select p.nipppk, p.gelar_depan, p.nama, p.gelar_blk, p.fid_jabft,
+        u.nama_unit_kerja, c.thn_cuti, c.jml, c.satuan_jml, c.satuan_jml, jc.nama_jenis_cuti, c.tgl_mulai, c.tgl_selesai,
+        c.user_usul, c.tgl_usul, c.tgl_kirim_usul, c.fid_pengantar, cp.fid_unit_kerja, cp.id_pengantar, c.fid_jns_cuti, c.fid_status, c.qrcode
+        from pppk as p, cuti_pppk as c, cuti_pengantar as cp, ref_jenis_cuti as jc, ref_unit_kerjav2 as u where c.nipppk = p.nipppk and c.fid_jns_cuti = jc.id_jenis_cuti
+        and p.fid_unit_kerja = u.id_unit_kerja and c.fid_pengantar = cp.id_pengantar and c.fid_pengantar='$idpengantar' and cp.kelompok_cuti='$kelompok_cuti'
+        and cp.fid_status = '3' order by c.thn_cuti desc, jc.id_jenis_cuti");
+    return $q;
+  }
+
+  function cek_selainsetujubtltms_pppk($id_pengatar)
+  {
+    $q = $this->db->query("select c.* from cuti_pppk as c, cuti_pengantar as cp, ref_statuscuti as sc where c.fid_pengantar = cp.id_pengantar
+        and cp.id_pengantar = '".$id_pengatar."' and c.fid_status=sc.id_statuscuti and sc.nama_statuscuti not in ('TMS','BTL','CETAKSK')");
+
+    $jml = $q->num_rows();
+    if ($jml == 0) {
+      return true; // true : data tidak ditemukan
+    } else {
+      return false;
+    }
+  }
   
+  public function cetakskcuti_pppk($nip, $tahun, $fid_jns_cuti, $fid_pengantar)
+  {
+    $q = $this->db->query("select p.nipppk, p.fid_golru_pppk, p.fid_jabft, p.fid_unit_kerja,
+        c.*, cp.tgl_pengantar from cuti_pppk as c, cuti_pengantar as cp, pppk as p where p.nipppk=c.nipppk
+        and c.fid_pengantar='".$fid_pengantar."' and cp.id_pengantar=c.fid_pengantar and c.nipppk='".$nip."' and c.thn_cuti='".$tahun."' and c.fid_jns_cuti='".$fid_jns_cuti."'");
+    return $q;
+  }
+
+  function hapus_cuti_pppk($where){
+    $this->db->where($where);
+    $this->db->delete('cuti_pppk');
+    return true;
+  }
+
+  public function carirekap_pppk($idunker, $thn)
+  {
+    $q = $this->db->query("select p.nipppk, p.nama, p.gelar_blk, p.gelar_depan, p.fid_jabft, 
+c.fid_jns_cuti, c.jml, c.satuan_jml, c.tgl_mulai, c.tgl_selesai, c.fid_status, c.fid_pengantar, c.thn_cuti, c.tgl_proses
+FROM pppk as p left join cuti_pppk as c on c.nipppk=p.nipppk and c.thn_cuti = '".$thn."', ref_unit_kerjav2 as u
+WHERE p.fid_unit_kerja = u.id_unit_kerja and p.fid_unit_kerja = '".$idunker."'");
+
+    return $q;
+  }
+
+  function getunker_pengantar($id_pengantar)
+  {
+    $qgetjns = $this->db->query("select fid_unit_kerja from cuti_pengantar WHERE id_pengantar='".$id_pengantar."'");
+
+    if ($qgetjns->num_rows()>0)
+    {
+      $row=$qgetjns->row();
+      $unitkerja = $this->munker->getnamaunker($row->fid_unit_kerja);
+      return $unitkerja;
+    }
+  }
+
+  function input_riwayatcutipppk($id_pengantar, $thn_cuti, $fid_status) {
+    $q = $this->db->query("insert into riwayat_cuti_pppk(nipppk, fid_jns_cuti, ket_jns_cuti, thn_cuti, jml, satuan_jml, 
+	tgl_mulai, tgl_selesai, alamat, no_sk, tgl_sk, pejabat_sk) select nipppk, fid_jns_cuti, ket_jns_cuti, thn_cuti, jml, satuan_jml, tgl_mulai, tgl_selesai,
+        alamat, no_sk, tgl_sk, pejabat_sk from cuti_pppk where fid_pengantar = '".$id_pengantar."' and thn_cuti='".$thn_cuti."' and fid_status='".$fid_status."'");
+
+    return $q;
+  }
+
+  public function getrwy_perbulan($thn, $nip)
+  {
+    $query = $this->db->query("select * from riwayat_cuti where thn_cuti = '".$thn."' and nip = '".$nip."' order by tgl_mulai");
+
+        if($query->num_rows() > 0){
+            foreach($query->result() as $data){
+                $hasil[] = $data;
+        }
+            return $hasil;
+    }
+  }
+
+  public function getusulpns_perbulan($thn, $nip)
+  {
+    $query = $this->db->query("select * from cuti where thn_cuti = '".$thn."' and nip = '".$nip."' order by tgl_mulai");
+
+        if($query->num_rows() > 0){
+            foreach($query->result() as $data){
+                $hasil[] = $data;
+        }
+            return $hasil;
+    }
+  }
+
+  public function getusulpppk_perbulan($thn, $nip)
+  {
+    $query = $this->db->query("select * from cuti_pppk where thn_cuti = '".$thn."' and nipppk = '".$nip."' order by tgl_mulai");
+
+        if($query->num_rows() > 0){
+            foreach($query->result() as $data){
+                $hasil[] = $data;
+        }
+            return $hasil;
+    }
+  }
+
+  public function getjmlhk_perbulan($bln, $thn, $jmlhk_perweek)
+  {
+     $tgl = $thn."-".$bln."-01";	
+     $firstdate = date("Y-m-01", strtotime($tgl));
+     $lastdate = date("Y-m-t", strtotime($tgl));	
+     $jmlharikerja = 0;
+     $jmlliburcutber = 0;		
+	
+     while ($firstdate <= $lastdate) {
+        // dapatkan nama Hari
+        $nmhari = date('D', strtotime($firstdate));
+        if ($jmlhk_perweek == "5") {
+                if (($nmhari != "Sat") AND ($nmhari != "Sun")) {
+                        // Cek Libur dan Cuti Bersama
+                        $liburcutber = $this->mcuti->cek_liburcutibersama($firstdate);
+                        if ($liburcutber) $jmlliburcutber++; // Hitung jumlah Cuti Bersama
+
+                        $jmlharikerja++;
+                }
+        } else if ($jmlhk_perweek == "6") {
+                if ($nmhari != "Sun") {
+                        // Cek Libur dan Cuti Bersama
+                        $liburcutber = $this->mcuti->cek_liburcutibersama($firstdate);
+                        if ($liburcutber) $jmlliburcutber++; // Hitung jumlah Cuti Bersama
+
+                        $jmlharikerja++;
+                }
+        }
+        $firstdate = date('Y-m-d',strtotime('+1 days',strtotime($firstdate)));
+    }
+    return $jmlharikerja-$jmlliburcutber;
+  } 
+
+  public function getjmlhcuti_perbulan($tglmulai, $tglselesai, $bln, $jmlhk_perweek)
+  {
+     $jmlharikerja = 0;
+     $jmlliburcutber = 0;
+	
+     $thnmulai = date("Y", strtotime($tglmulai));	
+     $blnmulai = date("m", strtotime($tglmulai));
+     $blnselesai = date("m", strtotime($tglselesai));
+
+     if (($bln == $blnmulai) AND ($blnmulai < $blnselesai)) {
+	//echo "BULAN MULAI";
+	$firstdate = date("Y-m-d", strtotime($tglmulai));
+	$lastdate = date("Y-m-t", strtotime($tglmulai));
+     } else if (($bln == $blnselesai) AND ($blnmulai < $blnselesai)) {
+	//echo "BULAN SELESAI"; 
+        $firstdate = date("Y-m-01", strtotime($tglselesai));
+        $lastdate = date("Y-m-d", strtotime($tglselesai));
+     } else if ($blnmulai == $blnselesai) {
+	//echo "SAMA BULAN";
+        $firstdate = date("Y-m-d", strtotime($tglmulai));
+        $lastdate = date("Y-m-d", strtotime($tglselesai));
+     } else if (($bln > $blnmulai) AND ($bln < $blnselesai)) {
+        $firstdate = date("Y-m-d", strtotime($thnmulai."-".$bln."-01"));
+        $lastdate = date("Y-m-t", strtotime($thnmulai."-".$bln."-01"));
+     }
+     					
+
+     //echo $firstdate."s/d".$lastdate;	
+     while ($firstdate <= $lastdate) {
+        // dapatkan nama Hari
+        $nmhari = date('D', strtotime($firstdate));
+        if ($jmlhk_perweek == "5") {
+                if (($nmhari != "Sat") AND ($nmhari != "Sun")) {
+                        // Cek Libur dan Cuti Bersama
+                        $liburcutber = $this->mcuti->cek_liburcutibersama($firstdate);
+                        if ($liburcutber) $jmlliburcutber++; // Hitung jumlah Cuti Bersama
+
+                        $jmlharikerja++;
+                }
+        } else if ($jmlhk_perweek == "6") {
+                if ($nmhari != "Sun") {
+                        // Cek Libur dan Cuti Bersama
+                        $liburcutber = $this->mcuti->cek_liburcutibersama($firstdate);
+                        if ($liburcutber) $jmlliburcutber++; // Hitung jumlah Cuti Bersama
+
+                        $jmlharikerja++;
+                }
+        }
+        $firstdate = date('Y-m-d',strtotime('+1 days',strtotime($firstdate)));
+    }
+    //echo $jmlharikerja;	
+    return $jmlharikerja-$jmlliburcutber;
+  }
+
 }

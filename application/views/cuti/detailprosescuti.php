@@ -2,6 +2,19 @@
   <center>
   <div class="panel panel-default"  style="width: 99%">
   <div class="panel-body">
+
+  <?php
+        $get_jnsasn = $this->mcuti->get_jnsasn($idpengantar);
+        if ($get_jnsasn == "PNS") {
+                $ket_jnsasn = "PNS";
+                $cljns = "success";
+                $lbspan = "<span class='label label-success'>Jenis ASN : PNS</span>";
+        } else if ($get_jnsasn == "PPPK") {
+                $ket_jnsasn = "PPPK";
+                $cljns = "warning";
+                $lbspan = "<span class='label label-warning'>Jenis ASN : PPPK</span>";
+        }
+  ?>
   
   <table class='table table-condensed'>
     <tr>      
@@ -28,15 +41,17 @@
   }
   ?> 
 
-  <div class="panel panel-warning">  
+  <div class="panel panel-<?php echo $cljns; ?>">  
   <div class="panel-heading" align="left">
-  <b>Pengantar Nomor : <?php echo $nopengantar; ?></b><br />
-  <?php echo "Jumlah Data : ", $jmldata, " Usul"; ?>
+  <b>qPengantar Nomor : <?php echo $nopengantar; ?></b><br />
+  <?php echo $this->mcuti->getunker_pengantar($idpengantar); ?>
+  <?php echo "<br/>Jenis ASN : ".$ket_jnsasn; ?>
+  <?php echo " | Jumlah Data : ", $jmldata, " Usul"; ?>
   </div>
   <!-- untuk scrollbar -->
   <div style="padding:3px;overflow:auto;width:99%;height:300px;border:1px solid white" >
   <table class="table table-condensed table-hover">
-      <tr class='warning'>
+      <tr class='<?php echo $cljns;?>'>
         <td align='center' width='10'><b>No</b></td>
         <td align='center' width='250'><b>NIP | Nama</b></td>
         <td align='center' width='500'><b>Jabatan</b></td>
@@ -53,21 +68,36 @@
       ?>
 
       <?php 
+	$get_jnsasn = $this->mcuti->get_jnsasn($v['id_pengantar']);
+        if ($get_jnsasn == "PNS") {
+	  $ni = $v['nip'];
           if ($v['fid_jnsjab'] == 1) { $idjab = $v['fid_jabatan'];
           }else if ($v['fid_jnsjab'] == 2) { $idjab = $v['fid_jabfu'];
           }else if ($v['fid_jnsjab'] == 3) { $idjab = $v['fid_jabft'];
           }
+	} else if ($get_jnsasn == "PPPK") {
+          $ni = $v['nipppk'];
+	}
       ?>
 
       <tr>
         <td align='center'><?php echo $no; ?></td>
-        <td><?php echo $v['nip'], '<br />', namagelar($v['gelar_depan'],$v['nama'],$v['gelar_belakang']); ?></td>
-        <td><?php echo $this->mpegawai->namajab($v['fid_jnsjab'],$idjab), '<br />', $v['nama_unit_kerja']; ; ?></td>
+	<?php
+	if ($get_jnsasn == "PNS") {
+		echo "<td>".$v['nip'], '<br />', namagelar($v['gelar_depan'],$v['nama'],$v['gelar_belakang'])."</td>";
+		echo "<td>".$this->mpegawai->namajab($v['fid_jnsjab'],$idjab), '<br />', $v['nama_unit_kerja']."</td>";
+	} else if ($get_jnsasn == "PPPK") {
+		echo "<td>".$v['nipppk'], '<br />', namagelar($v['gelar_depan'],$v['nama'],$v['gelar_blk'])."</td>";
+		echo "<td>".$this->mpegawai->namajab(3,$v['fid_jabft']), '<br />', $v['nama_unit_kerja']."</td>";
+	}
+	?>
+        
         <td align='center'><?php echo $v['nama_jenis_cuti'], '<br />Tahun ',$v['thn_cuti']; ?></td>
 
 	<td align='center'>
         <?php
-        if ($v['tambah_hari_tunda'] != 0) {
+	
+        if (($get_jnsasn == "PNS") AND ($v['tambah_hari_tunda'] != 0)) {
           $jmltotal = $v['jml'] + $v['tambah_hari_tunda'];
           echo $jmltotal." (".$v['jml']." + ".$v['tambah_hari_tunda']." Cuti Tunda)";
         } else {
@@ -95,8 +125,7 @@
         } else if ($status == 'SELESAI') {
           echo "<h5><span class='label label-default'>SELESAI</span></h5>";
         }
-        ?>
-          
+        ?>          
         </td>
 	<td>
           <?php
@@ -112,7 +141,7 @@
           <?php
           if ($this->mcuti->getstatuscuti($v['fid_status']) == 'INBOXBKPPD') {
             echo "<form method='POST' action='../cuti/prosesusul'>";          
-            echo "<input type='hidden' name='nip' id='nip' value='$v[nip]'>";
+            echo "<input type='hidden' name='nip' id='nip' value='$ni'>";
             echo "<input type='hidden' name='thn_cuti' id='thn_cuti' value='$v[thn_cuti]'>";
             echo "<input type='hidden' name='fid_jns_cuti' id='fid_jns_cuti' value='$v[fid_jns_cuti]'>";
             echo "<input type='hidden' name='fid_pengantar' id='fid_pengantar' value='$v[fid_pengantar]'>";
@@ -122,7 +151,7 @@
             echo "</form>";
           } else {
             echo "<form method='POST' action='../cuti/prosesusul'>";          
-            echo "<input type='hidden' name='nip' id='nip' value='$v[nip]'>";
+            echo "<input type='hidden' name='nip' id='nip' value='$ni'>";
             echo "<input type='hidden' name='thn_cuti' id='thn_cuti' value='$v[thn_cuti]'>";
             echo "<input type='hidden' name='fid_jns_cuti' id='fid_jns_cuti' value='$v[fid_jns_cuti]'>";
             echo "<input type='hidden' name='fid_pengantar' id='fid_pengantar' value='$v[fid_pengantar]'>";
@@ -152,7 +181,14 @@
       -->
         <?php
           if ($this->mcuti->getstatuspengantar_byidpengantar($idpengantar) == 'BKPPD') {
-            if ($this->mcuti->cek_selainsetujubtltms($idpengantar) == TRUE) {
+	    if ($get_jnsasn == "PNS") {
+		$cekstatus = $this->mcuti->cek_selainsetujubtltms($idpengantar);
+	    } else if ($get_jnsasn == "PPPK") {
+		$cekstatus = $this->mcuti->cek_selainsetujubtltms_pppk($idpengantar);
+	    }
+	
+	    if ($cekstatus == TRUE) {
+            //if ($this->mcuti->cek_selainsetujubtltms($idpengantar) == TRUE) {
               echo "<form method='POST' action='../cuti/selesaikancuti_aksi'>";          
               echo "<input type='hidden' name='id_pengantar' id='id_pengantar' value='$v[id_pengantar]'>";
               echo "<input type='hidden' name='thn_cuti' id='thn_cuti' value='$v[thn_cuti]'>";

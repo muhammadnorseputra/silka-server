@@ -110,7 +110,7 @@ $config['rest_realm'] = 'REST API';
 |           authorization key
 |
 */
-$config['rest_auth'] = FALSE;
+$config['rest_auth'] = false;
 
 /*
 |--------------------------------------------------------------------------
@@ -126,7 +126,7 @@ $config['rest_auth'] = FALSE;
 | Note: If 'rest_auth' is set to 'session' then change 'auth_source' to the name of the session variable
 |
 */
-$config['auth_source'] = 'ldap';
+$config['auth_source'] = '';
 
 /*
 |--------------------------------------------------------------------------
@@ -228,7 +228,7 @@ $config['rest_valid_logins'] = ['Balangankab' => 'bkpsdm@2022'];
 |    restrict certain methods to IPs in your white-list
 |
 */
-$config['rest_ip_whitelist_enabled'] = FALSE;
+$config['rest_ip_whitelist_enabled'] = false;
 
 /*
 |--------------------------------------------------------------------------
@@ -546,7 +546,7 @@ $config['rest_language'] = 'indonesia';
 | will access it through a browser
 |
 */
-$config['check_cors'] = true;
+$config['check_cors'] = TRUE;
 
 /*
 |--------------------------------------------------------------------------
@@ -603,4 +603,8 @@ $config['allow_any_cors_domain'] = TRUE;
 | e.g. $config['allowed_origins'] = ['http://www.example.com', 'https://spa.example.com']
 |
 */
-$config['allowed_cors_origins'] = ['http://localhost/','https://bkpsdm.balangankab.go.id'];
+$config['allowed_cors_origins'] = [];
+
+$config['secretkey'] = 'bkpsdm@6811';
+
+$config['exp'] = 3600; //milisecond atau 1 Jam

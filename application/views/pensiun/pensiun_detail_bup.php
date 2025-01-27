@@ -6,6 +6,11 @@
 		<div class="col-md-10 col-md-offset-1">
 			<div class="panel panel-default">
 				<div class="panel-body">
+				<?php 
+					// API E-PENSIUN
+					$api = PostApi('https://bkpsdm.balangankab.go.id/epensiun/api/usul/detail?nip='.$d->nip);
+					$row = json_decode($api);
+				?>
 				<?= form_open(base_url('pensiun/pensiun_aksi/bup')); ?>
 				<table class="table table-responsive table-bordered table-condensed table-hover" align="center" style="margin-top:10px;">
 				  <tbody>
@@ -135,6 +140,14 @@
 				      </tr>
 				  </tbody>
 				</table>
+				<div class="alert alert-<?= $row->status_color ?> alert-dismissible fade in" role="alert"> 
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button> 
+					<strong><?= strtoupper($row->status_color) ?></strong> <?= $row->message ?> 
+				</div>
+				<?php 
+				if($row->data !== null && $row->data->jenis_pensiun === 'BUP') {
+				?>
+					<object data="<?= base_url('fileskpensiun/'.$row->data->nip.'.pdf') ?>" width="100%" height="500"></object>
 				
 				<table class="table table-responsive table-bordered table-condensed table-hover bg-warning" align="center">
                 	<tbody>
@@ -148,13 +161,13 @@
                           		<b>NO. SK</b>
                         	</td>
                         	<td colspan="1">
-                        		<input name="no_sk" size="50" class="form-control" maxlength="40">
+                        		<input name="no_sk" size="50" class="form-control" maxlength="40" value="<?= @$row->data->sk->nomor_sk ?>">
                         	</td>
                           	<td align="right">
                           		<b>Tanggal SK</b>
                           	</td>
                           	<td colspan="1">
-                          		<input name="tgl_sk" class="form-control" id="tgl_sk" size="12" maxlength="10">
+                          		<input name="tgl_sk" class="form-control" id="tgl_sk" size="12" maxlength="10"  value="<?= @tgl_indo_pendek($row->data->sk->tanggal_sk) ?>">
                           	</td>
                         </tr>
                         <tr>
@@ -186,14 +199,14 @@
                         
 										    <tr>
 										      <td align="right"><b>TMT Pensiun</b></td>
-										      <td colspan="3"><div class="row"><div class="col-md-3"><input class="form-control" name="tmt_pens" id="tmt_pens" size="12" maxlength="10"></div></div></td>
+										      <td colspan="3"><div class="row"><div class="col-md-3"><input class="form-control" name="tmt_pens" id="tmt_pens" size="12" maxlength="10"  value="<?= @tgl_indo_pendek($row->data->sk->tmt) ?>"></div></div></td>
 										    </tr>
 										    
                         <tr>
                           	<td align="right"><b>Nama Keluarga</b></td>
-                          	<td colspan="1"><input class="form-control" name="nm_pnrima" size="30" maxlength="25"></td>
+                          	<td colspan="1"><input class="form-control" name="nm_pnrima" size="30" maxlength="25"  value="<?= @$row->data->sk->nama_penerima ?>"></td>
                           	<td align="right"><b>Tanggal Lahir Penerima</b></td>
-                          	<td colspan="1"><input class="form-control" name="tl_pnrima" id="tl_pnrima" size="12" maxlength="10"></td>
+                          	<td colspan="1"><input class="form-control" name="tl_pnrima" id="tl_pnrima" size="12" maxlength="10"  value="<?= @tgl_indo_pendek($row->data->sk->tgl_lahir_penerima) ?>"></td>
                         </tr>  
                         <tr>
                           	<td align="right"><b>Hubungan Keluarga</b></td>
@@ -202,10 +215,10 @@
 	                          		<div class="col-md-4">
 			                          	<select class="form-control" name="hub_kel"> &nbsp; &nbsp;
 				                          <option value="0" selected="">-- Hubungan Keluarga --</option>
-				                          <option value="ybs">PNS Ybs</option>
-				                          <option value="sutri">SUAMI / ISTRI</option>
-				                          <option value="anak">ANAK</option>
-				                          <option value="ortu">ORANG TUA</option>
+				                          <option value="ybs" <?= @$row->data->sk->hubungan_keluarga === 'ybs' ? 'selected' : '' ?>>PNS Ybs</option>
+				                          <option value="sutri" <?= @$row->data->sk->hubungan_keluarga === 'sutri' ? 'selected' : '' ?>>SUAMI / ISTRI</option>
+				                          <option value="anak" <?= @$row->data->sk->hubungan_keluarga === 'anak' ? 'selected' : '' ?>>ANAK</option>
+				                          <option value="ortu" <?= @$row->data->sk->hubungan_keluarga === 'ortu' ? 'selected' : '' ?>>ORANG TUA</option>
 			                          	</select>
 			                         </div>
 			                    </div>
@@ -213,11 +226,11 @@
 	                    </tr>  
 	                    <tr>
                           	<td align="right"><b>Alamat Pensiun</b></td>
-                          	<td colspan="3"><input class="form-control" name="alamat_pens" size="90"></td>
+                          	<td colspan="3"><input class="form-control" name="alamat_pens" size="90"  value="<?= @$row->data->sk->alamat_pensiun ?>"></td>
                         </tr>
                         <tr>
                          	 <td align="right"><b>Catatan</b></td>
-                          	 <td colspan="3"><textarea class="form-control" name="note" rows="3"></textarea></td>
+                          	 <td colspan="3"><textarea class="form-control" name="note" rows="3"><?= @$row->data->sk->catatan ?></textarea></td>
                         </tr>
                         <tr>
                           	<td></td>
@@ -228,6 +241,9 @@
                         </tr>
                    	</tbody>
                   </table>	
+				<?php
+				}
+				?>
         <?= form_close(); ?>
 				</div>
 			</div>

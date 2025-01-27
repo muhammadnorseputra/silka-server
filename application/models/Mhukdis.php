@@ -125,7 +125,7 @@ class Mhukdis extends CI_Model {
 
   function peruu()
   {
-    $sql = "SELECT * from ref_peruu_hukdis ORDER BY id_peruu_hukdis";
+    $sql = "SELECT * from ref_peruu_hukdis WHERE is_aktif='Y' ORDER BY urutan desc";
     return $this->db->query($sql);
   }
 

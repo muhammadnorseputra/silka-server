@@ -9,7 +9,6 @@
       <div class="modal-body">
         Mohon perhatian, proses cetak rekaputlasi Analisis Kebutuhan Diklat (AKD) akan di tutup dalam beberapa hari lagi.
         Terimakasih.
-        
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
@@ -73,7 +72,7 @@
                 <thead>
                   <th>NO</th>
                   <th>NAMA / NIP</th>
-                  <th>NAMA DIKLAT</th>
+                  <th class="none">NAMA DIKLAT</th>
                   <th>TUPOKSI</th>
                   <th>WAKTU (JP)</th>
                   <th>PENYELENGGARA</th>

@@ -37,6 +37,58 @@
 | in the URL cannot be matched to a valid route.
 |
 */
+/* Route API Web Services */
+$route['services/v2/pns/(:num)'] = 'services/v2/pns/$1';
+$route['services/v2/pns/tpp'] = 'services/v2/tpp/pns';
+$route['services/v2/pns/(:num)/tpp'] = 'services/v2/tpp/pns/$1';
+$route['services/v2/pppk/tpp'] = 'services/v2/tpp/pppk';
+$route['services/v2/pppk/(:num)/tpp'] = 'services/v2/tpp/pppk/$1';
+$route['services/v2/kgb/(:num)/inexis'] = 'services/v2/kgb/inexis/$1';
+
+/* Route Riwayat */
+$route['services/v2/riwayat/(:num)/absensi']            = 'services/v2/riwayat/absensi/$1';
+$route['services/v2/riwayat/(:num)/cuti']               = 'services/v2/riwayat/cuti/$1';
+$route['services/v2/riwayat/(:num)/kgb']                = 'services/v2/riwayat/kgb/$1';
+$route['services/v2/riwayat/(:num)/pmk']                = 'services/v2/riwayat/pmk/$1';
+$route['services/v2/riwayat/(:num)/lhkpn']              = 'services/v2/riwayat/lhkpn/$1';
+$route['services/v2/riwayat/(:num)/hukdis']             = 'services/v2/riwayat/hukdis/$1';
+$route['services/v2/riwayat/(:num)/pendidikan']         = 'services/v2/riwayat/pendidikan/$1';
+$route['services/v2/riwayat/(:num)/pangkat']            = 'services/v2/riwayat/pangkat/$1';
+$route['services/v2/riwayat/(:num)/jabatan']            = 'services/v2/riwayat/jabatan/$1';
+$route['services/v2/riwayat/(:num)/pokja']              = 'services/v2/riwayat/pokja/$1';
+$route['services/v2/riwayat/(:num)/penghargaan']        = 'services/v2/riwayat/penghargaan/$1';
+$route['services/v2/riwayat/(:num)/plt']                = 'services/v2/riwayat/plt/$1';
+
+$route['services/v2/riwayat/diklat-fungsional']         = 'services/v2/riwayat/diklatFungsional';
+$route['services/v2/riwayat/(:num)/diklat-fungsional']  = 'services/v2/riwayat/diklatFungsional/$1';
+
+$route['services/v2/riwayat/diklat-teknis']             = 'services/v2/riwayat/diklatTeknis';
+$route['services/v2/riwayat/(:num)/diklat-teknis']      = 'services/v2/riwayat/diklatTeknis/$1';
+
+$route['services/v2/riwayat/diklat-struktural']         = 'services/v2/riwayat/diklatStruktural';
+$route['services/v2/riwayat/(:num)/diklat-struktural']  = 'services/v2/riwayat/diklatStruktural/$1';
+
+$route['services/v2/riwayat/(:num)/workshop']           = 'services/v2/riwayat/workshop/$1';
+
+$route['services/v2/riwayat/cpns-pns']                  = 'services/v2/riwayat/cpnsPns';
+$route['services/v2/riwayat/(:num)/cpns-pns']           = 'services/v2/riwayat/cpnsPns/$1';
+
+$route['services/v2/riwayat/suami-istri']               = 'services/v2/riwayat/sutri';
+$route['services/v2/riwayat/(:num)/suami-istri']        = 'services/v2/riwayat/sutri/$1';
+
+$route['services/v2/riwayat/kinerja-bkn']               = 'services/v2/riwayat/kinerjaBkn';
+$route['services/v2/riwayat/(:num)/kinerja-bkn']        = 'services/v2/riwayat/kinerjaBkn/$1';
+
+$route['services/v2/riwayat/(:num)/anak']               = 'services/v2/riwayat/anak/$1';
+$route['services/v2/riwayat/(:num)/gaji']               = 'services/v2/riwayat/gaji/$1';
+/* End Riwayat */
+
+/* Route Referensi */
+$route['services/v2/referensi/status-asn'] = 'services/v2/referensi/statusAsn';
+$route['services/v2/referensi/status-asn/(:num)'] = 'services/v2/referensi/statusAsn/$1';
+/* End Referensi */
+
+/* End Route API Web Service */
 
 $route['default_controller'] = "Login";
 $route['404_override'] = '';

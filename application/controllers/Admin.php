@@ -11,6 +11,7 @@ class Admin extends CI_Controller {
       $this->load->helper('fungsitanggal');
       $this->load->helper('fungsipegawai');
       $this->load->model('mpegawai');
+      $this->load->model('mpetajab');	
       $this->load->model('madmin');
       $this->load->model('munker');
 
@@ -370,14 +371,14 @@ class Admin extends CI_Controller {
 
         $namaunker = $this->munker->getnamaunker($idunker);
 
-        echo "<div class='panel panel-default' style='width: 70%'>";
+        echo "<div class='panel panel-default' style='width: 60%'>";
         echo "<div class='panel-body'>";
         echo "<form method='POST' action='../admin/editspesimen'>";
         echo "<input type='hidden' name='id_unker' size='30' maxlength='18' value='$idunker' />";
         echo "<div class='panel panel-warning'>";
         echo "<div class='panel-heading' align='left'><b>$namaunker</b><br />";
         echo "</div>";
-        echo "<div style='padding:0px;overflow:auto;width:99%;height:170px;border:1px solid white' >";
+        echo "<div style='padding:0px;overflow:auto;width:100%;height:100%;border:1px solid white' >";
 
         echo "<table class='table table-condensed'>";
         foreach($sqlcari as $v):
@@ -427,7 +428,16 @@ class Admin extends CI_Controller {
           } else {
             echo "<td align='center'>".$jabok."</td>";
           }
-          
+	  echo "</tr>";	
+	  echo "<tr>";
+          echo "<td align='right'><b>Kewenangan :</b></td>";
+	  echo "<td>";
+	  echo "<div class='row'>
+		  <div class='col-md-3'><span class='text text-info'>Tanda Terima TPP : ".$v['tpp']."</span></div>
+                  <div class='col-md-3'><span class='text text-info'>SK Cuti : ".$v['cuti']."</span></div>
+                  <div class='col-md-3'><span class='text text-info'>SK Kenaikan Gaji Berkala : ".$v['kgb']."</span></div>
+	        </div>";
+	  echo "</td>";          
           
           echo "</tr>";
           //echo "<button type='submit' class='btn btn-success btn-sm'>
@@ -455,7 +465,7 @@ class Admin extends CI_Controller {
     if ($this->session->userdata('profil_priv') == "Y") { 
       $idunker = $this->input->post('id_unker');
       $data['nmunker'] = $this->munker->getnamaunker($idunker);
-      $data['spes'] = $this->madmin->getspesimen($idunker)->result_array();
+      $data['v'] = $this->madmin->getspesimen($idunker)->row_array();
       $data['content'] = 'admin/editspesimen';
       $this->load->view('template',$data);
     }
@@ -489,9 +499,9 @@ class Admin extends CI_Controller {
         echo "<img src=".base_url()."photo/".$nip.".jpg width='60' height='80' alt='$nip.jpg'>";
         echo "</td>";
         echo "</tr>";
-        echo "<tr><td align='center'>$jabok<br /></td></tr>";        
-        echo "<tr><td align='center'><br /></td></tr>";        
-        echo "<tr><td align='center'>$nama<br />(NIP. $nip)</td></tr>";
+        echo "<tr><td align='center'><b>$jabok</b>";
+	echo "<br/><br/><br/>";
+        echo "$nama<br />(NIP. $nip)</td></tr>";
         echo "<tr><td align='right' colspan='2'>";
         echo "<button type='submit' class='btn btn-success btn-sm'>
               <span class='glyphicon glyphicon-floppy-disk' aria-hidden='true'></span>&nbspSimpan
@@ -502,6 +512,41 @@ class Admin extends CI_Controller {
     } else {
         echo "<center><b><span style='color: #FF0000'>Data tidak ditemukan.</span></b></center>";
     }
+  }
+
+  public function tambahspesimen_aksi()
+  {
+    $post = $this->input->post();
+    $unkerid = $post['unorid'];
+    $status = $post['status'];
+    $nip = $post['nip'];
+    $jabatan = $post['jabatan'];
+    
+    $nmunker = $this->munker->getnamaunker($unkerid);  
+    
+    $data = array(
+      'nip'              => $nip,
+      'status'           => $status,
+      'jabatan_spesimen' => $jabatan
+    );
+
+    $where = [
+      'fid_unit_kerja' => $unkerid
+    ];
+
+    if(empty($unkerid) || empty($nip) || empty($status) || empty($jabatan)) {
+      $this->session->set_flashdata('pesan', '<b>Gagal</b>, Spesimen '.$nmunker.' gagal ditambahkan, periksa isian yang tersedia.');
+      redirect('admin/carispesimen');
+      return false;
+    }
+
+    $db = $this->db->update('ref_spesimen', $data, $where);
+    if($db) {
+      $this->session->set_flashdata('pesan', '<b>Sukses</b>, Spesimen '.$nmunker.' berhasil ditambahkan.');
+    } else {
+      $this->session->set_flashdata('pesan', '<b>Gagal</b>, Spesimen '.$nmunker.' gagal ditambahkan.');
+    }
+   redirect('admin/carispesimen');
   }
 
   function editspesimen_aksi() {
@@ -618,7 +663,126 @@ class Admin extends CI_Controller {
   }
   // END UPDATE PHOTO
   
-  
+
+  function approve_tppbasic() {
+      $data['content'] = 'admin/approve_tppbasic';
+      $data['unker'] = $this->munker->dd_unker()->result_array();
+      $data['pesan'] = '';
+      $data['jnspesan'] = '';
+      $this->load->view('template', $data);
+  }  
+
+  function approve_tppbasic_act() {
+    $input = $this->input->post();
+    $datastatus = $input['approve'];
+
+    $updateArray = array();
+    foreach($datastatus as $key => $value):
+      $updateArray[] = array(
+                'id' => $key,  
+                'approved' => $value
+            );
+    endforeach;
+    // var_dump($updateArray);
+    $db = $this->db->update_batch('ref_peta_jabatan', $updateArray, 'id');
+    if($db) {
+      //$this->session->set_flashdata('pesan', '<b>SUKSES</b>, Status usulan peta jabatan berhasil di perbaharui');
+      //$this->session->set_flashdata('jnspesan', 'alert-success');
+      $data['pesan'] = '<b>SUKSES</b>, Status usulan peta jabatan berhasil di perbaharui';
+      $data['jnspesan'] = 'alert alert-success';	
+    } else {
+      //$this->session->set_flashdata('pesan', '<b>GAGAL</b>, Status usulan peta jabatan gagal');
+      //$this->session->set_flashdata('jnspesan', 'alert-danger');
+      $data['pesan'] = '<b>GAGAL</b>, Status usulan peta jabatan gagal';
+      $data['jnspesan'] = 'alert alert-danger';
+    }
+
+    // Load Ulang
+    $data['content'] = 'admin/approve_tppbasic';
+    $data['unker'] = $this->munker->dd_unker()->result_array();
+    $this->load->view('template', $data);
+  }
+
+  function tampil_tppbasic() {
+	$idunker = addslashes($this->input->get('idunker'));
+
+	//$data = $this->mpetajab->jabstruk_peta($idunker)->result_array();	
+	$data = $this->mpetajab->get_peta_byunker($idunker)->result_array();
+	//var_dump($jabstruk);	
+	?>
+  <form action="<?= base_url('admin/approve_tppbasic_act') ?>" method="post">
+	<table class='table table-condensed table-hover' style='width: 90%'>
+  <thead>
+          <tr class='info'>
+           <td align='center' width='10'><b>NO</b></td>
+           <td align='center' width='25%'><b>JABATAN</b></td>
+           <td align='center' width='10'><b>KELAS</b></td>
+           <td align='center' width='20%'><b>ATASAN</b></td>
+	   <td align='right' width=80'><b>BEBAN<br/>KERJA</b></td>
+           <td align='right' width=80'><b>PRESTASI<br/>KERJA</b></td>
+           <td align='right' width=80'><b>KONDISI<br/>KERJA</b></td>
+           <td align='right' width=80'><b>TEMPAT<br/>BERTUGAS</b></td>
+           <td align='right' width=80'><b>KELANGKAAN<br/>PROFESI</b></td>
+           <td align='right' width=80'><b>TOTAL</b></td>
+	   <td align='center' width='5%'><b>STATUS</b></td>
+          </tr>
+  </thead>
+    <tbody>
+    <?php
+    $no = 1;
+    foreach($data as $p) :
+      
+      $color = $p['approved'] == 'N' ? 'bg-danger' : '';
+      $status = $p['approved'] == 'N' ? 'N' : 'Y';
+      $Y = $p['approved'] == 'Y' ? 'selected' : '';
+      $N = $p['approved'] == 'N' ? 'selected' : '';
+
+      echo "<tr class='".$color."'>";
+      echo "<td align='center'>".$no."</td>";	  	  
+      echo "<td>".$this->mpetajab->get_namajab($p['id'])."<br/>";
+      //echo "<span class='label label-primary'>".$p['koord_subkoord']."</span>";
+      //echo "<span class='text text-primary'>Pemangku : </span>";
+      $getpemangku_pns = $this->mpetajab->get_pemangku_pns($p['id'])->result_array();
+      foreach ($getpemangku_pns as $pns) {
+      	echo "<span class='text text-info'>".$pns['nama']." (NIP. ".$pns['nip'].")</span>";
+      	echo "<br/>";
+      }
+      $getpemangku_pppk = $this->mpetajab->get_pemangku_pppk($p['id'])->result_array();
+      foreach ($getpemangku_pppk as $pppk) {
+      	echo "<span class='text text-success'>".$pppk['nama']." (NIPPPK. ".$pppk['nipppk'].")</span>";
+        echo "<br/>";
+      }
+      echo "</td>";
+      	
+      echo "<td align='center'>".$p['kelas']."</td>";
+            echo "<td>".$this->mpetajab->get_namajabatasan($p['id'])."</td>";
+            echo "<td align='right'>".number_format($p['tpp_bk'],0,",",".")."</td>";
+            echo "<td align='right'>".number_format($p['tpp_pk'],0,",",".")."</td>";
+            echo "<td align='right'>".number_format($p['tpp_kk'],0,",",".")."</td>";
+            echo "<td align='right'>".number_format($p['tpp_tb'],0,",",".")."</td>";
+            echo "<td align='right'>".number_format($p['tpp_kp'],0,",",".")."</td>";
+      $jml = $p['tpp_bk'] + $p['tpp_pk'] + $p['tpp_kk'] + $p['tpp_tb'] + $p['tpp_kp'];	  
+            echo "<td align='right'>".number_format($jml,0,",",".")."</td>";
+      // echo "<td align='center'><input type='checkbox' name='approve[".$p['id']."]' value='".$status."' ".$check."/></td>";
+      echo "<td align='center'><select name='approve[".$p['id']."]'>
+            <option value='Y' $Y>Aktif</option>
+            <option value='N' $N>Non Aktif</option>
+      </select></td>";
+      echo "</tr>";
+            $no++;
+        endforeach;
+    ?>
+    </tbody>
+    <tfooter>
+      <tr class="success" style="position: sticky; position: -webkit-sticky;bottom: 0">
+        <td colspan="11" class="text-right"><button class="btn btn-success"><i class="glyphicon glyphicon-send"></i> &nbsp; Submit Perubahan</button></td>
+      </tr>
+    </tfooter>
+  </table>
+  </form>
+<?php
+
+  }
 
 }
 

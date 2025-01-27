@@ -147,6 +147,13 @@ class Mkinerja extends CI_Model
         return $q->num_rows();
       }
 
+    function cektelahusul_tppng($nip, $tahun, $bulan)
+      {
+        $q = $this->db->query("select nip from tppng where nip='".$nip."' and tahun='".$tahun."' and bulan='".$bulan."'");
+
+        return $q->num_rows();
+      }
+
     function update_usultpp($where, $data)
       {
         $this->db->where($where);
@@ -1703,6 +1710,19 @@ class Mkinerja extends CI_Model
         {
             $row=$q->row();
             return $row->nilai_skp; 
+        } else {
+            // jika data kinerja tidak ditemukan, set dengan nilai 0 NOL
+            return 0;
+        }
+    }
+
+    function get_realisasikinerja2024($nip, $thn, $bln)
+    {
+        $q = $this->db->query("select hasil_akhir from riwayat_kinerja_bkn where tahun = '".$thn."' and bulan = '".$bln."' and nip='".$nip."'");
+        if ($q->num_rows()>0)
+        {
+            $row=$q->row();
+            return $row->hasil_akhir;
         } else {
             // jika data kinerja tidak ditemukan, set dengan nilai 0 NOL
             return 0;

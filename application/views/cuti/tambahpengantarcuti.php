@@ -68,15 +68,27 @@
                   </td>
                 </tr>                
                 <tr>
+                  <td align='right'>Jenis ASN :</td>
+                  <td>
+                    <select name="jns_asn" id="jns_asn" required />
+                      <?php
+                      echo "<option value='' selected>- Pilih Jenis ASN -</option>";
+                      echo "<option value='PNS'>PNS</option>";
+                      echo "<option value='PPPK'>PPPK</option>";                      
+                      ?>
+                    </select>                            
+                  </td>
+                </tr>
+		<tr>
                   <td align='right'>Kelompok Cuti :</td>
                   <td>
                     <select name="id_kelcuti" id="id_kelcuti" required />
                       <?php
                       echo "<option value=''>- Pilih Kelompok Cuti -</option>";
-                      echo "<option value='CUTI TUNDA' disabled>CUTI TUNDA</option>";
-                      echo "<option value='CUTI LAINNYA'>CUTI LAINNYA</option>";                      
+                      echo "<option value='CUTI TUNDA'>CUTI TUNDA</option>";
+                      echo "<option value='CUTI LAINNYA' selected>CUTI LAINNYA</option>";
                       ?>
-                    </select>                            
+                    </select>
                   </td>
                 </tr>
               </table>

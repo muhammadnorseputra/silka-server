@@ -24,7 +24,7 @@ class Munker extends CI_Model
                 u.fid_instansi_userportal = i.id_instansi
                 and up.nip = '$nip'
                 and i.nip_user like '%$nip%'
-                and u.nama_unit_kerja NOT LIKE '-%'
+		and u.aktif = 'Y'
                 order by u.id_unit_kerja";
 	} else {
         	$sql = "select u.nama_unit_kerja, u.id_unit_kerja
@@ -33,8 +33,7 @@ class Munker extends CI_Model
                 u.fid_instansi_userportal = i.id_instansi
                 and up.nip = '$nip'
                 and i.nip_user like '%$nip%'
-                and u.nama_unit_kerja NOT LIKE '-%'
-		and nama_unit_kerja not like '-%'
+		and u.aktif = 'Y'
 		order by u.id_unit_kerja";
 		//and nama_unit_kerja not like '-%'
 	}
@@ -51,7 +50,7 @@ class Munker extends CI_Model
     function pegperunker($id)
     {
         $q = $this->db->query("select p.nip, p.gelar_depan, p.nama, p.gelar_belakang, 
-        g.nama_golru, p.fid_jnsjab, p.fid_jabatan, p.fid_jabfu, p.fid_jabft, e.nama_eselon, p.tmt_golru_skr
+        g.nama_golru, p.fid_jnsjab, p.fid_jabatan, p.fid_jabfu, p.fid_jabft, p.fid_peta_jabatan, e.nama_eselon, p.tmt_golru_skr
         from pegawai as p, ref_eselon as e, ref_golru as g
         where p.fid_eselon = e.id_eselon
         and p.fid_golru_skr = g.id_golru
@@ -98,7 +97,7 @@ class Munker extends CI_Model
 	    $nmstrip = substr($nmunker,0,1);
 	    $nmlength = strlen($nmunker);
 	    if ($nmstrip == "-") {
-	 	$nmunker = substr($nmunker,1,$nmlength);
+	    	$nmunker = substr($nmunker,1,$nmlength);
 	    }
             return $nmunker; 
         }        

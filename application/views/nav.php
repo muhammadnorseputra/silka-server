@@ -106,7 +106,14 @@ if ($this->session->userdata('level') == "PNS") {
         <!--<li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>-->
         <?php
 	if (($this->session->userdata('level') == "ADMIN") OR ($this->session->userdata('nip') == "198309132011011002")) {
-        	echo "<li><a href='".base_url('home/dashboard')."'>Dashboard</a></li>";
+		echo "<li class='dropdown'>";
+		echo "<a href='#' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-haspopup='true' aria-expanded='false'>Dashboard<span class='caret'></span></a>";
+        	//echo "<li><a href='".base_url('home/dashboard')."'>Dashboard</a></li>";
+		echo "<ul class='dropdown-menu' role='menu' aria-labelledby='dLabel'>";
+		echo "<li><a href='".base_url('home/dashboard')."'>PNS</span></a></li>";
+		echo "<li><a href='".base_url('home/dashboard_pppk')."'>PPPK</a></li>";
+		echo "</ul>";
+		echo "</li>";
 	}        
         ?>
 
@@ -123,25 +130,42 @@ if ($this->session->userdata('level') == "PNS") {
           		}
             }
             //if ($this->session->userdata('profil_priv') == "Y") {
-	    if ($this->session->userdata('level') == "ADMIN") {
-              echo "<li role='separator' class='divider'></li>";
-              echo "<li><a href='".base_url('nonpns/tampilunker')."'>Non PNS</a></li>";  
-            }
-            //if($this->session->userdata('profil_priv') == "Y"){
-	    if ($this->session->userdata('level') != "TAMU") {
-            	echo "<li role='separator' class='divider'></li>";
-              echo "<li><a href='".base_url('pppk/tampilunker')."'>PPPK</a></li>";
-            }
+	    //if ($this->session->userdata('level') == "ADMIN") {
+            //  echo "<li role='separator' class='divider'></li>";
+            //  echo "<li><a href='".base_url('nonpns/tampilunker')."'>Non PNS</a></li>";  
+            //}
 
             ?>
+	    <?php echo "<li role='separator' class='divider'></li>"; ?>
+            <li class="dropdown-submenu">
+              <a href="#" >PPPK</a>
+              <ul class="dropdown-menu">
+	    	<?php
+		if ($this->session->userdata('profil_priv') == "Y") {
+                  echo "<li><a tabindex='-1' href='".base_url('pppk/tampilunker')."'>Cari Data</a></li>";
+                }
+
+                if ($this->session->userdata('level') == "ADMIN") {
+                  echo "<li><a tabindex='-1' href='".base_url('pppk/add')."'>Tambah Data</a></li>";
+                }
+		?>
+	      </ul>
+            </li>
+
+
             <?php echo "<li role='separator' class='divider'></li>"; ?>
             <li class="dropdown-submenu">
               <a href="#" >Laporan</a>
               <ul class="dropdown-menu">
                 <?php
+		if ($this->session->userdata('nominatif_priv') == "Y") {
+                  echo "<li><a class='btn-info' tabindex='-1' href='".base_url('pegawai/tampil_wllhkpn')."'>Nominatif Wajib Lapor LHKPN<sup><code>Baru</code></sup></a></li>";
+                }
+
 		//if ($this->session->userdata('level') == "ADMIN") {
 		if ($this->session->userdata('nominatif_priv') == "Y") {
-                  echo "<li><a class='btn-info' href='".base_url('pip/tampilunkernom_reviewdjasn')."'>Progress IPASN 2021 <sup><code>Versi DJASN BKN</code></sup></a></li>";
+                  //echo "<li><a class='' href='".base_url('pip/tampilunkernom_reviewdjasn')."'>Progress IPASN 2021 <sup><code>Versi DJASN BKN</code></sup></a></li>";
+		  echo "<li><a  href='".base_url('pip/tampilunkernom_siasn')."'>Progress IPASN <sup><code>Versi SIASN BKN</code></sup></a></li>";
                 }
                 if ($this->session->userdata('nominatif_priv') == "Y") {
                   echo "<li><a tabindex='-1' href='".base_url('pegawai/tampilunkernom')."'>Nominatif</a></li>";  
@@ -157,11 +181,11 @@ if ($this->session->userdata('level') == "PNS") {
                 }
 
                 if ($this->session->userdata('nominatif_priv') == "Y") {
-                  echo "<li><a tabindex='-1' href='".base_url('pegawai/tampilprogresspdm')."'>Progress PDM MySAPK <sup><code>Baru</code></sup></a></li>";  
+                  echo "<li><a tabindex='-1' href='".base_url('pegawai/tampilprogresspdm')."'>Progress PDM MySAPK</a></li>";  
                 } 
 
 		if ($this->session->userdata('nominatif_priv') == "Y") {
-                  echo "<li><a tabindex='-1' href='".base_url('pegawai/tampilstatusvaksinasi')."'>Status Vaksinasi COVID-19 <sup><code>Baru</code></sup></a></li>";
+                  echo "<li><a tabindex='-1' href='".base_url('pegawai/tampilstatusvaksinasi')."'>Status Vaksinasi COVID-19</a></li>";
                 }
 
 		if ($this->session->userdata('nominatif_priv') == "Y") {
@@ -172,9 +196,9 @@ if ($this->session->userdata('level') == "PNS") {
                   echo "<li><a tabindex='-1' href='".base_url('takah/tampilunkernomtakah')."'>Nominatif Takah</a></li>";  
                 } 
 
-		if ($this->session->userdata('nominatif_priv') == "Y") {
-                  echo "<li><a tabindex='-1' href='".base_url('pip/tampilunkernom')."'>Nominatif IP-ASN</a></li>";  
-                }
+		// if ($this->session->userdata('nominatif_priv') == "Y") {
+    //               echo "<li><a tabindex='-1' href='".base_url('pip/tampilunkernom')."'>Nominatif IP-ASN</a></li>";  
+    //             }
                 ?>
               </ul>
             </li>
@@ -216,6 +240,7 @@ if ($this->session->userdata('level') == "PNS") {
         <?php        
         // awal layanan cuti
         if ($this->session->userdata('usulcuti_priv') == "Y") {
+	//if ($this->session->userdata('level') == "ADMIN") {
         ?>
           <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Cuti<span class="caret"></span></a>
@@ -239,6 +264,7 @@ if ($this->session->userdata('level') == "PNS") {
 	    // KHUSUS ADMIN, Untuk Edit Pengantar dan Usul Cuti
             echo "<li role='separator' class='divider'></li>";
             if ($this->session->userdata('level') == "ADMIN") {
+	      echo "<li><a href='".base_url('cuti/rekap_sisa')."'>Rekapitulasi Sisa</a></li>";	
               echo "<li><a class='btn-warning' href='".base_url('cuti/admin_tampilupdatepengantar')."'>Update Pengantar</a></li>";              
               echo "<li><a class='btn-danger' href='".base_url('cuti/admin_tampilupdateusul')."'>Update Usul</a></li>";
             }
@@ -334,44 +360,83 @@ if ($this->session->userdata('level') == "PNS") {
                 echo "<li><a tabindex='-1' href='".base_url('kinerja/tampilhasilimport')."'>Tampil Kinerja</a></li>";
               }
             ?>
-	    <li role='separator' class='divider'></li>
-        
+	    
 	    <?php
-              //if ($this->session->userdata('level') == "ADMIN") {
-              if ($this->session->userdata('tpp_priv') == "Y") {
+            if ($this->session->userdata('level') == "ADMIN") {
+	    ?>	
+	    <li role='separator' class='divider'></li>	
+	    <li class="dropdown-submenu">
+               <a href="#" >TPP 2020 s/d 2022</a>
+               <ul class="dropdown-menu">
+		<li><a tabindex='-1' href="<?php echo base_url()."kinerja/tampil_importhitung" ?>">Kalkulasi TPP Mandiri <sup><code>Baru</code></sup></a></li>
+		<li role='separator' class='divider'></li>
+		<li><a tabindex='-1' href="<?php echo base_url()."kinerja/cariusul" ?>" >Rekapitulasi TPP PNS</a></li>
+                <li><a tabindex='-1' href="<?php echo base_url()."kinerja_pppk/cariusul_pppk" ?>" 'Rekapitulasi TPP PPPK</a></li>
+                <li role='separator' class='divider'></li>
+                <li><a tabindex='-1' href="<?php echo base_url()."kinerja/cekhasilimport" ?>" >Croscek Hasil Import</a></li>
+		<li><a href="<?php echo base_url()."kinerja/statistika2020" ?>">Statistik PNS 2020</a></li>
+                <li><a href="<?php echo base_url()."kinerja/statistika2021" ?>">Statistik PNS 2021</a></li>
+                <li><a href="<?php echo base_url()."kinerja_pppk/statistika2021" ?>" >Statistik PPPK 2021</a></li>
+                <li><a href="<?php echo base_url()."kinerja/statistika2022" ?>" >Statistik PNS 2022</a></li>
+                <li><a href="<?php echo base_url()."kinerja/statistika2022" ?>" >Statistik PPPK 2022</a></li>
+               </ul>
+            </li>
+	    <?php
+	      }
+            ?>
+		
+
+	    <li role='separator' class='divider'></li>        
+	    <?php
+              if ($this->session->userdata('level') == "ADMIN") {
+              //if ($this->session->userdata('tpp_priv') == "Y") {
                 echo "<li><a tabindex='-1' href='".base_url('tppng/periode')."'>TPP 2023</a></li>";
-                echo "<li role='separator' class='divider'></li>";
+                //echo "<li role='separator' class='divider'></li>";
 	      }
             ?>
 
 	    <?php
-              if ($this->session->userdata('tpp_priv') == "Y") {
-	      //if ($this->session->userdata('level') == "ADMIN") {
-                echo "<li><a tabindex='-1' href='".base_url('kinerja/tampil_importhitung')."'>Kalkulasi TPP Mandiri <sup><code>Baru</code></sup></a></li>";
+              if ($this->session->userdata('level') == "ADMIN") {
+              //if ($this->session->userdata('tpp_priv') == "Y") {
+	    ?>
+		<li class="dropdown-submenu">
+                  <a href="#" >TPP 2024</a>
+                  <ul class="dropdown-menu">
+			<li><a href="<?php echo base_url()."tppng2024/tampilskpbulanan" ?>">Tampil Kinerja</a></li>
+			<?php
+              		//if ($this->session->userdata('level') == "ADMIN") {
+            		?>
+			<li><a href="<?php echo base_url()."tppng2024/periode" ?>">Kalkulasi</a></li>
+			<?php
+			//}
+            		?>
+		  </ul>
+		</li>
+	    <?php		
+              }
+            ?>	
+
+            <?php
+              if ($this->session->userdata('level') == "ADMIN") {
+              //if ($this->session->userdata('tpp_priv') == "Y") {
+            ?>
+                <li class="dropdown-submenu">
+                  <a href="#" >TPP 2025</a>
+                  <ul class="dropdown-menu">
+                        <li><a href="<?php echo base_url()."tppng2025/tampilskpbulanan" ?>">Tampil Kinerja</a></li>
+                        <?php
+                        //if ($this->session->userdata('level') == "ADMIN") {
+                        ?>
+                        <li><a href="<?php echo base_url()."tppng2025/periode" ?>">Kalkulasi</a></li>
+                        <?php
+                        //}
+                        ?>
+                  </ul>
+                </li>
+            <?php
               }
             ?>
-            
-            <?php
-	    if ($this->session->userdata('tpp_priv') == "Y") {
-	    //if ($this->session->userdata('level') == "ADMIN") {
-	    //if (($this->session->userdata('level') == "ADMIN") || ($this->session->userdata('nama') == "uda") || ($this->session->userdata('level') == "USER")) {
-                echo "<li><a tabindex='-1' href='".base_url('kinerja/cariusul')."'>Rekapitulasi TPP PNS</a></li>";
-                echo "<li><a tabindex='-1' href='".base_url('kinerja_pppk/cariusul_pppk')."'>Rekapitulasi TPP PPPK</a></li>";
-		echo "<li role='separator' class='divider'></li>";
-		echo "<li><a tabindex='-1' href='".base_url('kinerja/cekhasilimport')."'>Croscek Hasil Import</a></li>"; 
-	    }  
-                            
-            if (($this->session->userdata('level') == "ADMIN") OR ($this->session->userdata('nip') == "198309042007011001") ) {
-                echo "<li><a href='".base_url('kinerja/statistika2020')."'>Statistik PNS 2020</a></li>"; 
-		echo "<li><a href='".base_url('kinerja/statistika2021')."'>Statistik PNS 2021</a></li>";
-		echo "<li><a href='".base_url('kinerja_pppk/statistika2021')."'>Statistik PPPK 2021</a></li>";
-		echo "<li><a href='".base_url('kinerja/statistika2022')."'>Statistik PNS 2022</a></li>";
-                echo "<li><a href='".base_url('kinerja_pppk/statistika2022')."'>Statistik PPPK 2022</a></li>";
-            }
 
-			
-
-            ?>
           </ul>
         </li>
 
@@ -399,6 +464,8 @@ if ($this->session->userdata('level') == "PNS") {
 	                <li><a href="<?php echo base_url('home/manfile') ?>" >Upload/Download File Berkas</a></li>
 	                <li><a href="<?php echo base_url('home/mannonpns') ?>" >Pendataan Non PNS</a></li>                
 			-->
+            		<li><a href="<?php echo base_url('assets/Manual-TPP2023.pdf') ?>" target='_blank'>Perhitungan TPP 2023</a></li>
+                        <li><a href="https://drive.google.com/file/d/1V-CQkXcD94DgzCJLxpf8baXAB53s2AXL/view?usp=sharing" target='_blank'>Panduan Si Atun</a></li>
 			<li><a href="<?php echo base_url('assets/Manual-Infopeg.pdf') ?>" target='_blank'>Informasi Kepegawaian</a></li>
                         <li><a href="<?php echo base_url('assets/Manual-Cuti.pdf') ?>" target='_blank'>Cuti</a></li>
                         <li><a href="<?php echo base_url('assets/Manual-Kgb.pdf') ?>" target='_blank'>Kenaikan Gaji Berkala</a></li>
@@ -491,15 +558,25 @@ if ($this->session->userdata('level') == "PNS") {
 
         <?php
         // khusus untuk level admin
-        if ($this->session->userdata('level') == "ADMIN") {
+        if (($this->session->userdata('level') == "ADMIN") or ($this->session->userdata('nama') == "kholik")) {
         ?>
           <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin<span class="caret"></span></a>
             <ul class="dropdown-menu">
-	            <li><a href="<?php echo base_url('admin/listuser') ?>">User</a></li>            
-	            <li><a href="<?php echo base_url('admin/listsopduser') ?>">SOPD User</a></li>            
-	            <li><a href="<?php echo base_url('admin/approvephoto') ?>">Approve Photo</a></li>
+	      <?php
+              if ($this->session->userdata('level') == "ADMIN") {
+              ?>	
+	      <li><a href="<?php echo base_url('admin/listuser') ?>">User</a></li>            
+	      <li><a href="<?php echo base_url('admin/listsopduser') ?>">SOPD User</a></li>            
+	      <li><a href="<?php echo base_url('admin/approvephoto') ?>">Approve Photo</a></li>
               <li><a href="<?php echo base_url('files') ?>">Manajemen Files</a></li>
+	      <?php
+	      }
+	      ?>		
+
+	      <?php
+              if (($this->session->userdata('level') == "ADMIN") OR ($this->session->userdata('nama') == "kholik")) {
+              ?>			
               <li class="dropdown-submenu">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Pensiun</a>
                 <ul class="dropdown-menu">
@@ -511,6 +588,9 @@ if ($this->session->userdata('level') == "PNS") {
                   <?php endif; ?> 
                 </ul>
               </li>
+	      <?php
+	      }
+	      ?>	
 
               <?php if($this->session->userdata('nama') == "uda" || $this->session->userdata('nama') == "putra" || $this->session->userdata('nama') == "fitriani") { ?>
                 <li class="dropdown-submenu">
@@ -520,8 +600,13 @@ if ($this->session->userdata('level') == "PNS") {
                     <li><a href="<?php echo base_url('pensiun/rekap_mutasi') ?>">Rekapitulasi Mutasi</a></li>  
                   </ul>
                 </li>
-              <?php
-              }
+	      <?php 
+		}
+		if($this->session->userdata('level') == "ADMIN") { ?>
+		  <li role='separator' class='divider'></li>		  
+		  <li><a href="<?php echo base_url('admin/approve_tppbasic') ?>">Approve Besaran TPP</a></li>		
+              <?php		
+                }
               ?>
 	  		</ul>
           </li>
@@ -634,7 +719,12 @@ if ($this->session->userdata('level') == "PNS") {
 		        <li class="dropdown-submenu">
 	            <a href="#">Si - PETRUK </a>
 	            <ul class="dropdown-menu">
-										<li><a href="<?php echo base_url('petruk/penilaian') ?>">Penilaian</a></li>
+                    <?php 
+											if (($this->session->userdata('level')=="ADMIN") || ($this->session->userdata('nama')=="sukiman")) {
+										?>
+											<li><a href="<?php echo base_url('petruk/penilaian') ?>">Penilaian 2024</a></li>  
+                      <li><a href="<?php echo base_url('petruk/penilaian') ?>">Penilaian</a></li>
+										<?php } ?>
 			              <li role='separator' class='divider'></li>
 			              <li><a href="<?php echo base_url('home/panduan_sipetruk') ?>" >User Guide</a></li>  
 										<?php 
@@ -669,7 +759,7 @@ if ($this->session->userdata('level') == "PNS") {
                           echo "<li><a tabindex='-1' href='".base_url('/rpk')."'>Profile</a></li>";            
                           echo "<li><a tabindex='-1' href='".base_url('/rpk/petajabatan')."'>Pemetaan</a></li>";            
                           echo "<li><a tabindex='-1' href='".base_url('/rpk/instansi')."'>Instansi</a></li>";            
-                          echo "<li><a tabindex='-1' href='".base_url('/rpk/kompetensi')."'>Penyelarasan Kompetensi</a></li>";    
+                          echo "<li><a tabindex='-1' href='".base_url('/rpk/kompetensi')."'>Penyelarasan Kompetensi</a></li>"; 
                           echo "<li role='separator' class='divider'></li>";        
                           echo "<li><a tabindex='-1' href='".base_url('/rpk/rekap')."'>Rekapitulasi</a></li>";            
                   ?>

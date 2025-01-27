@@ -36,10 +36,11 @@
                         allowPointSelect: true,
                         cursor: 'pointer',
                         dataLabels: {
-                            enabled: true,
+                          enabled: true,
                           format: '{point.y:f}<br />{point.percentage:.1f} %',
                           style: {
-                              color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                              color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black',
+			      fontSize: '12px'
                           }
                         },
                         showInLegend: true
@@ -99,6 +100,7 @@
             		enabled: true,
             		style: {
                 		fontWeight: 'bold',
+				fontSize: '14px',
                 		color: ( // theme
                     			Highcharts.defaultOptions.title.style &&
                     			Highcharts.defaultOptions.title.style.color
@@ -113,7 +115,7 @@
         		//verticalAlign: 'top',
         		//y: 25,
         		floating: false,
-        		backgroundColor: 'red',
+        		//backgroundColor: 'red',
         		borderColor: '#111',
         		borderWidth: 2,
         		shadow: false
@@ -130,9 +132,9 @@
             			dataLabels: {
                 			enabled: true,
 					style: {
-                                                fontWeight: 'bold',
-						fontSize: '23px',
-                                                color : 'red'
+                                                //fontWeight: 'normal',
+						fontSize: '10px',
+                                                //color : ''
                                         }
             			},
         		}
@@ -142,7 +144,7 @@
         		name: 'BUP',
         		data: 
 				<?php
-					$jmlbup = $this->mpensiun->getjmlperjnsbulan('2022','1');
+					$jmlbup = $this->mpensiun->getjmlperjnsbulan('2024','1');
 					echo "[";				
                         		foreach($jmlbup as $v):
                                         	echo $v->jumlah.",";
@@ -153,10 +155,10 @@
         		name: 'Janda/Duda',
         		data: 
 				<?php
-                                        $jmljadu = $this->mpensiun->getjmlperjnsbulan('2022','6');
+                                        $jmljadu = $this->mpensiun->getjmlperjnsbulan('2024','6');
                                         echo "[";
                                         foreach($jmljadu as $v):
-                                                //echo $v->jumlah.",";
+                                                echo $v->jumlah.",";
                                         endforeach;
                                         echo "]";
                                 ?>
@@ -164,7 +166,7 @@
         		name: 'APS',
         		data: 
 				<?php
-                                        $jmlaps = $this->mpensiun->getjmlperjnsbulan('2022','7');
+                                        $jmlaps = $this->mpensiun->getjmlperjnsbulan('2024','7');
                                         echo "[";
 					
                                         foreach($jmlaps as $v):
@@ -181,34 +183,8 @@
                                                 if ($v->bulan = '11') { $j11 = $v->jumlah; } else { $j11 = 0; }
                                                 if ($v->bulan = '12') { $j12 = $v->jumlah; } else { $j12 = 0; }
 						
-						//if ($v->bulan == '5') { echo $v->jumlah.","; break; } else { echo "0,"; break; }
-                                                //if ($v->bulan == '6') { echo $v->jumlah.","; break; } else { echo "0,"; break; }
-                                                //if ($v->bulan == '7') { echo $v->jumlah.","; break; } else { echo "0,"; break; }
-                                                //if ($v->bulan == '8') { echo $v->jumlah.","; break; } else { echo "0,"; break; }
-						//if ($v->bulan == '9') { echo $v->jumlah.","; break; } else { echo "0,"; break; }
-                                                //if ($v->bulan == '10') { echo $v->jumlah.","; break; } else { echo "0,"; break; }
-                                                //if ($v->bulan == '11') { echo $v->jumlah.","; break; } else { echo "0,"; break; }
-                                                //if ($v->bulan == '12') { echo $v->jumlah.","; break; } else { echo "0,"; break; }
-
-						/*for ($i = 1; $i <= 12; $i++){
-							if ($i == $v->bulan) {
-								echo $v->jumlah.",";
-								echo $i.",";
-								break;
-							} 
-							else {
-								echo "0,";
-								break;
-							}
-						}
-						*/
-						//continue;
-						//echo $v->jumlah.",";
+						echo $v->jumlah.",";
                                         endforeach;
-					//echo $jml1.",".$jml2.",".$jml3.",".$jml4.",".$jml5.",".$jml6.",".$jml7.",".$jml8.",".$jml9.",".$jml10.",".$jml11.",".$jml12;
-					//echo $jml1.",".$jml2.",".$jml3.",".$jml4.",".$jml5.",".$jml6.",".$jml7.",".$jml8.",".$jml9.",".$jml10;
-					//echo $jml1;
-					//echo "2,0,1,1,0,0,1,0,0,1,0,0";
                                         echo "]";
                                 ?>
 		}
@@ -241,10 +217,11 @@
                         allowPointSelect: true,
                         cursor: 'pointer',
                         dataLabels: {
-                            enabled: true,
+                          enabled: true,
                           format: '{point.y:f}<br />{point.percentage:.1f} %',
                           style: {
-                              color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                              color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black',
+			      fontSize: '12px',
                           }
                         },
                         showInLegend: true
@@ -347,7 +324,11 @@
 	      plotOptions: {
 		column: {
 			dataLabels: {
-                          enabled: true
+                          enabled: true,
+			  style: {
+                              color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black',
+                              fontSize: '10px'
+                          }
                       	},
             		pointPadding: 0,
             		borderWidth: 0,
@@ -356,6 +337,10 @@
 		spline: {
                         dataLabels: {
                           enabled: true,
+			  style: {
+                              color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black',
+                              fontSize: '12px',
+                          }	
 			},
 		},
 		pie: {
@@ -364,6 +349,10 @@
                         dataLabels: {
                           enabled: true,
                           format: '{point.y:f} [{point.percentage:.1f} %]',
+			  style: {
+                              color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black',
+                              fontSize: '10px',
+                          }
                         },
                         showInLegend: false
                     }

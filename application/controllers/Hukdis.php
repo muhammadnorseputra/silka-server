@@ -371,7 +371,7 @@ class Hukdis extends CI_Controller {
                   $peruu = $this->mhukdis->peruu()->result_array();
                   foreach($peruu as $uu)
                   {
-                    echo "<option value='".$uu['id_peruu_hukdis']."'>".$uu['nama_peruu_hukdis']."</option>";
+                    echo "<option value='".$uu['id_peruu_hukdis']."'>".strtoupper($uu['nama_peruu_hukdis'])."</option>";
                   }
                 ?>
               </select>
@@ -556,7 +556,8 @@ class Hukdis extends CI_Controller {
       $data['pesan'] = '<b>Gagal !</b>, Data Hukuman Disiplin PNS A.n. <u>'.$nama.'</u> gagal ditambahkan.<br />Pastikan data sesuai dengan ketentuan';
       $data['jnspesan'] = 'alert alert-danger';
     }
-    
+
+    //$data['nip'] = $nip;    
     $data['usulhd'] = $this->mhukdis->tampilusulhd()->result_array();
     $data['content'] = 'hukdis/tampilusulhd';
     $this->load->view('template', $data);
@@ -605,7 +606,8 @@ class Hukdis extends CI_Controller {
         $data['pesan'] = '<b>Gagal</b>, Laporan Hukuman Disiplin '.$nama.' gagal dihapus';
         $data['jnspesan'] = 'alert alert-danger';
       }
-      
+    
+    //$data['nip'] = $nip;	  
     $data['usulhd'] = $this->mhukdis->tampilusulhd()->result_array();
     $data['content'] = 'hukdis/tampilusulhd';
     $this->load->view('template', $data);
@@ -727,6 +729,7 @@ class Hukdis extends CI_Controller {
         $data['jnspesan'] = 'alert alert-danger';
       }
     
+    //$data['nip'] = $nip;	
     $data['usulhd'] = $this->mhukdis->tampilusulhd()->result_array();
     $data['content'] = 'hukdis/tampilusulhd';
     $this->load->view('template', $data);

@@ -53,7 +53,47 @@
         <?php
           foreach($diktek as $v):
         ?>
-      <table class="table table-condensed">        
+      <table class="table table-condensed">
+        <tr>
+          <td align='right'>Jenis :</td>
+          <td>
+		<select name="fid_jenis" id="fid_jenis" required >
+		<?php
+		if ($v['fid_jenis_workshop'] == 0) {
+                       echo "<option value='' selected>-- Pilih Jenis --</option>";
+                }     
+                $jnsw = $this->mpegawai->jenis_workshop()->result_array();
+                foreach($jnsw as $jw) {
+		     if ($jw['id_jenis_workshop'] == $v['fid_jenis_workshop']) {		
+                       echo "<option value='".$jw['id_jenis_workshop']."' selected>".$jw['nama_jenis_workshop']."</option>";
+		     } else {
+		       echo "<option value='".$jw['id_jenis_workshop']."'>".$jw['nama_jenis_workshop']."</option>";
+		     } 	
+                }
+		?>
+		</select>
+	  </td>
+        </tr>
+        <tr>
+          <td align='right'>Rumpun :</td>
+          <td>
+                <select name="fid_rumpun" id="fid_rumpun" required >
+                <?php
+                if ($v['fid_rumpun_diklat'] == 0) {
+                       echo "<option value='' selected>-- Pilih Rumpun --</option>";
+                }
+                $jnsrd = $this->mpegawai->rumpun_diklat()->result_array();
+                foreach($jnsrd as $rd) {
+                     if ($rd['id_rumpun_diklat'] == $v['fid_rumpun_diklat']) {
+                       echo "<option value='".$rd['id_rumpun_diklat']."' selected>".$rd['nama_rumpun_diklat']."</option>";
+                     } else {
+                       echo "<option value='".$rd['id_rumpun_diklat']."'>".$rd['nama_rumpun_diklat']."</option>";
+                     }
+                }
+                ?>
+                </select>
+          </td>
+        </tr>
         <tr>
           <td align='right'>Nama Seminar / Workshop :</td>
           <td><input type="text" name="namaws" size='80' maxlength='200' value='<?php echo $v['nama_workshop']; ?>' required /></td>
@@ -85,7 +125,7 @@
           <td align='right'>Lama :</td>
           <td>
             <?php
-              if ($v['lama_bulan'] != null) {
+              if ($v['lama_bulan'] != 0) {
                 $lama = $v['lama_bulan'];
               } else if ($v['lama_hari'] != 0) {
                 $lama = $v['lama_hari'];
@@ -115,7 +155,12 @@
                 echo "<option value='BULAN'>BULAN</option>";
                 echo "<option value='HARI'>HARI</option>";
                 echo "<option value='JAM' selected>JAM</option>";
-              } 
+              } else {
+		echo "<option value=''>-- Pilih Satuan --</option>";
+		echo "<option value='BULAN'>BULAN</option>";
+                echo "<option value='HARI'>HARI</option>";
+                echo "<option value='JAM'>JAM</option>";
+	      }	
             ?>
           </select>
           </td>

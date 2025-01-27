@@ -264,7 +264,7 @@ and p.nip='$nip'";
 
 
     function detail_pns() {        
-        $nip = $this->input->get('nip');
+        $nip = $this->input->post('nip');
 
         $nilai = $this->Mapi->detail_pns($nip);
         //masukkan data kedalam variabel
@@ -332,7 +332,9 @@ and p.nip='$nip'";
                 );
             }
         
-        header('Content-Type: application/json');
+        header('Accept: application/json');
+	header('Content-Type: multipart/form-data');
+	header('Authorization: Simgaji');
         echo json_encode($posts,TRUE);
         }   
     }

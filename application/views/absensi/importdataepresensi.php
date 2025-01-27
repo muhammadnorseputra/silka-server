@@ -120,7 +120,8 @@
             echo "<option value='0'>- Pilih Tahun -</option>";
             echo "<option value='2021'>2021</option>";          
 	    echo "<option value='2022'>2022</option>";
-	    echo "<option value='2023' selected>2023</option>";
+            echo "<option value='2023'>2023</option>";
+	    echo "<option value='2024' selected>2024</option>";
         ?>
         </select>
         </td>          

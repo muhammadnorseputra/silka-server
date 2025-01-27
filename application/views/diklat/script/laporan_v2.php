@@ -9,6 +9,10 @@
 <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/select2/css/select2.min.css') ?>">
 <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/select2/css/select2-bootstrap.min.css') ?>">
 <script type="text/javascript" src="<?php echo base_url('assets/select2/js/select2.min.js') ?>"></script>
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.5.6/css/buttons.dataTables.min.css">
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.6/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.print.min.js"></script>
 <script>
 /*
 $(document).ready(function(){

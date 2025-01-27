@@ -257,10 +257,12 @@ $("#jenis_jabatan").select2({
             $("#usulTab, #okTab").hide();
             $("#okContent").show();
             $("#usulTabStruktural").show();
+            $("#rekomendasiDiklatFungsional").hide();
           } else {
             $("#usulTab, #okTab").show();
             $("#okContent").hide();
             $("#usulTabStruktural").hide();
+            $("#rekomendasiDiklatFungsional").show();
           }
 
           if(i.jenis_kelamin == "L"){
@@ -374,6 +376,7 @@ $("#jenis_jabatan").select2({
       },
       complete: function(){
         data_riwayat_diklat();
+        getRekomendasiDiklatFungsional();
         data_rekomendasi_diklat();
         getUsulan();
         getRekDikTek();
@@ -693,20 +696,26 @@ $("#jenis_jabatan").select2({
           getRekDikTek();
         });
     }
-
+    function getRekomendasiDiklatFungsional() {
+      let jabatanId = $("#analisa-diklat-pop").val();
+      $.getJSON('<?= base_url("diklat/getRekomendasiDiklatFungsional") ?>', {id: jabatanId}, function(e){
+        $("#rekomendasi_diklat_fungsional").html(e.html);
+        $("span#loader3").css("display","none");
+      });
+    }
     function data_rekomendasi_diklat(){
 
         var id = $("#analisa-diklat-pop").val();
 
              
         $.ajax({
-        type:'POST',
-        data:'id='+id,
-        url : '<?php echo base_url()."diklat/get_datasyaratdiklat" ?>',
-        dataType: 'json',
-        beforeSend: function(){
-          data_riwayat_diklat();
-        },
+          type:'POST',
+          data:'id='+id,
+          url : '<?php echo base_url()."diklat/get_datasyaratdiklat" ?>',
+          dataType: 'json',
+          beforeSend: function(){
+            data_riwayat_diklat();
+          },
         success: function(res){
         
           if(res == ''){
@@ -839,14 +848,6 @@ $("#jenis_jabatan").select2({
     }
 
 
-</script>
-<script>
-  // $('[data-toggle="popover"]').popover({
-  //   trigger: 'hover',
-  //   placement: 'top',
-  //   delay: { "show": 500, "hide": 100 },
-  //   container: 'body'
-  // });
 </script>
 <style>
   .thumbnail { transition: all .5s ease; background: url("<?php echo base_url('assets/bg-batik.jpg') ?>");background-repeat: no-repeat;

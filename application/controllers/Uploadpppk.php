@@ -11,6 +11,8 @@ class Uploadpppk extends CI_Controller {
         $this->load->helper(array('url')); //load helper url         
         $this->load->model('mpegawai');
         $this->load->model('mnonpns');
+        $this->load->model('mpetajab');;
+        $this->load->model('mtppng');
         $this->load->model('mpppk');
         $this->load->helper('fungsitanggal');
         $this->load->helper('fungsipegawai');
@@ -168,6 +170,138 @@ class Uploadpppk extends CI_Controller {
             $this->load->view('template', $data);
         }
     }
+
+    public function insertskp2024() {
+        $nip = $this->input->post('nipppk');
+
+        $this->load->library('upload');
+
+        $nmfile = $nip."-SKP2024"; //nama file nip + '-' + $tmt_jabatan (10 karakter) + nomor acak (8 karakter acak)
+        $config['upload_path'] = './fileskpbulanan_pppk/'; //Folder untuk menyimpan hasil upload
+        $config['allowed_types'] = 'pdf|PDF'; //type yang dapat diakses bisa anda sesuaikan
+        $config['max_size'] = '200'; //maksimum besar file 5M
+        $config['file_name'] = $nmfile; //nama yang terupload nantinya
+
+        $this->upload->initialize($config);
+
+        if($_FILES['fileskpbulanan_pppk']['name'])
+        {
+            if (file_exists('./fileskpbulanan_pppk/'.$nip.'-SKP2024.pdf')) {
+               unlink('./fileskpbulanan_pppk/'.$nip.'-SKP2024.pdf');
+            } else if (file_exists('./fileskpbulanan_pppk/'.$nip.'-SKP2024.PDF')) {
+               unlink('./fileskpbulanan_pppk/'.$nip.'-SKP2024.PDF');
+            }
+
+            if ($this->upload->do_upload('fileskpbulanan_pppk'))
+            {
+                //pesan yang muncul jika berhasil diupload pada session flashdata
+                $data['pesan'] = '<b>Sukses</b>, Dokumen SKP Tahun 2024 Berhasil di-Upload.';
+                $data['jnspesan'] = 'alert alert-success';
+            } else{
+                //pesan yang muncul jika terdapat error dimasukkan pada session flashdata
+                $data['pesan'] = '<b>Gagal</b>, Dokumen SKP Tahun 2024 Gagal di-Upload.';
+                $data['jnspesan'] = 'alert alert-danger';
+            }
+        } else {
+            //redirect('./pegawai/uploadnok'); //jika file belum dipilih maka akan ditampilkan view upload no ok
+            $data['pesan'] = '<b>Gagal</b>, Dokumen SKP Tahun 2024 Gagal di-Upload.';
+            $data['jnspesan'] = 'alert alert-warning';
+        }
+
+        $nipppk = $nip;
+        $data['rwygaji'] = $this->mpppk->rwygaji($nipppk)->result_array();
+        $data['pegrwyabs'] = $this->mpppk->rwyabsensi($nipppk)->result_array();
+        $data['pegrwykin'] = $this->mpppk->rwykinerja($nipppk)->result_array();
+        $data['pegrwykinbkn'] = $this->mpppk->rwykinerjabkn($nipppk)->result_array();
+        $data['pegrwytppng'] = $this->mpppk->rwytppng($nipppk)->result_array();
+        $data['pegrwycuti'] = $this->mpppk->rwycuti($nipppk)->result_array();
+        $data['nipppk'] = $nipppk;
+        $data['content'] = 'pppk/rwygaji';
+        $this->load->view('template', $data);
+    }
+
+    public function insertskpbulanan() {
+        $id = $this->input->post('id');
+        $nip = $this->input->post('nipppk');
+        $thn = $this->input->post('thn');
+        $bln = $this->input->post('bln');
+        $nmberkaslama = $this->input->post('berkaslama');
+
+        $this->load->library('upload');
+
+        // membuat nomor acak untuk nama file
+        $karakter = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+        $string='';
+        $pjg = 8;
+        for ($i=0; $i < $pjg; $i++) {
+            $pos = rand(0, strlen($karakter)-1);
+            $string .= $karakter{$pos};
+        }
+        $nmfile = $nip."-".$bln.$thn."-".$string; //nama file nip + '-' + $tmt_jabatan (10 karakter) + nomor acak (8 karakter acak)
+        $config['upload_path'] = './fileskpbulanan_pppk/'; //Folder untuk menyimpan hasil upload
+        $config['allowed_types'] = 'pdf|PDF'; //type yang dapat diakses bisa anda sesuaikan
+        $config['max_size'] = '200'; //maksimum besar file 5M
+        $config['file_name'] = $nmfile; //nama yang terupload nantinya
+
+        $this->upload->initialize($config);
+        if($_FILES['fileskpbulanan_pppk']['name'])
+        {
+            if ($this->upload->do_upload('fileskpbulanan_pppk'))
+            {
+                /*
+                $gbr = $this->upload->data();
+                $data = array(
+                  'namafile' =>$gbr['file_name'],
+                  'type' =>$gbr['file_type'],
+                  'keterangan' =>$this->input->post('textket')
+
+                );
+                */
+                $data = array(
+                  'berkas'   => $nmfile
+                );
+
+                $where = array(
+                  'id'  => $id,
+                  'nip' => $nip
+                );
+
+                $this->mpegawai->edit_rwyskpbulanan($where, $data);
+
+                if (file_exists('./fileskpbulanan_pppk/'.$nmberkaslama.'.pdf')) {
+                         unlink('./fileskpbulanan_pppk/'.$nmberkaslama.'.pdf');
+                } else if (file_exists('./fileskpbulanan_pppk/'.$nmberkaslama.'.PDF')) {
+                         unlink('./fileskpbulanan_pppk/'.$nmberkaslama.'.PDF');
+                }
+
+                //pesan yang muncul jika berhasil diupload pada session flashdata
+                $data['pesan'] = '<b>Sukses</b>, Berkas Dokumen Penilaian Kinerja Bulanan Berhasil di-Upload.';
+                $data['jnspesan'] = 'alert alert-success';
+            } else{
+                //pesan yang muncul jika terdapat error dimasukkan pada session flashdata
+                $data['pesan'] = '<b>Gagal</b>, Berkas Dokumen Penilaian Kinerja Bulanan Gagal di-Upload.';
+                $data['jnspesan'] = 'alert alert-danger';
+            }
+        } else {
+            //redirect('./pegawai/uploadnok'); //jika file belum dipilih maka akan ditampilkan view upload no ok
+            $data['pesan'] = '<b>Gagal</b>, Berkas Dokumen Penilaian Kinerja Bulanan Gagal di-Upload.';
+            $data['jnspesan'] = 'alert alert-warning';
+        }
+        $nipppk = $nip;
+        $data['rwygaji'] = $this->mpppk->rwygaji($nipppk)->result_array();
+        $data['pegrwyabs'] = $this->mpppk->rwyabsensi($nipppk)->result_array();
+        $data['pegrwykin'] = $this->mpppk->rwykinerja($nipppk)->result_array();
+        $data['pegrwykinbkn'] = $this->mpppk->rwykinerjabkn($nipppk)->result_array();
+        $data['pegrwytppng'] = $this->mpppk->rwytppng($nipppk)->result_array();
+        $data['pegrwycuti'] = $this->mpppk->rwycuti($nipppk)->result_array();
+        $data['nipppk'] = $nipppk;
+        $data['content'] = 'pppk/rwygaji';
+        $this->load->view('template', $data);
+
+    }
+
+
+
 
     
 }

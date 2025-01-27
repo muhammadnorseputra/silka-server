@@ -93,7 +93,7 @@
     <form method='POST' name='formupdatestatus'>    
       <table>      
       <tr>        
-        <td>Nama Unit Kerja :&nbsp
+        <td>
           <select name="id_unker" id="id_unker" required onChange="showData(this.value, formupdatestatus.thn.value)"/>
           <?php
           echo "<option value=''>- Pilih Unit Kerja -</option>";
@@ -104,7 +104,7 @@
           ?>
           </select>
         </td>
-        <td>&nbspTahun Usul KGB :&nbsp
+        <td>
           <select name="thn" id="thn" required onChange="showData(formupdatestatus.id_unker.value, this.value)" />
           <?php
           $tahunini = date(Y);

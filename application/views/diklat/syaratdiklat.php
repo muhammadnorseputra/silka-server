@@ -15,10 +15,11 @@
 					</a></li>
 
 				<li role="presentation"><a href="#usul" aria-controls="usul" role="tab" data-toggle="tab"> Data Diklat JFU & JFT</a></li>
+				<li role="presentation"><a href="#rekomendasi" aria-controls="rekomendasi" role="tab" data-toggle="tab">Data Rekomendasi Diklat</a></li>
 				<!--<li role="presentation"><a href="#jf" aria-controls="jf" role="tab" data-toggle="tab">Data Diklat Teknis Fungsional Terpenuhi</a></li>-->
 			</ul>
 
-			<!-- Tab panes -->
+			<!-- TAB DIKLAT STRUKTURAL -->
 			<div class="tab-content">
 
 				<div role="tabpanel" class="tab-pane fade in active" id="table-data">
@@ -86,96 +87,117 @@
 						</div>
 					</div>
 				</div>
-			<div role="tabpanel" class="tab-pane fade in" id="usul">
-				
-				<div class="form-horizontal row" style=" margin-left: 10px; margin-top:10px;">
-					<div class="col-md-1">
-						<div class="form-group">
-								<select class="form-control" name="tahun">
-					          		<?php foreach($this->md->get_tahun_usul() as $t): ?>
-					          			<option value="<?= $t->tahun ?>"><?= $t->tahun ?></option>
-					          		<?php endforeach; ?>
-					           </select>
+			
+				<div role="tabpanel" class="tab-pane fade in" id="usul">
+					<div class="form-horizontal row" style=" margin-left: 10px; margin-top:10px;">
+						<div class="col-md-1">
+							<div class="form-group">
+									<select class="form-control" name="tahun">
+										<?php foreach($this->md->get_tahun_usul() as $t): ?>
+											<option value="<?= $t->tahun ?>"><?= $t->tahun ?></option>
+										<?php endforeach; ?>
+								</select>
+							</div>
+							
+						</div>
+						<div class="col-md-1">
+							<div class="form-group">
+									<select class="form-control" name="checkjst" id="checkjst">
+										<option value="1">All</option>
+										<option value="0">Struktural</option>
+									</select>
+							</div>
 						</div>
 						
-					</div>
-					<div class="col-md-1">
-						<div class="form-group">
-								<select class="form-control" name="checkjst" id="checkjst">
-									<option value="1">All</option>
-									<option value="0">Struktural</option>
-								</select>
-						</div>
-					</div>
-					
-					<div class="col-md-2">
-						<div class="form-group">
-								<select class="form-control" name="checkstatus" id="checkstatus">
-									<option value="1">Setuju</option>
-									<option value="2" selected>Dalam Proses</option>
-									<option value="0">Tidak Disetujui</option>
-								</select>
-						</div>
-					</div>
-					
-					<div class="col-md-4">
-						<div class="form-group">
-								<select class="form-control" name="unkerid2" id="unkerfilter2"></select>
-						</div>
-					</div>
-					
-					<div class="col-md-4">
-						<button class="btn btn-sm btn-info pull-right"
-									onclick="dataTables2.ajax.reload()" data-toggle="tooltip" data-placement="top" title="Reload Table"><i class="glyphicon glyphicon-refresh"></i> Refresh Table</button>
-					</div>
-					
-					
-				</div>
-				<div class="panel panel-warning" style="margin-top:10px;">
-							<div class="panel-heading"><b>TABLE USER USUL DIKLAT</b> 
-									
+						<div class="col-md-2">
+							<div class="form-group">
+									<select class="form-control" name="checkstatus" id="checkstatus">
+										<option value="1">Setuju</option>
+										<option value="2" selected>Dalam Proses</option>
+										<option value="0">Tidak Disetujui</option>
+									</select>
 							</div>
-							<div class="panel-body">
-								<table class="table table-hover table-striped table-condensed  display  responsive no-wrap" id="tableSyaratJF">
-									<thead>
-										<tr>
-											<th>No</th>
-											<th>NIP/Nama</th>
-											<th class="none">Tupoksi</th>
-											<th class="none">Unit Kerja</th>
-											<th>Nama Usulan Diklat</th>
-											<th class="none">Waktu (JP)  </th>
-											<th class="none">Penyelenggara </th>
-											<th class="none">Tempat </th>
-											<th class="none">Tahun </th>
-											<th class="none">Biaya </th>
-											<th class="none">Hasil Yang Diharapkan </th>
-											<th class="none">Catatan </th>
-											<th>Status</th>
-											<th>Hapus | Sinkron</th>
-										</tr>
-									</thead>
-									<tbody></tbody>
-									<!-- <tfoot>
+						</div>
+						
+						<div class="col-md-4">
+							<div class="form-group">
+									<select class="form-control" name="unkerid2" id="unkerfilter2"></select>
+							</div>
+						</div>
+						
+						<div class="col-md-4">
+							<button class="btn btn-sm btn-info pull-right"
+										onclick="dataTables2.ajax.reload()" data-toggle="tooltip" data-placement="top" title="Reload Table"><i class="glyphicon glyphicon-refresh"></i> Refresh Table</button>
+						</div>
+						
+						
+					</div>
+					<div class="panel panel-warning" style="margin-top:10px;">
+						<div class="panel-heading"><b>TABLE USER USUL DIKLAT</b> 
+								
+						</div>
+						<div class="panel-body">
+							<table class="table table-hover table-striped table-condensed  display  responsive no-wrap" id="tableSyaratJF">
+								<thead>
 									<tr>
-											<th>No</th>
-											<th>NIP/Nama</th>
-											<th>Tupoksi</th>
-											<th>Unit Kerja</th>
-											<th>Nama Usulan Diklat</th>
-											<th>Waktu (JP)</th>
-											<th>Penyelenggara</th>
-											<th>Biaya</th>
-											<th>Hasil Yang Diharapkan</th>
-											<th>Status</th>
-											<th>Hapus</th>
-										</tr>
-									</tfoot> -->
-								</table>
-							</div>
+										<th>No</th>
+										<th>NIP/Nama</th>
+										<th class="none">Tupoksi</th>
+										<th class="none">Unit Kerja</th>
+										<th>Nama Usulan Diklat</th>
+										<th class="none">Waktu (JP)  </th>
+										<th class="none">Penyelenggara </th>
+										<th class="none">Tempat </th>
+										<th class="none">Tahun </th>
+										<th class="none">Biaya </th>
+										<th class="none">Hasil Yang Diharapkan </th>
+										<th class="none">Catatan </th>
+										<th>Status</th>
+										<th>Hapus | Sinkron</th>
+									</tr>
+								</thead>
+								<tbody></tbody>
+								<!-- <tfoot>
+								<tr>
+										<th>No</th>
+										<th>NIP/Nama</th>
+										<th>Tupoksi</th>
+										<th>Unit Kerja</th>
+										<th>Nama Usulan Diklat</th>
+										<th>Waktu (JP)</th>
+										<th>Penyelenggara</th>
+										<th>Biaya</th>
+										<th>Hasil Yang Diharapkan</th>
+										<th>Status</th>
+										<th>Hapus</th>
+									</tr>
+								</tfoot> -->
+							</table>
 						</div>
+					</div>
+				</div>
+				<!-- TABS REKOMENDASI DIKLAT -->
+				<div role="tabpanel" class="tab-pane fade in" id="rekomendasi">
+				<div class="panel panel-success" style="margin-top:10px;">
+						<div class="panel-heading"><b>TABLE REKOMENDASI</b>
+						<button class="btn btn-sm btn-info" style="margin-left: 15px;" onclick="dataTables3.ajax.reload()"><i class="glyphicon glyphicon-refresh"></i> Refresh Table</button>
+						<button class="btn btn-sm btn-success" style="margin-left: 10px;" data-target="#myModalAddRekomendasi" data-toggle="modal"><i class="glyphicon glyphicon-plus"></i> Tambah Data</button></div>
+						<div class="panel-body">
+							<table class="table table-hover table-striped table-condensed  display  responsive no-wrap" id="tableRekomendasi">
+								<thead>
+									<tr>
+										<th>No</th>
+										<th>Jabatan</th>
+										<th class="none">Daftar Rekomendasi</th>
+										<th>Aksi</th>
+									</tr>
+								</thead>
+								<tbody></tbody>
+							</table>
+						</div>
+					</div>
+				</div>
 			</div>
-			<div role="tabpanel" class="tab-pane fade in" id="jf">JFU & JFT</div>
 			</div>
 		</div>
 
@@ -273,6 +295,58 @@
 						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 						<button type="button" class="btn btn-primary" onclick="toSave()" id="save"> <i
 												class="glyphicon glyphicon-save"></i> Save changes</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- MODAL ADD REKOMENDASI DIKLAT -->
+		<div class="modal fade" id="myModalAddRekomendasi">
+			<div class="modal-dialog modal-md">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title">Tambah Diklat Rekomendasi </h4>
+					</div>
+					<div class="modal-body">
+						<form class="form-horizontal" action="<?= base_url("diklat/insert_rekomendasi_diklat") ?>" method="post" name="frekomendasi" id="frekomendasi">
+						<!-- <div class="form-group">
+							<label for="pilih_unor" class="col-sm-3 control-label">Pilih Unit Kerja</label>
+								<div class="col-sm-8">
+									<select class="form-control" name="pilih_unor" id="pilih_unor"></select>
+									<p class="help-block">*) khusus jenis jabatan struktural</p>
+								</div>
+							</div> -->
+							<div class="form-group">
+								<label for="jenis_jabatan" class="col-sm-3 control-label">Jenis Jabatan</label>
+								<div class="col-sm-8">
+									<select class="form-control" id="jenis_jabatan" name="jenis_jabatan">
+										<option value="0">-- Pilih Jenis Jabatan --</option>
+										<!-- <option value="JST">Jabatan Struktural</option> -->
+										<option value="JFU">Jabatan Fungsional Umum / Pelaksana</option>
+										<option value="JFT">Jabatan Fungsional Tertentu</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="pilih_jabatan_skr" class="col-sm-3 control-label">Pilih Jabatan</label>
+								<div class="col-sm-8">
+									<select class="form-control" id="pilih_jabatan_skr" name="pilih_jabatan_skr" placeholder="Pilih jabatan">
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="rekomendasi" class="col-sm-3 control-label">Daftar Rekomendasi</label>
+								<div class="col-sm-8">
+									<textarea name="rekomendasi" id="rekomendasi" class="form-control" cols="30" rows="8" placeholder="Isikan daftar rekomendasi diklat disini ..."></textarea>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="rekomendasi" class="col-sm-3 control-label"></label>
+								<div class="col-sm-8">
+									<button type="submit" name="simpan" id="button" role="submit" class="btn btn-success">Simpan</button>
+								</div>
+							</div>
+						</form>
 					</div>
 				</div>
 			</div>
@@ -389,7 +463,34 @@
 				</form>
 			</div>
 		</div>
-
+		<!-- MODAL EDIT REKOMENDASI DIKLAT -->
+		<div class="modal fade" id="myModalEditRekomendasi">
+			<div class="modal-dialog modal-md">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title">Edit Diklat Rekomendasi </h4>
+					</div>
+					<div class="modal-body">
+						<form class="form-horizontal" action="<?= base_url("diklat/update_rekomendasi_diklat") ?>" method="post" name="updaterekomendasi" id="updaterekomendasi">
+							<input type="hidden" name="id_rekomendasi">
+							<div class="form-group">
+								<label for="rekomendasi" class="col-sm-3 control-label">Daftar Rekomendasi</label>
+								<div class="col-sm-8">
+									<textarea name="rekomendasi" id="rekomendasi" class="form-control" cols="30" rows="8" placeholder="Isikan daftar rekomendasi diklat disini ..."></textarea>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="rekomendasi" class="col-sm-3 control-label"></label>
+								<div class="col-sm-8">
+									<button type="submit" name="simpan" id="button" role="submit" class="btn btn-success">Simpan</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 </div>
 <?php $this->load->view($syarat_diklat) ?>

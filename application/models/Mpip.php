@@ -628,6 +628,68 @@ WHERE p.fid_unit_kerja = u.id_unit_kerja and p.fid_unit_kerja = '".$idunker."' o
 
   // END Review Progress IPASN 2021 DJASN BKN
 
+  // START IPASN SIASN BKN
+  public function gettgl_importsiasn()
+  {
+    $q = $this->db->query("select tgl_update from progress_ipasn_siasn GROUP BY tgl_update");
+    return $q;
+  }
+
+  public function tgl_updateterakhir_siasn()
+  {
+    $q = $this->db->query("select max(tgl_update) as tgl_update from progress_ipasn_siasn");
+    if ($q->num_rows() > 0)
+    {
+      $row=$q->row();
+      return $row->tgl_update;
+    }
+  }
+
+  public function nilairata_pertanggal_siasn($tl)
+  {
+    $q = $this->db->query("select count(pd.nip) as jmldata, avg(pd.kualifikasi) as ratakua, avg(pd.kompetensi) as ratakomp, avg(pd.kinerja) as ratakin,
+        avg(pd.disiplin) as ratadis, avg(pd.total) as ratatotal FROM progress_ipasn_siasn as pd WHERE pd.tgl_update = '".$tl."'");
+
+      return $q;
+  }
+
+  public function cariprogress_ipasn_siasn($idunker, $thn, $tl)
+  {
+    //$q = $this->db->query("select p.nip as 'nippeg', p.nama, p.gelar_belakang, p.gelar_depan, p.fid_unit_kerja, pd.*
+    //		    	FROM pegawai as p left join progress_ipasn_siasn as pd on pd.nip=p.nip and pd.tgl_update = '".$tl."', ref_unit_kerjav2 as u
+    //			WHERE p.fid_unit_kerja = u.id_unit_kerja and p.fid_unit_kerja = '".$idunker."' and pd.tahun = '".$thn."' order by pd.total");
+    
+    // GABUNG (UNION) PNS DAN PPPK	
+    $q = $this->db->query("select p.nip as 'nippeg', p.nama, p.gelar_belakang, p.gelar_depan, p.fid_unit_kerja, pd.*
+                        FROM pegawai as p left join progress_ipasn_siasn as pd on pd.nip=p.nip and pd.tgl_update = '".$tl."', ref_unit_kerjav2 as u
+                        WHERE p.fid_unit_kerja = u.id_unit_kerja and p.fid_unit_kerja = '".$idunker."' and pd.tahun = '".$thn."'
+			UNION
+			select p.nipppk as 'nippeg', p.nama, p.gelar_blk, p.gelar_depan, p.fid_unit_kerja, pd.*
+                        FROM pppk as p left join progress_ipasn_siasn as pd on pd.nip=p.nipppk and pd.tgl_update = '".$tl."', ref_unit_kerjav2 as u
+                        WHERE p.fid_unit_kerja = u.id_unit_kerja and p.fid_unit_kerja = '".$idunker."' and pd.tahun = '".$thn."'");
+    return $q;
+  }
+
+  public function nilairata_siasn($idunker, $tahun, $tl)
+  {
+  /*    $q = $this->db->query("select count(pd.nip) as jmldata, avg(pd.kualifikasi) as ratakua, avg(pd.kompetensi) as ratakomp, avg(pd.kinerja) as ratakin,
+        avg(pd.disiplin) as ratadis, avg(pd.total) as ratatotal FROM pegawai as p left join progress_ipasn_siasn as pd
+        on pd.nip=p.nip and pd.tgl_update = '".$tl."' WHERE p.fid_unit_kerja = '".$idunker."' AND pd.tahun = '".$tahun."'");
+  */
+
+	$q = $this->db->query("select count(pd.nip) as jmldata, 'PNS' as jnsasn, avg(pd.kualifikasi) as ratakua, avg(pd.kompetensi) as ratakomp, avg(pd.kinerja) as ratakin,
+        avg(pd.disiplin) as ratadis, avg(pd.total) as ratatotal FROM pegawai as p left join progress_ipasn_siasn as pd
+        on pd.nip=p.nip and pd.tgl_update = '".$tl."' WHERE p.fid_unit_kerja = '".$idunker."' AND pd.tahun = '".$tahun."' 
+	UNION
+	select count(pd.nip) as jmldata, 'PPPK' as jnsasn, avg(pd.kualifikasi) as ratakua, avg(pd.kompetensi) as ratakomp, avg(pd.kinerja) as ratakin,
+        avg(pd.disiplin) as ratadis, avg(pd.total) as ratatotal FROM pppk as p left join progress_ipasn_siasn as pd
+        on pd.nip=p.nipppk and pd.tgl_update = '".$tl."' WHERE p.fid_unit_kerja = '".$idunker."' AND pd.tahun = '".$tahun."'");
+	
+      return $q;
+  }
+
+  // END IPASN SIASN BKN
+
 }
 /* End of file mpegawai.php */
 /* Location: ./application/models/mpegawai.php */

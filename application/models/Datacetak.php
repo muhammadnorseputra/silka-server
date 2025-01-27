@@ -30,19 +30,27 @@ class Datacetak extends CI_Model {
       $fid_jns_cuti = $this->input->post('fid_jns_cuti');
       $fid_pengantar = $this->input->post('fid_pengantar');
       $id_status = 2;  // status cuti : CETAUKUSUL
-
+  
+      $get_jnsasn = $this->mcuti->get_jnsasn($fid_pengantar);
+      if ($get_jnsasn == "PNS") {
+	$ni = "nip";
+      } else if ($get_jnsasn == "PPPK") {
+	$ni = "nipppk";
+      }
+	
       // update status cuti : CETAKUSUL => 2
        $data = array(      
         'fid_status'      => $id_status
       );
 
       $where = array(
-      'nip'             => $nip,
+      $ni               => $nip,
       'fid_jns_cuti'    => $fid_jns_cuti,
       'fid_pengantar'   => $fid_pengantar,
       'thn_cuti'        => $thn_cuti
       );
 
+      /*
       if ($this->mcuti->edit_usul($where, $data))
       {
         // kirim konfirmasi pesan dan jenis pesan yang ada pada file tampilpengantarcuti.php
@@ -52,9 +60,32 @@ class Datacetak extends CI_Model {
         $data['pesan'] = '<b>Gagal !</b>, Usul Cuti gagal dicetak.';
         $data['jnspesan'] = 'alert alert-danger';
       }      
-
-      $query = $this->mcuti->cetakusulcuti($nip, $thn_cuti, $fid_jns_cuti, $fid_pengantar);
-
+      */
+	
+      if ($get_jnsasn == "PNS") {
+	if ($this->mcuti->edit_usul($where, $data))
+        {
+         // kirim konfirmasi pesan dan jenis pesan yang ada pada file tampilpengantarcuti.php
+         $data['pesan'] = '<b>Sukses</b>, Usul Cuti berhasil dicetak.';
+         $data['jnspesan'] = 'alert alert-success';
+        } else {
+         $data['pesan'] = '<b>Gagal !</b>, Usul Cuti gagal dicetak.';
+         $data['jnspesan'] = 'alert alert-danger';
+        }	
+      	$query = $this->mcuti->cetakusulcuti($nip, $thn_cuti, $fid_jns_cuti, $fid_pengantar);
+      } else if ($get_jnsasn == "PPPK") {
+	if ($this->mcuti->edit_usul_pppk($where, $data))
+        {
+         // kirim konfirmasi pesan dan jenis pesan yang ada pada file tampilpengantarcuti.php
+         $data['pesan'] = '<b>Sukses</b>, Usul Cuti berhasil dicetak.';
+         $data['jnspesan'] = 'alert alert-success';
+        } else {
+         $data['pesan'] = '<b>Gagal !</b>, Usul Cuti gagal dicetak.';
+         $data['jnspesan'] = 'alert alert-danger';
+        }
+	$query = $this->mcuti->cetakusulcuti_pppk($nip, $thn_cuti, $fid_jns_cuti, $fid_pengantar);
+      }	
+	
       return $query->result();
     }
 
@@ -84,7 +115,12 @@ class Datacetak extends CI_Model {
         $data['jnspesan'] = 'alert alert-danger';
       }      
 
-      $query = $this->mcuti->cetakpengantar($id_pengantar, $tgl_pengantar, $fid_unit_kerja);
+      $get_jnsasn = $this->mcuti->get_jnsasn($id_pengantar);
+      if ($get_jnsasn == "PNS") {
+        $query = $this->mcuti->cetakpengantar($id_pengantar, $tgl_pengantar, $fid_unit_kerja);
+      } else if ($get_jnsasn == "PPPK") {
+	$query = $this->mcuti->cetakpengantar_pppk($id_pengantar, $tgl_pengantar, $fid_unit_kerja);
+      }	
 
       return $query->result();
     }
@@ -127,6 +163,13 @@ class Datacetak extends CI_Model {
       $fid_jns_cuti = $this->input->post('fid_jns_cuti');
       $id_status = 7;  // status cuti : CETAKSK
 
+      $get_jnsasn = $this->mcuti->get_jnsasn($id_pengantar);
+      if ($get_jnsasn == "PNS") {
+        $ni = "nip";
+      } else if ($get_jnsasn == "PPPK") {
+        $ni = "nipppk";
+      }	
+
       // update status cuti : CETAKSK => 7
        $data = array(      
         'fid_status'      => $id_status
@@ -134,21 +177,34 @@ class Datacetak extends CI_Model {
 
       $where = array(
       'fid_pengantar'  => $id_pengantar,
-      'nip'            => $nip,
+      $ni              => $nip,
       'thn_cuti'       => $thn_cuti,
       'fid_jns_cuti'   => $fid_jns_cuti
       );
 
-      if ($this->mcuti->edit_usul($where, $data))
-      {
-        $data['pesan'] = '<b>Sukses</b>, SK Cuti berhasil dicetak.';
-        $data['jnspesan'] = 'alert alert-success';
-      } else {
-        $data['pesan'] = '<b>Gagal !</b>, SK Cuti gagal dicetak.';
-        $data['jnspesan'] = 'alert alert-danger';
-      }      
+      if ($get_jnsasn == "PNS") {	
+      	if ($this->mcuti->edit_usul($where, $data))
+      	{
+        	$data['pesan'] = '<b>Sukses</b>, SK Cuti berhasil dicetak.';
+        	$data['jnspesan'] = 'alert alert-success';
+      	} else {
+        	$data['pesan'] = '<b>Gagal !</b>, SK Cuti gagal dicetak.';
+        	$data['jnspesan'] = 'alert alert-danger';
+      	}
+	$query = $this->mcuti->cetakskcuti($nip, $thn_cuti, $fid_jns_cuti, $id_pengantar);
+      } else if ($get_jnsasn == "PPPK") {
+        if ($this->mcuti->edit_usul_pppk($where, $data))
+        {
+                $data['pesan'] = '<b>Sukses</b>, SK Cuti berhasil dicetak.';
+                $data['jnspesan'] = 'alert alert-success';
+        } else {
+                $data['pesan'] = '<b>Gagal !</b>, SK Cuti gagal dicetak.';
+                $data['jnspesan'] = 'alert alert-danger';
+        }
+	$query = $this->mcuti->cetakskcuti_pppk($nip, $thn_cuti, $fid_jns_cuti, $id_pengantar);
+      } 	      
 
-      $query = $this->mcuti->cetakskcuti($nip, $thn_cuti, $fid_jns_cuti, $id_pengantar);
+      //$query = $this->mcuti->cetakskcuti($nip, $thn_cuti, $fid_jns_cuti, $id_pengantar);
 
       return $query->result();
     }

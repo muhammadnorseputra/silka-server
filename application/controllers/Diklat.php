@@ -604,6 +604,18 @@ public function get_more_pegawai(){
   echo json_encode($data);
 }
 
+public function getRekomendasiDiklatFungsional() {
+  $id = $this->input->get('id');
+  $data=$this->db->get_where('ref_rekomendasi_diklat', ['id_jabatan' => $id])->row();
+  if(count($data) > 0) {
+    $rekomendasi = explode(";",$data->rekomendasi);
+    $result = $this->listRekomendasi($id, $rekomendasi);
+  } else {
+    $result = "BELUM ADA REKOMENDASI DIKLAT";
+  }
+  echo json_encode(['html' => $result]);
+}
+
 public function get_datasyaratdiklat(){
   $idnya = $this->input->post('id');
   $data = $this->md->getdatasyaratdiklat($idnya)->result();
@@ -689,6 +701,109 @@ public function get_update_usul_by_id($id) {
     $msg = "false";
   } else {
     $msg = "Updated Success.";
+  }
+  echo json_encode($msg);
+}
+function listRekomendasi($id, $arr) {
+  $data = [];
+  foreach($arr as $v => $k) {
+    $row[] = $k;
+    $data = $row;
+  }
+  $baris = '';
+  for($i=0;$i<count($arr);$i++) {
+    if($data != NULL) {
+      $baris .= "<div style='border: 1px solid #ccc; padding: 10px;'>".$data[$i]."</div>";
+    } else {
+      $baris .= "DATA TIDAK DI TEMUKAN";
+    }
+  }
+  return $baris;
+}
+public function get_rekomendasi_by_id() {
+  $id = $this->input->get('id');
+  $data = $this->db->get_where('ref_rekomendasi_diklat', ['id' => $id])->row();
+  echo json_encode($data);
+}
+public function get_rekomendasi_diklat() {
+  
+  $fetch_data = $this->md->fetch_datatable_rekomendasi();
+  $data = array();
+  $no = $_POST['start'];
+  foreach($fetch_data as $row) {
+    $rekomendasi = explode(";",$row->rekomendasi);
+    $sub_array = array();
+    $sub_array[] = $no+1;
+    $sub_array[] = $this->md->getNamaJabatan($row->jnsjab,$row->id_jabatan);
+    $sub_array[] = $this->listRekomendasi($row->id, $rekomendasi);
+    $sub_array[] = '<button type="button" class="btn btn-xs btn-primary" targetId="'.$row->id.'" id="edit_rekomendasi"><i class="glyphicon glyphicon-edit"></i></button> <button type="button" class="btn btn-xs btn-danger" targetId="'.$row->id.'" id="hapus_rekomendasi"><i class="glyphicon glyphicon-trash"></i></button>';
+    $data[] = $sub_array;
+  $no++;
+  }
+
+  $output = array(
+    'draw'  		  => intval($_POST['draw']),
+    'recordsTotal' 	  => $this->md->get_all_rekomendasi_data(),
+    'recordsFiltered' => $this->md->get_filtered_rekomendasi_data(),
+    'data'			  => $data			
+  );
+
+  echo json_encode($output);
+}
+
+public function insert_rekomendasi_diklat() {
+  $i = $this->input->post();
+
+  $jnsjab = $i['jenis_jabatan'];
+
+  $pecah_jabatan = explode("-",$i['pilih_jabatan_skr']);
+  $jabatan_id = $pecah_jabatan[0];
+  $jabatan_name = $pecah_jabatan[1];
+
+  $rekomendasi = $i['rekomendasi'];
+
+  $data = [
+    'jnsjab' => $jnsjab,
+    'id_jabatan' => $jabatan_id,
+    'rekomendasi' => $rekomendasi
+  ];
+  $table = 'ref_rekomendasi_diklat';
+  $db = $this->md->p_insert($data,$table);
+  if($db) {
+    $msg = 'Rekomendasi Diklat Berhasil Ditambahkan';
+  } else {
+    $msg = 'Galat 500';
+  }
+
+  echo json_encode(['pesan' => $msg]);
+}
+
+public function update_rekomendasi_diklat() {
+  $i = $this->input->post();
+  $id = $i['id_rekomendasi'];
+  $rekomendasi = $i['rekomendasi'];
+
+  $data = [
+    'rekomendasi' => $rekomendasi
+  ];
+  $table = 'ref_rekomendasi_diklat';
+  $whr = ['id' => $id];
+  $db = $this->md->p_update($whr,$data,$table);
+  if($db) {
+    $msg = 'Rekomendasi Diklat Berhasil Diupdate';
+  } else {
+    $msg = 'Galat 500';
+  }
+
+  echo json_encode(['pesan' => $msg]);
+}
+
+public function hapus_rekomendasi($id) {
+  $data = $this->md->hapus_datatable(['id' => $id], 'ref_rekomendasi_diklat');
+  if($data) {
+    $msg = 'Gagal Dihapus';
+  } else {
+    $msg = 'Data Rekomendasi Terhapus';
   }
   echo json_encode($msg);
 }

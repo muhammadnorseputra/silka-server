@@ -95,7 +95,7 @@
 
 ?>
 <center>
-  <div class="panel panel-default" style="width: 70%;">
+  <div class="panel panel-default" style="width: 85%;">
     <div class="panel-body">          
       <table class='table table-condensed'>
         <tr>         
@@ -120,7 +120,7 @@
         
         <table class="table table-condensed">
             <tr bgcolor='#D2DEDE'>
-              <td align='right' width='160'><b>NIP PPPK</b></td>
+              <td align='right' width='100%'><b>NIP PPPK</b></td>
               <td colspan='3'><input type="text" name="nipppk" value="<?= $d['nipppk'] ?>" size='20' onkeyup='validAngka(this)' maxlength='18' placeholder="Ketik NIP P3K" required />
               <small class="text-muted">** WAJIB DIISI, hanya angka tanpa spasi</small>
               </td>
@@ -200,6 +200,13 @@
                 <small class="text-muted">** WAJIB DIISI</small>
               </td>-->
             </tr>
+	    <tr>
+              <td align='right' bgcolor='#D9EDF7'><b>No. Handphone</b></td>
+              <td colspan='4'>
+                <input type="text" name="no_handphone" id="no_handphone" size='20' value="<?= $d['no_handphone'] ?>" maxlength='20' required />
+                <small class="text-muted">** WAJIB DIISI, Hanya Angka</small>
+              </td>
+	    </tr>	
             <tr>
               <td align='right' bgcolor='#D9EDF7'><b>Jenis Kelamin</b></td>
               <td>
@@ -383,7 +390,7 @@
               </td>
               <td align='right' bgcolor='#D9EDF7'><b>TMT Jabatan</b></td>
               <td>
-              	<input type="text" class="tanggal" name="tmt_jabft" value="<?= tgl_sql($d['tmt_jabft']) ?>" size='12' maxlength='10' required />
+              	<input type="text" class="tanggal" name="tmt_jabatan" value="<?= tgl_sql($d['tmt_jabatan']) ?>" size='12' maxlength='10' required />
               	<small class="text-muted">** WAJIB DIISI</small>
               </td>
             </tr>
@@ -414,9 +421,10 @@
             <tr>
             	<td align='right' bgcolor='#D9EDF7'><b>Masa Kerja</b></td>
             	<td>Tahun: <input type="text" name="maker_tahun" size='5' maxlength='2' value="<?= $d['maker_tahun'] ?>" placeholder="tahun"/> / Bulan: <input type="text" placeholder="bulan" name="maker_bulan" value="<?= $d['maker_bulan'] ?>" size='5' maxlength='2' /> / <b>Gaji Pokok</b> <input type="text" value="<?= $d['gaji_pokok'] ?>" name="gaji_pokok" size='12' maxlength='10' required /></td>
-            	<td align='right' bgcolor='#D9EDF7'><b>Tmt PPPK</b></td>
+            	<td align='right' bgcolor='#D9EDF7'><b>TMT Kontrak</b></td>
             	<td>
               	<input type="text" class="tanggal" name="tmt_pppk_awal" value="<?= tgl_sql($d['tmt_pppk_awal']) ?>" size='12' required />
+		 s/d <input type="text" class="tanggal" name="tmt_pppk_akhir" value="<?= tgl_sql($d['tmt_pppk_akhir']) ?>" size='12' required />
               	<small class="text-muted">** WAJIB DIISI</small>
               </td>
             </tr> 

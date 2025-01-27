@@ -56,6 +56,40 @@ if ( ! function_exists('bulan'))
     }
 }
 
+//untuk Konversi nama hari English ke Indonesia
+if ( ! function_exists('namahari_indo'))
+{
+    function namahari_indo($hari)
+    {
+        switch ($hari)
+        {
+            case "Sunday":
+                return "Minggu";
+                break;
+            case "Monday":
+                return "Senin";
+                break;
+            case "Tuesday":
+                return "Selasa";
+                break;
+            case "Wednesday":
+                return "Rabu";
+                break;
+            case "Thursday":
+                return "Kamis";
+                break;
+            case "Friday":
+                return "Jum'at";
+                break;
+            case "Saturday":
+                return "Sabtu";
+                break;
+	}
+    }
+}
+
+
+
 if ( ! function_exists('list_bulan')) 
 {
     function list_bulan($month_format="m"){
@@ -85,12 +119,16 @@ if ( ! function_exists('tgl_indo_pendek'))
 {
     function tgl_indo_pendek($tgl)
     {
+      if ($tgl) {
         $ubah = gmdate($tgl, time()+60*60*8);
         $pecah = explode("-",$ubah);  //memecah variabel berdasarkan -
         $tanggal = $pecah[2];
         $bulan = $pecah[1]; // cari nama bulan dari fungsi bulan diatas
         $tahun = $pecah[0];
         return $tanggal.'-'.$bulan.'-'.$tahun; //hasil akhir
+      } else {
+	return "";
+      }
     }
 }
 

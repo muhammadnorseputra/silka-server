@@ -800,11 +800,14 @@ class Absensi extends CI_Controller {
 		
 		$blnini = date('n'); // Ambil bulan tanpa diawali 0
 		$thnini = date('Y');
-		$sudahhitungtpp = $this->mkinerja->cektelahusul($nip, $thn, $bln);
+		$sudahhitungtpp = $this->mkinerja->cektelahusul_tppng($nip, $thn, $bln);
+
 		if ($sudahhitungtpp) {
 			echo "<h4><span class='text-danger'>Kada kawa di-Impor karena TPP bulan ".bulan($bln)." ".$thn." sudah tuntung dihitung.</span></h4>";
 		//} else if (($thnini == $thn) AND ($blnini == $bln+1) AND (!$sudahhitungtpp)) {
-		} else if (($thnini == '2023')  AND (!$sudahhitungtpp)) {
+		} else {
+		//} else if (($thnini == '2023')  AND (!$sudahhitungtpp)) {
+		//} else if (($bln == '12') AND ($blnini == '1') AND ($thn == $thnini-1)) {
 			echo "<div class='row'>";
             		echo "<div class='col-md-12'>";
             		echo "<form method='POST' action='../absensi/importperorangan'>
@@ -812,15 +815,14 @@ class Absensi extends CI_Controller {
                     		<input type='hidden' name='thn' id='thn' maxlength='4' value='".$thn."'>
                     		<input type='hidden' name='bln' id='bln' maxlength='4' value='".$bln."'>
                     		<input type='hidden' name='jns' id='jns' maxlength='4' value='".$jns."'>
-                    		<button type='submit' class='btn btn-danger btn'>
+                    		<button type='submit' class='btn btn-danger btn-outline'>
                       		   <span class='glyphicon glyphicon-import' aria-hidden='false'></span>&nbspSimpan ePresensi
                    		</button>
                   	      </form>";
             		echo "</div>";
             		echo "<div class='col-md-2'></div>";
             		echo "</div>";
-		} 
-
+		}
                 $berhasil++;
               } else {
                 echo "<td colspan='14' align='center' class='info'><span class='text-danger'>DATA TIDAK DITEMUKAN</span></td>"; 

@@ -314,6 +314,19 @@ class Mkinerja_pppk extends CI_Model
         }
     }
 
+    function get_realisasikinerja2024($nip, $thn, $bln)
+    {
+        $q = $this->db->query("select hasil_akhir from riwayat_kinerja_bkn where tahun = '".$thn."' and bulan = '".$bln."' and nip='".$nip."'");
+        if ($q->num_rows()>0)
+        {
+            $row=$q->row();
+            return $row->hasil_akhir;
+        } else {
+            // jika data kinerja tidak ditemukan, set dengan nilai 0 NOL
+            return 0;
+        }
+    }
+
     function get_realisasikinerja_nakes($nipppk, $thn, $bln)
     {
         $q = $this->db->query("select jml_aktifitas_nakes from kinerja_bulanan_pppk where tahun = '".$thn."' and bulan = '".$bln."' and nipppk='".$nipppk."'");

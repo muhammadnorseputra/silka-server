@@ -15,3 +15,8 @@ LimitRequestBody 10240000
 
 #Php_value memory_limit 128MB;
 
+#mengizinkan cors
+<IfModule mod_headers.c>
+    Header set Access-Control-Allow-Origin "*"
+</IfModule>
+

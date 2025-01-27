@@ -72,7 +72,7 @@
           <span class="input-group-addon"><small>Pilih Tahun Proyeksi </small></span>
           <select class="form-control" name="thn" id="thn" required onChange="showData(this.value)">
           <?php
-          $y = date('Y');
+          $y = date('Y')-1;
           echo "<option value='' selected>- Pilih Tahun -</option>";
           $i = 1;
           while($i<=6) {

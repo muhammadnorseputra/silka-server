@@ -1,6 +1,6 @@
 <!-- Default panel contents -->
   <center>
-  <div class="panel panel-default"  style="width: 99%;">
+  <div class="panel panel-default"  style="width: 90%;">
   <div class="panel-body">
 
   <?php
@@ -86,12 +86,29 @@
       ?>      
         <td align='center'><?php echo $no; ?></td>
         <td><?php echo $v['no_pengantar'].'<br/>'.tgl_indo($v['tgl_pengantar']); ?></td>
-        <td><?php echo $this->munker->getnamaunker($v['fid_unit_kerja']); ?></td>
+        <td><?php
+		echo $this->munker->getnamaunker($v['fid_unit_kerja']);
+		if ($v['jenis'] == "PNS") {
+			echo "<br/><span class='label label-success'>".$v['jenis']."</span>";
+		} else if ($v['jenis'] == "PPPK") {
+			echo "<br/><span class='label label-warning'>".$v['jenis']."</span>";
+		}
+	    ?>
+	</td>
         <!--<td><?php //echo $v['kelompok_cuti']; ?></td>-->
         <?php
           $kelompok_cuti = $this->mcuti->getkelompok($v['id_pengantar']);
         ?>
-        <td align='center'><?php echo $this->mcuti->getjmldetailpengantar($v['id_pengantar'], $kelompok_cuti); ?></td>
+        <td align='center'>
+	<?php 
+		if ($v['jenis'] == "PNS") {
+			echo $this->mcuti->getjmldetailpengantar($v['id_pengantar'], $kelompok_cuti);
+                } else if ($v['jenis'] == "PPPK") {
+			echo $this->mcuti->getjmldetailpengantar_pppk($v['id_pengantar'], $kelompok_cuti);
+                }
+		//echo $this->mcuti->getjmldetailpengantar($v['id_pengantar'], $kelompok_cuti);
+	?>
+	</td>
         <td align='center'><?php echo $this->mcuti->getstatuspengantarcuti($v['fid_status']); ?></td>        
         <!--<td><?php //echo tglwaktu_indo($v['created_at']); ?></td>-->
         <td align='center' width='100'>
@@ -108,8 +125,10 @@
           ?>
         </td>
         <td align='right' width='100'>
-          <?php          
-            if (($this->mcuti->getjmldetailpengantar($v['id_pengantar'], $kelompok_cuti) != 0) AND (($this->mcuti->getstatuspengantar_byidpengantar($v['id_pengantar']) == 'SKPD') OR ($this->mcuti->getstatuspengantar_byidpengantar($v['id_pengantar']) == 'CETAK'))) {
+          <?php 
+	  
+            if (($v['jenis'] == "PNS") AND ($this->mcuti->getjmldetailpengantar($v['id_pengantar'], $kelompok_cuti) != 0) 
+		AND (($this->mcuti->getstatuspengantar_byidpengantar($v['id_pengantar']) == 'SKPD') OR ($this->mcuti->getstatuspengantar_byidpengantar($v['id_pengantar']) == 'CETAK'))) {
               echo "<form method='POST' action='../cuti/cetakpengantar' target='_blank'>";          
               echo "<input type='hidden' name='id_pengantar' id='id_pengantar' value='$v[id_pengantar]'>";
               echo "<input type='hidden' name='tgl_pengantar' id='tgl_pengantar' value='$v[tgl_pengantar]'>";
@@ -119,7 +138,19 @@
               <span class="glyphicon glyphicon-print" aria-hidden="true"></span><br />Cetak Pengantar
               </button>
               </form>
-            <?php
+              <?php
+	    } else if (($v['jenis'] == "PPPK") AND ($this->mcuti->getjmldetailpengantar_pppk($v['id_pengantar'], $kelompok_cuti) != 0)
+                AND (($this->mcuti->getstatuspengantar_byidpengantar($v['id_pengantar']) == 'SKPD') OR ($this->mcuti->getstatuspengantar_byidpengantar($v['id_pengantar']) == 'CETAK'))) {
+              echo "<form method='POST' action='../cuti/cetakpengantar' target='_blank'>";
+              echo "<input type='hidden' name='id_pengantar' id='id_pengantar' value='$v[id_pengantar]'>";
+              echo "<input type='hidden' name='tgl_pengantar' id='tgl_pengantar' value='$v[tgl_pengantar]'>";
+              echo "<input type='hidden' name='id_unker' id='id_unker' value='$v[fid_unit_kerja]'>";
+              ?>
+              <button type="submit" class="btn btn-primary btn-xs">
+              <span class="glyphicon glyphicon-print" aria-hidden="true"></span><br />Cetak Pengantar
+              </button>
+              </form>
+              <?php
             } else {
               echo "<button class='btn btn-primary btn-xs disabled'>";
               echo "<span class='glyphicon glyphicon-print' aria-hidden='true'></span><br />Cetak Pengantar";

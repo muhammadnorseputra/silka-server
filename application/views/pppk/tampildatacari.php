@@ -60,8 +60,25 @@
           </td>
 
           <td>
-            <?php echo $v['nama_jabft'];?><br />
-            <?php echo $v['nama_unit_kerja'];?>        
+	    <?php
+	     if ($v['fid_peta_jabatan']) {	
+                $detail_pejab = $this->mpetajab->detailKomponenJabatan($v['fid_peta_jabatan'])->result_array();
+                foreach($detail_pejab as $dp) {
+                        $nmunker_pj = $this->munker->getnamaunker($dp['fid_unit_kerja']);
+                        $nmjab_pj = $this->mpetajab->get_namajab($dp['id']);
+                        $jnsjab_pj = $this->mpetajab->get_namajnsjab($dp['fid_jnsjab']);
+                        $unor = $this->mpetajab->get_namaunor($dp['fid_atasan']);
+                        echo "<small>".$nmunker_pj;
+                        echo "<br/>-".$unor;
+                        echo "</small>";
+                        echo "<br/><span class='label label-info'>".$jnsjab_pj."</span><br/>".$nmjab_pj;
+                        echo " <span class='text text-info'>(Kelas : ".$dp['kelas'].")</span>";
+                }
+	      } else {
+            	echo $v['nama_jabft']."<br />";
+            	echo $v['nama_unit_kerja'];
+	      } // End if peta jabatan
+	      ?>        
           </td>
           <td align='center' width='50'>
             <?php

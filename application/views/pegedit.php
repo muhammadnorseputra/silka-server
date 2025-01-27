@@ -49,7 +49,7 @@
       <?php
           foreach($peg as $v):
       ?>
-      <table class='table table-condensed'>
+      <table class='table table-bordered'>
         <tr>         
           <td align='right' width='50'>
           <?php
@@ -83,7 +83,7 @@
           }
         ?>
         
-        <table class="table table-bordered">
+        <table class="table table-condensed">
             <tr>
               <td align='right' width='160'><b>Nama Lengkap</b></td>
               <td colspan='3'><?php echo $v['nama']; ?></td>
@@ -191,7 +191,7 @@
               </td>
             </tr>
             <tr>
-              <td align='left' bgcolor='#D9EDF7'><b>No. Karpeg</b></td>
+              <td align='right' bgcolor='#D9EDF7'><b>No. Karpeg</b></td>
               <td  bgcolor='#D9EDF7'>
               <input type="text" name="nokarpeg" size='10' maxlength='30' value="<?php echo $this->mpegawai->getnokarpeg($v['nip']); ?>" />              
               </td>
@@ -241,6 +241,36 @@
               <td align='right'><b>Pangkat</b></td>
               <td><?php echo $this->mpegawai->getnamapangkat($v['fid_golru_skr']).' ('.$this->mpegawai->getnamagolru($v['fid_golru_skr']).')'; ?>
               --- TMT : <?php echo tgl_indo($v['tmt_golru_skr']); ?></td>
+	      
+	      <?php
+	      if($this->session->userdata('level') == 'ADMIN') {
+	      ?>	
+	        <td align='right'><b>Wajib LHKPN</b></td>
+                <td>
+                  <select name="lhkpn">
+                        <?php
+                        if($v['wajib_lhkpn'] == 'YA') {
+                        ?>
+                          <option value="YA" selected>YA</option>
+                          <option value="TIDAK">TIDAK</option>
+                        <?php 
+			} else { 
+			?>
+                          <option value="YA">YA</option>
+                          <option value="TIDAK" selected>TIDAK</option>
+                        <?php 
+			} 
+			?>
+                  </select>
+                </td>
+	      <?php
+	      } else {
+	      ?>
+                <td align='right'><b>Wajib LHKPN</b></td>
+                <td><?php echo $this->mpegawai->cekstatuslhkpn($v['nip']); ?></td>
+              <?php
+	      }
+	      ?>
             </tr>
             <tr>
               <td align='right'><b>Unit Kerja</b></td>

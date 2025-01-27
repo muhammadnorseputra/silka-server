@@ -34,13 +34,16 @@ class Mpetruk extends CI_Model {
       $q = $this->db->query("select * from pegawai where fid_unit_kerja='$id' and fid_eselon in ('0231','0232','0241','0242','0253','0254','0251','0255','0256') order by fid_eselon, fid_golru_skr desc,tmt_golru_skr, tmt_cpns, fid_tingkat_pendidikan desc, tahun_lulus, tgl_lahir asc");
       return $q;
   }
-  function detail_penilaian_by_unker($id)
+  function detail_penilaian_by_unker($nip, $id, $tahun)
   {
-  		return $this->db->get_where('petruk', ['fid_unit_kerja' => $id]);
+  		return $this->db->get_where('petruk', ['nip' => $nip,'fid_unit_kerja' => $id, 'tahun' => $tahun]);
   }
-  function detail_penilaian_by_nip($nip)
+  function detail_penilaian_by_nip($nip, $tahun)
   {
-  		return $this->db->get_where('petruk', ['nip' => $nip]);
+	if(!empty($tahun)) {
+		return $this->db->get_where('petruk', ['nip' => $nip, 'tahun' => $tahun]);
+	}
+	return $this->db->get_where('petruk', ['nip' => $nip]);
   }
   function kinerja_bulanan($nip, $bln, $thn) {
   	$sql = $this->db->get_where('kinerja_bulanan', ['nip' => $nip, 'bulan' => $bln, 'tahun' => $thn])->row();

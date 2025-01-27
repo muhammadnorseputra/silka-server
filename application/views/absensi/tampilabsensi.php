@@ -57,7 +57,7 @@
 </script>
 <!-- Default panel contents -->
   <center>
-    <div class="panel panel-primary"   style="padding:3px;overflow:auto;width:98%;height:620px;">
+    <div class="panel panel-primary"   style="padding:3px;overflow:auto;width:98%;">
       <div class='panel-heading' align='left'><span class="glyphicon glyphicon-dashboard" aria-hidden="true"></span>
         <b>TAMPIL ABSENSI</b>
       </div>
@@ -105,7 +105,9 @@
             echo "<option value='0'>- Pilih Tahun -</option>";
 	    echo "<option value='2021'>2021</option>";
 	    echo "<option value='2022'>2022</option>";
-	    echo "<option value='2023' selected>2023</option>";
+	    echo "<option value='2023'>2023</option>";
+            echo "<option value='2024' selected>2024</option>";
+
         ?>
         </select>
 

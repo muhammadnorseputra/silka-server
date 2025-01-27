@@ -70,6 +70,7 @@ class Pensiun extends CI_Controller {
         <td align='center'><b>NIP</b></td>
         <td align='center'><b>NAMA</b></td>
         <td align='center'><b>JABATAN</b></td>
+        <td align='center'><b>UNIT KERJA</b></td>
         <td align='center'><b>JENIS PENSIUN</b></td>
         <td align='center'><b>TMT</b></td> 
         <td align='center'></td>";
@@ -109,10 +110,13 @@ class Pensiun extends CI_Controller {
         
         <tr>
         <td width='10' align='center'><?php echo $no.'.'; ?></td>
-        <td width='150'><?php echo $v['nip']; ?> <?= $showfiles ?></td>
+        <!-- <td width='150'><?php echo $v['nip']; ?> <?= $showfiles ?></td> -->
+        <td width='150'>'<?php echo $v['nip']; ?></td>
         <td><?php echo $v['nama']; ?></td>
         <?php $jnsjab = $this->mpensiun->getjnsjab($v['nip']); ?>
-        <td><?php echo $v['nama_jabatan']."<small><code>".$jnsjab."</code></small>"."</br>".$v['nama_unit_kerja']; ?> <br> <?= $status_santunan ?></td>
+        <!-- <td><?php echo $v['nama_jabatan']."<small><code>".$jnsjab."</code></small>"."</br>".$v['nama_unit_kerja']; ?> <br> <?= $status_santunan ?></td> -->
+        <td><?php echo $v['nama_jabatan'] ?></td>
+        <td><?php echo $v['nama_unit_kerja'] ?></td>
         <td><?php echo $v['nama_jenis_pensiun']; ?></td>
         <td><?php echo tgl_indo($v['tmt_pensiun']); ?></td>
         <td>
@@ -411,13 +415,13 @@ class Pensiun extends CI_Controller {
               <table class='table table-hover table-bordered'>";
         echo "<tr>
           <td align='center'><b>NO</b></td>
-          <td align='center'><b>NAMA/NIP</b></td>
+          <td align='center'><b>NIP</b></td>
+          <td align='center'><b>NAMA</b></td>
           <td align='center'><b>JABATAN</b></td>
-          <td align='center' width=80'><b>USIA BUP</b></td>
-          <td align='center' width='100'><b>TMT</b></td>
-          <td>TTL</td>
-          <td>Alamat</td>
-          
+          <td align='center'><b>UNIT KERJA</b></td>
+          <td align='center' width=80'><b>TMT BUP</b></td>
+          <td align='center' width='100'><b>TTL</b></td>
+          <td>ALAMAT</td>
           <td></td>";
         echo "</tr>";    
         
@@ -456,8 +460,9 @@ class Pensiun extends CI_Controller {
               ?>
                 <tr>
                 <td width='10' align='center'><?php echo $no.'.'; ?></td>
+                <td>'<?php echo $v['nip']; ?></td>
                 <td width='150'>
-                <?= $this->mpegawai->getnama($v['nip']) ?><br>NIP.<?php echo $v['nip']; ?> <br> 
+                <?= $this->mpegawai->getnama($v['nip']) ?> 
                 <?php
                     $status = $this->mpensiun->getstatpeg($v['nip']);
                     if ($status == "PEGAWAI MPP") {
@@ -466,7 +471,6 @@ class Pensiun extends CI_Controller {
                     }
                   ?>
                 </td>
-
                 <td>
                 <?php
                   $jnsjab = $this->mpip->getnamajnsjab($v['nip']);
@@ -478,11 +482,9 @@ class Pensiun extends CI_Controller {
                     case "FUNGSIONAL" : {$jmljft++;break;}
                   }
 
-                  echo $this->mpegawai->namajabnip($v['nip']).
-                       "<br/><code>".$jnsjab."</code><br/>".
-                       $this->munker->getnamaunker($v['fid_unit_kerja']); 
+                  echo $this->mpegawai->namajabnip($v['nip'])
                 ?></td>
-                <td><?php echo $v['usia_pensiun']; ?></td>
+                <td><?php echo $this->munker->getnamaunker($v['fid_unit_kerja']) ?></td>
                 <td>
                 <?php
                   $blntmt = $bln_lahir+1;

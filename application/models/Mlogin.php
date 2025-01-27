@@ -13,7 +13,7 @@ class Mlogin extends CI_Model {
 	    $this->db->where('username', $username);
 	    $this->db->where('password', $pass);
 
-	    return $this->db->get(userportal);
+	    return $this->db->get('userportal');
 	   	// end 1
 	    
 
@@ -44,7 +44,7 @@ class Mlogin extends CI_Model {
 	    $this->db->where('password', $pass);
 	    $this->db->where('status', 'AKTIF');
 
-	    return $this->db->get(userportal_pns);
+	    return $this->db->get('userportal_pns');
 	 	
     }
 

@@ -100,6 +100,76 @@ public function __construct(){
 		return $q;	
 	}
 
+	//MODEL DATA REKOMENDASI DIKLAT
+	public $table_rekomendasi = 'ref_rekomendasi_diklat as t';
+	public $select_colums_rekomendasi = array('t.*');
+	public $order_colums_rekomendasi = array('t.id');
+	public $column_search_rekomendasi = array('t.rekomendasi');
+
+	public function get_datatable_rekomendasi() {
+		$this->db->select($this->select_colums_rekomendasi);
+		$this->db->from($this->table_rekomendasi);
+		$i=0;
+		foreach ($this->column_search_rekomendasi as $item) { // loop column 
+                if (!empty($_POST['search']['value'])) { // if datatable send POST for search
+                if ($i === 0) { // first loop
+                    $this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
+                    $this->db->like($item, $_POST['search']['value']);
+                } else {
+                    $this->db->or_like($item, $_POST['search']['value']);
+                }
+
+                if (count($this->column_search_rekomendasi) - 1 == $i) //last loop
+                    $this->db->group_end(); //close bracket
+            }
+            $i++;
+        }
+		
+		if(isset($_POST["order"])){
+			$this->db->order_by($this->order_colums[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+		} else {
+			$this->db->order_by("t.id", "desc");
+		}
+	}
+
+	public function fetch_datatable_rekomendasi() {
+		$this->get_datatable_rekomendasi();
+		if($_POST['length'] != -1){
+			$this->db->limit($_POST['length'], $_POST['start']);
+		}
+		$query = $this->db->get();
+		return $query->result();
+	}
+	
+	public function get_filtered_rekomendasi_data() {
+		$this->get_datatable_rekomendasi();
+		$query = $this->db->get();
+		return $query->num_rows();
+	}	
+	
+	public function get_all_rekomendasi_data() {
+		$this->db->select("*");
+		$this->db->from($this->table_rekomendasi);
+		$query = $this->db->count_all_results();
+		return $query;
+	}
+
+	public function getNamaJabatan($jns,$id) {
+		if($jns === 'JST') {
+			$row = $this->db->get_where('ref_jabstruk', ['id_jabatan' => $id])->row();
+			$name = $row->nama_jabatan;
+		} 
+		if($jns === 'JFT') {
+			$row = $this->db->get_where('ref_jabft', ['id_jabft' => $id])->row();
+			$name = $row->nama_jabft;
+		} 
+		if($jns === 'JFU') {
+			$row = $this->db->get_where('ref_jabfu', ['id_jabfu' => $id])->row();
+			$name = $row->nama_jabfu;
+		} 
+		return $name;
+	}
+
 	//MODEL DATA DIKLAT JFU & JFT
 	public $table_jf = 'ref_syarat_diklat as t';
 	public $select_colums_jf = array('t.*','p.nip','CONCAT(p.gelar_depan," ",p.nama," ",p.gelar_belakang) AS nama_asn','u.nama_unit_kerja as unker', 'jfu.nama_jabfu', 'jft.nama_jabft');
@@ -283,7 +353,8 @@ public function getunker($table) {
             WHERE
             u.fid_instansi_userportal = i.id_instansi
             and up.nip = '$nip'
-            and i.nip_user like '%$nip%' order by u.id_unit_kerja";
+            and i.nip_user like '%$nip%'
+			and u.nama_unit_kerja not like '-%' order by u.id_unit_kerja";
     return $this->db->query($sql);
 }
 
@@ -297,7 +368,8 @@ public function get_unit_kerja($tbl, $search = '') {
 						u.fid_instansi_userportal = i.id_instansi
 						and up.nip = '$nip' 
 						and i.nip_user like '%$nip%'
-						and u.nama_unit_kerja like '%$search%' order by u.id_unit_kerja";
+						and u.nama_unit_kerja like '%$search%' 
+						and u.nama_unit_kerja not like '-%' order by u.id_unit_kerja";
 		$res = $this->db->query($sql);
 	} else {
 		$sql = "select u.nama_unit_kerja, u.id_unit_kerja
@@ -305,7 +377,8 @@ public function get_unit_kerja($tbl, $search = '') {
 						WHERE
 						u.fid_instansi_userportal = i.id_instansi
 						and up.nip = '$nip'
-						and i.nip_user like '%$nip%' order by u.id_unit_kerja";
+						and i.nip_user like '%$nip%' 
+						and u.nama_unit_kerja not like '-%' order by u.id_unit_kerja";
 		$res = $this->db->query($sql);
 	}
 
@@ -715,7 +788,7 @@ public function get_all_data_rekap($unker,$s,$j,$t) {
 }
 
 public function cetaklaporan_v2($u,$s,$j,$t) {
-	$select = array('t.*','p.nip','CONCAT(p.gelar_depan," ",p.nama," ",p.gelar_belakang) AS nama_asn','u.nama_unit_kerja as unker', 'p.fid_unit_kerja', 'jfu.nama_jabfu', 'jft.nama_jabft', 'rs.nip as nip_spesimen', 'rs.status as status_spesimen', 'rs.jabatan_spesimen');
+	$select = array('t.*','p.nip','p.fid_jnsjab','p.fid_jabatan','p.fid_jabft','p.fid_jabfu','CONCAT(p.gelar_depan," ",p.nama," ",p.gelar_belakang) AS nama_asn','u.nama_unit_kerja as unker', 'p.fid_unit_kerja', 'jfu.nama_jabfu', 'jft.nama_jabft', 'rs.nip as nip_spesimen', 'rs.status as status_spesimen', 'rs.jabatan_spesimen');
 	$this->db->select($select);
 	$this->db->from($this->table_rekap);
 	$this->db->join('pegawai as p', 't.nip=p.nip','left');
@@ -749,6 +822,9 @@ public function cetaklaporan_v2($u,$s,$j,$t) {
 	return $query;
 }
 
+public function getRekomendasiDiklat($idjabatan) {
+	return $this->db->get_where('ref_rekomendasi_diklat', ['id_jabatan' => $idjabatan])->row();
+}
 
 
 }

@@ -91,7 +91,7 @@
                       // if (file_exists($lokasifile.$namafile)) {
                         if ($v['berkas'] != NULL) {
                           echo "<div>";
-                          echo "<a class='btn btn-warning btn-lg' href='../filecuti/$namafile' target='_blank' role='button'><span class='glyphicon glyphicon-download-alt' aria-hidden='true'></span>&nbspDownload</a>";  
+                          echo "<a class='btn btn-warning btn-xs' href='../filecuti/$namafile' target='_blank' role='button'><span class='glyphicon glyphicon-download-alt' aria-hidden='true'></span>&nbspDownload</a>";  
                           ?>
                           <br />
                           Silahkan upload untuk update file
@@ -202,8 +202,8 @@
               	
                 <?php
           		$sisa_cuti = (12 - $getJmlCuti_sebelumnya);
-                if($thn_sebelummya == '2018'){
-                  //Jumlah Sisa Cuti Hanya Jika Tahun 2018
+                if($thn_sebelummya == ($thn_sekarang-1)){
+                  //Jumlah Sisa Cuti Hanya Jika Tahun 2023
                   if($getJmlCuti_sebelumnya >= 6 ? $jmlCutiSebelumnya = "<b>0</b>" : $jmlCutiSebelumnya = ($sisa_cuti - $getJmlCuti_sebelumnya));
                   echo "<b>".$jmlCutiSebelumnya."</b> Hari";
                 
@@ -268,9 +268,9 @@
                     $opertator_kurang = "";
                     $opertator_samadengan = "";
                   }
-                  //echo $sisa." <b class='text-danger'>".$jmlCuti_skr." ".$opertator_lebihdari." ".$lebihdari."</b> ( <b>".$lebihdari." ".$opertator_kurang." ".$tahun_sekarang." ".$opertator_samadengan." </b>  Sisa <b class='text-success'>". $sisaCuti ."</b> Hari )";
+                  echo $sisa." <b class='text-danger'>".$jmlCuti_skr." ".$opertator_lebihdari." ".$lebihdari."</b> ( <b>".$lebihdari." ".$opertator_kurang." ".$tahun_sekarang." ".$opertator_samadengan." </b>  Sisa <b class='text-success'>". $sisaCuti ."</b> Hari )";
                   //echo "<b class='text-danger'>".$sisaCuti." Hari"; // Publis 2019
-		  echo "<b class='text-danger'>".$jmlCuti_skr." Hari";
+		              // echo "<b class='text-danger'>".$jmlCuti_skr." Hari";
 		?>
               </td>
             </tr>          
@@ -285,11 +285,11 @@
                 $kouta = $jatahCuti+$sisaCuti+$jmlCutiSebelumnya;
               ?>
                   Komulatif jumlah cuti tahunan yang dapat di ambil  : 
-                  <!--
-			<b><?= $jatahCuti ?> Hari </b> + 
-                  	<b><?= $sisaCuti ?> Hari</b> + 
-                  	<b><?= $jmlCutiSebelumnya ?> Hari</b> =
-		  -->
+                  
+			<b>(Jatah <?= $thn_selanjutnya ?> = <?= $jatahCuti ?> Hari ) </b> + 
+                  	<b>(Sisa N-1 = <?= $sisaCuti ?> Hari)</b> + 
+                  	<b>(Sisa Tunda N-1 <?= $jmlCutiSebelumnya ?> Hari )</b> =
+		  
                   <b class="text-success"><?= $kouta ?></b> Hari
                </td>
             </tr>          

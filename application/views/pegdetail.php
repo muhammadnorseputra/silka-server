@@ -1,3 +1,79 @@
+<script type="text/javascript">
+
+  function GetXmlHttpObject()
+  {
+    if (window.XMLHttpRequest)
+      {
+      // code for IE7+, Firefox, Chrome, Opera, Safari
+      return new XMLHttpRequest();
+      }
+    if (window.ActiveXObject)
+      {
+      // code for IE6, IE5
+      return new ActiveXObject("Microsoft.XMLHTTP");
+      }
+    return null;
+  }
+
+  function showUpdateJabPeta(str1, str2)
+  {
+    xmlhttp=GetXmlHttpObject();
+    if (xmlhttp==null)
+    {
+      alert ("Browser does not support HTTP Request");
+      return;
+    }
+    var url="tampilupdatejabpeta";
+    url=url+"?idjnsjab="+str2;
+    url=url+"&idunker="+str1;
+    url=url+"&sid="+Math.random();
+    xmlhttp.onreadystatechange=stateChangedDataJabPeta;
+    xmlhttp.open("GET",url,true);
+    xmlhttp.send(null);
+  }
+
+  function stateChangedDataJabPeta(){
+    if (xmlhttp.readyState==4)
+    {
+      document.getElementById("tampiljabpeta").innerHTML=xmlhttp.responseText;
+    }
+
+    if (xmlhttp.readyState==1 || xmlhttp.readyState=="loading") {
+      document.getElementById("tampiljabpeta").innerHTML=
+      "<center><br/><img src=<?php echo '../assets/loading5.gif'; ?> /><br/>Waiting...</center>";
+    }
+  }
+
+  function showUpdateJabPeta1(str1)
+  {
+    xmlhttp=GetXmlHttpObject();
+    if (xmlhttp==null)
+    {
+      alert ("Browser does not support HTTP Request");
+      return;
+    }
+    var url="tampilupdatejabpeta1";
+    url=url+"?idjab="+str1;
+    url=url+"&sid="+Math.random();
+    xmlhttp.onreadystatechange=stateChangedDataJabPeta1;
+    xmlhttp.open("GET",url,true);
+    xmlhttp.send(null);
+  }
+
+  function stateChangedDataJabPeta1(){
+    if (xmlhttp.readyState==4)
+    {
+      document.getElementById("tampiljabpeta1").innerHTML=xmlhttp.responseText;
+    }
+
+    if (xmlhttp.readyState==1 || xmlhttp.readyState=="loading") {
+      document.getElementById("tampiljabpeta1").innerHTML=
+      "<center><br/><img src=<?php echo '../assets/loading5.gif'; ?> /><br/>Waiting...</center>";
+    }
+  }
+
+</script>
+
 <center>
 <?php
   $intbkn_session = $this->session->userdata('intbkn_priv');
@@ -53,7 +129,7 @@
             }
           ?>
 
-	  <td align='right' width='50'>
+	  <!-- <td align='right' width='50'>
             <?php
              if (($this->session->userdata('level') == "PNS") OR ($this->session->userdata('edit_profil_priv') == "Y")) {
 	     //if ($this->session->userdata('level') == "ADMIN") {
@@ -69,7 +145,7 @@
             <?php
             }
             ?>
-          </td>
+          </td> -->
 	  <?php
           if ($this->session->userdata('edit_profil_priv') == "Y") {
           ?>
@@ -140,7 +216,7 @@
           }
         ?>
         
-        <table class="table table-bordered table-condensed">
+        <table class="table table-condensed">
             <tr>
               <td align='right' width='160'><b>Nama Lengkap</b></td>
               <td colspan='3'><?php echo $v['nama']; ?></td>
@@ -318,6 +394,8 @@
               <td align='right'><b>Pangkat</b></td>
               <td><?php echo $this->mpegawai->getnamapangkat($v['fid_golru_skr']).' ('.$this->mpegawai->getnamagolru($v['fid_golru_skr']).')'; ?>
               --- TMT : <?php echo tgl_indo($v['tmt_golru_skr']); ?></td>
+	      <td align='right'><b>Wajib LHKPN</b></td>
+              <td><?php echo $v['wajib_lhkpn']; ?></td>	
             </tr>
             <tr>
               <td align='right'><b>Unit Kerja</b></td>
@@ -326,7 +404,7 @@
             <tr>
               <td align='right'><b>Jabatan</b></td>              
               <td colspan='3'>
-              <?php 
+              <?php
 		//var_dump($v[fid_jabstrukatasan]);
 		$ideselon = $this->mpegawai->getfideselon($v['nip']);
                 $namaeselon = $this->mpegawai->getnamaeselon($ideselon);
@@ -378,7 +456,7 @@
 		echo "<br/>".tgl_indo($v['tmt_jabatan']);
                 //echo "<br/><small style='color:blue;'>ATASAN : ".$jabinduk."</small>";
                 //echo "<br/><code>Kelas Jabatan : ".$kelasjabatan.", Harga Jabatan : ".$hargajabatan."</code>";
-                echo "<br/><code>Kelas Jabatan : ".$kelasjabatan."</code>";
+                //echo "<br/><code>Kelas Jabatan : ".$kelasjabatan."</code>";
                 if (($namaeselon == 'IV/A') OR ($namaeselon == 'IV/B')) {
                   $id_jabstruk = $this->mkinerja->getfidjabstruk($v['nip']);
                   $datajf= $this->mkinerja->getdatajfubawahan($id_jabstruk)->result_array();
@@ -392,9 +470,9 @@
               	    }
                     $idtingpenjf = $this->mkinerja->getidtingpenterakhir($jf['nip']);
                     $tingpenjf = $this->mpegawai->gettingpen($idtingpenjf); 
-                    echo "+ ";
-                    echo $jabjf." - ".$namajf." [".$tingpenjf."]";
-                    echo "<br/>";
+                    //echo "+ ";
+                    //echo $jabjf." - ".$namajf." [".$tingpenjf."]";
+                    //echo "<br/>";
                   }
                   echo "</small>";
                 }
@@ -402,9 +480,55 @@
 		//echo " <code>Kelas Jabatan : ".$kelasjabatan."</code>";
 		//echo "<br/><small style='color:blue;'>ATASAN : ".$jabinduk."</small>";
                 //echo "<br/><code>Kelas Jabatan : ".$kelasjabatan.", Harga Jabatan : ".$hargajabatan."</code>";
-              ?>
+	      ?>
 	      </td>
             </tr>
+	  <?php
+	  //if ($this->session->userdata('level') == "ADMIN") {
+	  ?>  
+ 	    <tr>
+              <td align='right'><b>Peta Jabatan</b>
+	      <?php
+                if ($this->session->userdata('level') == "ADMIN") {
+              ?>	
+	      <button type="button" class="form-control btn btn-info btn-outline btn-sm" data-toggle="modal" data-target="#updatejab" >
+                 <span class="fa fa-refresh" aria-hidden="true"></span> Mapping Peta Jabatan
+                </button>	
+	      <?php
+                }
+              ?>	
+	      </td>
+              <td colspan='3'>
+		<?php
+		$detail_pejab = $this->mpetajab->detailKomponenJabatan($v['fid_peta_jabatan'])->result_array();
+		//var_dump($detail_pejab);
+		if ($detail_pejab) {
+		  foreach($detail_pejab as $dp) {
+			$nmunker_pj = $this->munker->getnamaunker($dp['fid_unit_kerja']);
+			$nmjab_pj = $this->mpetajab->get_namajab($dp['id']);
+			$jnsjab_pj = $this->mpetajab->get_namajnsjab($dp['fid_jnsjab']);
+			$unor = $this->mpetajab->get_namaunor($dp['fid_atasan']);
+			//echo $nmunker_pj;
+			//echo "<br/>".$unor;
+			//echo "<br/><span class='label label-info'>".$jnsjab_pj."</span> ".$nmjab_pj;
+			//echo " <span class='text text-info'>(Kelas : ".$dp['kelas'].")</span>";
+		  }				
+
+		  $namajab = $this->mpegawai->namajab($v['fid_jnsjab'],$idjab);
+		  //if (($dp['fid_unit_kerja'] == $v['fid_unit_kerja']) AND ($dp['fid_jnsjab'] == $v['fid_jnsjab']) AND ($namajab == $nmjab_pj)) {
+		  if (($dp['fid_unit_kerja'] == $v['fid_unit_kerja']) AND ($dp['fid_jnsjab'] == $v['fid_jnsjab'])) {
+			echo $nmunker_pj;
+                        echo "<br/>".$unor;
+                        echo "<br/><span class='label label-info'>".$jnsjab_pj."</span> ".$nmjab_pj;
+                        echo " <span class='text text-info'>(Kelas : ".$dp['kelas'].")</span>";
+		  }
+		}
+		?>
+	      </td>
+	    </tr> 	 	
+	  <?php
+	  //} // End If session tipe user	
+	  ?>
         </table>
       <?php
         endforeach;
@@ -524,19 +648,19 @@
               echo "</form>";
           ?>
 	</div>
-        <div class="col-md-2">
+        <div class="col-md-1">
           <?php
-            echo "<form method='POST' action='../pegawai/rwyskp'>";          
+            echo "<form method='POST' action='../pegawai/rwyskp'>";
             echo "<input type='hidden' name='nip' id='nip' maxlength='18' value='$v[nip]'>";
           ?>
-          <button type="submit" class="<?php echo $this->mpegawai->getbuttoncolor($v['nip']); ?> btn-warning btn-block btn-outline btn-sm">
+          <button type="submit" class="<?php echo $this->mpegawai->getbuttoncolor($v['nip']); ?> btn-block btn-outline btn-sm">
             <span class="glyphicon glyphicon-grain" aria-hidden="true"></span>&nbspSKP</button>
 
           <?php
               echo "</form>";
           ?>
-	</div>
-        <div class="col-md-2">
+        </div>
+        <div class="col-md-1">
           <?php
             echo "<form method='POST' action='../pegawai/rwykgb'>";          
             echo "<input type='hidden' name='nip' id='nip' maxlength='18' value='$v[nip]'>";
@@ -548,7 +672,19 @@
               echo "</form>";
           ?>
 	</div>
-        <div class="col-md-2">
+        <div class="col-md-1">
+          <?php
+            echo "<form method='POST' action='../pegawai/rwyhukdis'>";
+            echo "<input type='hidden' name='nip' id='nip' maxlength='18' value='$v[nip]'>";
+          ?>
+          <button type="submit" class="<?php echo $this->mpegawai->getbuttoncolor($v['nip']); ?> btn-block btn-outline btn-sm">
+            <span class="glyphicon glyphicon-screenshot" aria-hidden="true"></span>&nbspHukdis</button>
+
+          <?php
+              echo "</form>";
+          ?>
+        </div>
+        <div class="col-md-1">
           <?php
             echo "<form method='POST' action='../pegawai/rwycuti'>";          
             echo "<input type='hidden' name='nip' id='nip' maxlength='18' value='$v[nip]'>";
@@ -560,18 +696,41 @@
               echo "</form>";
           ?>
 	</div>
-        <div class="col-md-2">
+        <div class="col-md-1">
           <?php
-            echo "<form method='POST' action='../pegawai/rwyhukdis'>";          
+            echo "<form method='POST' action='../pegawai/rwypmk'>";
             echo "<input type='hidden' name='nip' id='nip' maxlength='18' value='$v[nip]'>";
           ?>
           <button type="submit" class="<?php echo $this->mpegawai->getbuttoncolor($v['nip']); ?> btn-block btn-outline btn-sm">
-            <span class="glyphicon glyphicon-screenshot" aria-hidden="true"></span>&nbspHukdis</button>
-	
+            <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>&nbspPMK</button>
+
           <?php
               echo "</form>";
           ?>
-	</div>
+        </div>
+        <div class="col-md-1">
+          <?php
+            echo "<form method='POST' action='../pegawai/rwylhkpn'>";
+            echo "<input type='hidden' name='nip' id='nip' maxlength='18' value='$v[nip]'>";
+          ?>
+          <button type="submit" class="<?php echo $this->mpegawai->getbuttoncolor($v['nip']); ?> btn-block btn-outline btn-sm">
+            <span class="glyphicon glyphicon-screenshot" aria-hidden="true"></span>&nbspLHKPN</button>
+
+          <?php
+              echo "</form>";
+          ?>
+        </div>
+	<div class="col-md-2">
+          <?php
+            echo "<form method='POST' action='../pegawai/rwypenkom'>";
+            echo "<input type='hidden' name='nip' id='nip' maxlength='18' value='$v[nip]'>";
+          ?>
+          <button type="submit" class="btn btn-warning btn-block btn-outline btn-sm">
+            <span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span>&nbspPenKom</button>
+          <?php
+              echo "</form>";
+          ?>
+        </div>
   	</div> <!-- Akhir Baris Kedua -->
 	<?php
 	//}
@@ -1228,3 +1387,76 @@ if ($intbkn_session == "YA") {
   </div> <!-- end modal dialog -->
 </div> <!-- End Modal rwyvaksin -->	
 <!-- END MODAL RIWAYAT VAKSINASI -->
+
+<!-- Modal Update Jabatan -->
+	<div id="updatejab" class="modal fade" role="dialog">
+          <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <!-- konten modal-->
+            <div class="modal-content">
+              <!-- heading modal -->
+              <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">UPDATE JABATAN</h4>
+              </div>
+              <!-- body modal -->
+              <div class="modal-body" align="left" style="padding:10px;width:100%;height:100%;">
+                <form method='POST' name='formupdatejab' style='padding-top:8px' action='../pegawai/update_rwyjabpeta_aksi' enctype='multipart/form-data'>
+		    <input type='hidden' name='nip' id='nip' maxlength='18' value='<?php echo $v['nip']; ?>'>
+                    <div class='row'>
+                        <div class='col-md-12'>
+                            <div class="form-group input-group">
+                            <span class="input-group-addon">Unit Kerja</span>
+                            <?php
+                                //$nmunker = $this->munker->getnamaunker($dp['fid_unit_kerja']);
+				$unker = $this->munker->dd_unker()->result_array();
+                            ?>
+                            <select class="form-control" name="id_unker" id="id_unker" required
+                                onChange="showUpdateJabPeta(this.value, formupdatejab.id_jnsjab.value)" style="font-size: 11px;">
+                              <?php
+                              foreach($unker as $u)
+                              {
+				if ($dp['fid_unit_kerja'] == $u['id_unit_kerja']) {
+                                   echo "<option value='".$u['id_unit_kerja']."' selected>".$u['nama_unit_kerja']."</option>";
+				} else {
+				   if ($this->session->userdata('level') == "ADMIN") {				   	
+					echo "<option value='".$u['id_unit_kerja']."'>".$u['nama_unit_kerja']."</option>";
+				   }
+				}
+                              }
+                              ?>
+                            </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='row'>
+                        <div class='col-md-8'>
+                            <div class="form-group input-group">
+                            <span class="input-group-addon" style="width:140px;text-align: left;">Jenis Jabatan</span>
+                            <?php
+                                $jnsjab = $this->mpetajab->jnsjab()->result_array();
+                            ?>
+                            <select class="form-control" name="id_jnsjab" id="id_jnsjab" required 
+				onChange="showUpdateJabPeta(formupdatejab.id_unker.value, this.value)" style="font-size: 11px;">				
+                              <?php
+                              echo "<option value='' selected>-- Jenis Jabatan --</option>";
+                              foreach($jnsjab as $jj)
+                              {
+				if (($this->session->userdata('level') == "USER") AND ($jj['nama_jenis_jabatan'] == "FUNGSIONAL UMUM")) {
+                                  echo "<option value='".$jj['id_jenis_jabatan']."'>".$jj['nama_jenis_jabatan']."</option>";
+				} else if ($this->session->userdata('level') == "ADMIN") {
+				  echo "<option value='".$jj['id_jenis_jabatan']."'>".$jj['nama_jenis_jabatan']."</option>";
+				}
+                              }
+                              ?>
+                            </select>
+                            </div>
+                        </div>
+                    </div>
+		    <div id='tampiljabpeta'></div>
+		    <div id='tampiljabpeta1'></div>	
+                </form>
+              </div> <!-- End Modal Body -->
+            </div> <!-- End Modal Content -->
+          </div> <!-- End Modal Dialog -->
+        </div>
+<!-- End Modal Tambah Jabatan -->

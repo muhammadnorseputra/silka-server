@@ -207,6 +207,15 @@
               <center><span id="loader3"></span></center>
             </div>
 
+            <div class="panel panel-default" id="rekomendasiDiklatFungsional" style="border-bottom: 3px solid #333;">
+              <div class="panel-heading"><span class="text-default"><i
+                    class="glyphicon glyphicon-lg glyphicon-book"></i><b> Rekomendasi Diklat</b></span> <br> <small
+                  class="text-muted">::: Data diambil dari Rekomendasi Diklat </small></div>
+              <div class="panel-body" id="rekomendasi_diklat_fungsional"
+                style="height: auto; max-height: 350px; overflow-y: scroll; overflow-x: hidden;"></div>
+              <center><span id="loader3"></span></center>
+            </div>
+
           </div>
         </div>
       </div>

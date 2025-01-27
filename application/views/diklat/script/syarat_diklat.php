@@ -169,6 +169,42 @@ $(document).ready(function(){
 			}
     });
 
+    var dataTables3 = $("#tableRekomendasi").DataTable({
+        processing: true,
+        serverSide: true,
+        searching: true,
+        order: [],
+        "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+        autoWidth: false,
+        keys: false,
+        "deferRender": true,
+        responsive: true,
+        fixedColumns:   true,
+        "pagingType": "full_numbers",
+        ajax: {
+            url: '<?= base_url("diklat/get_rekomendasi_diklat") ?>',
+            type: 'POST',
+            // data: function(s){
+            //     s.jabid = $("[name='jabatanid']").val(),
+            // }
+        },
+        columnDefs: [
+            {
+                "targets": [0,1,2,3],
+                "orderable": false
+            },
+        ],
+        language: {
+				search: "Pencarian: ",
+				processing: "Mohon Tunggu, Processing...",
+				paginate: {
+					previous: "Sebelumnya",
+					next: "Selanjutnya"
+				},
+                emptyTable: "Data Tidak Ditemukan"
+			}
+    });
+
     // dataTables2.cells('[name="checkboxlist"]').select();
 
     $("[name='unkerid2'],[name='tahun'],[name='checkjst'],[name='checkstatus']").on('change', function() {
@@ -202,6 +238,29 @@ $(document).ready(function(){
         }, 'json');
       }
     }
+
+    $(document).on("click","button#hapus_rekomendasi",function() {
+        let _ = $(this);
+        let id = _.attr('targetId');
+        var r = confirm("Apakah anda yakin akan menghapus rekomendasi diklat tersebut?");
+        if(r) {
+            $.post('<?= base_url('diklat/hapus_rekomendasi') ?>/'+ id, function(res) {
+            console.log(res);
+            dataTables3.ajax.reload();
+            }, 'json');
+        }
+    });
+
+    $(document).on("click","button#edit_rekomendasi",function() {
+        let _ = $(this);
+        let id = _.attr('targetId');
+        let modal = $("#myModalEditRekomendasi");
+        modal.modal('show');
+        $.getJSON('<?= base_url('diklat/get_rekomendasi_by_id') ?>', {id: id}, function(res) {
+            modal.find("textarea[name='rekomendasi']").val(res.rekomendasi);
+            modal.find("input[name='id_rekomendasi']").val(res.id);
+        })
+    });
 
     // function hapuslist() {
     //     var selected = $('[name=checkboxlist]:checked').map(function(){
@@ -279,7 +338,7 @@ function unker() {
         url: '<?php echo base_url()."diklat/get_unker" ?>',
         dataType: 'json',
         success: function(hasil) {
-            $("#unker,#unkerfilter2").html(hasil);
+            $("#unker,#unkerfilter2,#pilih_unor").html(hasil);
         }
     });
 }
@@ -605,4 +664,74 @@ $(document).on('submit', 'form[name="sinkron_usulan"]', function(e) {
 	  return "You pressed Cancel!";
 	}
 });
+
+$(document).on('submit', 'form[name="frekomendasi"]', function(e) {
+	e.preventDefault();
+	var _self = $(this);
+	var _action = _self.attr('action');
+	var _data = _self.serialize();
+
+	  $.post(_action, _data, function(response) {
+	  	console.log(response.pesan);
+	  	dataTables3.ajax.reload();
+	  	_self[0].reset();
+		$("#myModalAddRekomendasi").modal('hide');
+	  }, 'json');
+});
+
+$(document).on('submit', 'form[name="updaterekomendasi"]', function(e) {
+	e.preventDefault();
+	var _self = $(this);
+	var _action = _self.attr('action');
+	var _data = _self.serialize();
+
+	  $.post(_action, _data, function(response) {
+	  	console.log(response.pesan);
+	  	dataTables3.ajax.reload();
+	  	_self[0].reset();
+		$("#myModalEditRekomendasi").modal('hide');
+	  }, 'json');
+});
+
+
+$("select#pilih_unor").on("change", function() {
+    var unorid = $(this).val();
+    var jnsjab = $("select[name='jenis_jabatan']").val();
+    pilih_jabatan(jnsjab, unorid)
+});
+
+$("select[name='jenis_jabatan']").on("change", function() {
+    var jnsjab = $(this).val();
+    var unkerId = $("#pilih_unor").val();
+    if(jnsjab == 'JST') {
+		pilih_jabatan(jnsjab, unkerId);
+	}
+	if(jnsjab == 'JFU') {
+		pilih_jabatan(jnsjab);
+	}
+	if(jnsjab == 'JFT') {
+		pilih_jabatan(jnsjab);
+	}
+    if(jnsjab == '0') {
+		pilih_jabatan();
+	}
+});
+
+function pilih_jabatan(jns, unkerId='null') {
+	if(jns == 'JST') {
+		$.getJSON('<?= base_url("pegawai/getJst/") ?>', {unkerId: unkerId}, function(result) {
+			$("select[name='pilih_jabatan_skr']").html(result);
+		});
+	}
+	if(jns == 'JFU') {
+		$.getJSON('<?= base_url("pegawai/getJfu/") ?>', function(result) {
+			$("select[name='pilih_jabatan_skr']").html(result);
+		});
+	}
+	if(jns == 'JFT') {
+		$.getJSON('<?= base_url("pegawai/getJft/") ?>', function(result) {
+			$("select[name='pilih_jabatan_skr']").html(result);
+		});
+	}
+}
 </script>

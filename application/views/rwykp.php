@@ -44,11 +44,15 @@
         	 </tr>
         	<?php endif; ?>
             <tr>
-              <td colspan='2' align='center'>                            
+              <td colspan='2' align='center'>   
+              <div class="alert alert-danger" role="alert">
+          <b>UNTUK PERHATIAN</b> <br>Pastikan format file yang diupload <code>pdf</code> huruf kecil dan maksimal ukuran file <code>800kb</code>
+        </div>                          
                 <table class='table table-condensed table-hover'>
                   <tr class='warning'>
                     <th width='20'><center>#</center></th>
-                    <th width='200'><center>Pangkat / Golru<br />TMT<br/>Gaji Pokok</center></th>
+                    <th width='200'><center>Pangkat / Golru</center></th>
+		    <th width='200'><center>TMT<br/>Gaji Pokok</center></th>
                     <th width='300'><center><u>Dalam Jabatan</u><br />Angka Kredit<br /><i>Masa Kerja</i></center></th>
                     <th><center>Surat Keputusan</center></th>
                     <th><center>Aksi</center></th>
@@ -59,8 +63,15 @@
                     ?>
                     <tr>
                       <td align='center'><?php echo $no;?></td>
-                      <td><?php echo $this->mpegawai->getnamapangkat($v['fid_golru']).'<br />'.$this->mpegawai->getnamagolru($v['fid_golru']); ?>
-                        <?php echo '<br />TMT : '.tgl_indo($v['tmt'])."<br/>Rp. ".indorupiah($v['gapok']).",-"; ?></td>
+                      <td>
+			<?php
+				echo $this->mpegawai->getnamapangkat($v['fid_golru']).'<br />'.$this->mpegawai->getnamagolru($v['fid_golru']);
+				if ($v['is_sync_simgaji'] == 1) 
+				echo "<br/><span class='label label-info'><span class='glyphicon glyphicon-ok'></span> Sync INEXIS</span>";
+		      	?>			
+		      </td>
+		      <td align='center'>	
+                        <?php echo tgl_indo($v['tmt'])."<br/>Rp. ".indorupiah($v['gapok']).",-"; ?></td>
                         <?php
                         if ($v['angka_kredit'] == 0) {
                           echo '<td><u>'.$v['dlm_jabatan'].'</u><br />';  
@@ -361,7 +372,7 @@ if ($intbkn_session == "YA") {
                       <option value="">Pilih Uraian</option>
                       <option value="CPNS">CPNS</option>
                       <option value="PNS">PNS</option>
-                      <option value="KENAIKAN PANGKAT">KENAIKAN PANGKAT</option>
+                      <option value="KENAIKAN PANGKAT" selected>KENAIKAN PANGKAT</option>
                     </select>
 			        		</div>
 			        	</div>
@@ -388,7 +399,7 @@ if ($intbkn_session == "YA") {
                 <div class="col-md-2 col-lg-2">
 			        		<div class="form-group" style="margin-right: 10px;">
 			        			<label for="tmt">TMT Pangkat</label>
-                    <input type="date" name="tmt" id="tmt" class="form-control">
+                    <input type="date" name="tmt" id="tmt" value='2024-04-01' class="form-control">
 			        		</div>
 			        	</div>
 		        	</div> <!-- container -->

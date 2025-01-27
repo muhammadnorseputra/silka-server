@@ -63,6 +63,9 @@
           <br />
           <?php echo 'TMT : ',tgl_indo($v['tmt_golru_skr']); ?>
         </td>
+	<?php	
+	  if (!$v['fid_peta_jabatan']) { 
+	?>
         <td><?php echo $v['nama_unit_kerja']; ?><br/><br/>
         <?php 
           if ($v['fid_jnsjab'] == 1) { $idjab = $v['fid_jabatan'];
@@ -110,7 +113,28 @@
             //$hargajabatan = "-";
           }
 
-          echo "<br/><code>Kelas Jabatan : ".$kelasjabatan."</code>";
+          //echo "<br/><code>Kelas Jabatan : ".$kelasjabatan."</code>";
+
+	} else {
+	  echo "<td>";
+                $detail_pejab = $this->mpetajab->detailKomponenJabatan($v['fid_peta_jabatan'])->result_array();
+                foreach($detail_pejab as $dp) {
+                        $nmunker_pj = $this->munker->getnamaunker($dp['fid_unit_kerja']);
+                        $nmjab_pj = $this->mpetajab->get_namajab($dp['id']);
+                        $jnsjab_pj = $this->mpetajab->get_namajnsjab($dp['fid_jnsjab']);
+                        $unor = $this->mpetajab->get_namaunor($dp['fid_atasan']);
+                        echo "<small>".$nmunker_pj;
+                        echo "<br/>-".$unor;
+			echo "</small>";
+                        echo "<br/><span class='label label-info'>".$jnsjab_pj."</span><br/>".$nmjab_pj;
+                        echo " <span class='text text-info'>(Kelas : ".$dp['kelas'].")</span>";
+                }
+	  echo "</td>";	
+
+	}// End if peta jabatan
+  
+	
+	  /*
 	  if (($namaeselon == 'IV/A') OR ($namaeselon == 'IV/B')) {
             $id_jabstruk = $this->mkinerja->getfidjabstruk($v['nip']);
             $datajf= $this->mkinerja->getdatajfubawahan($id_jabstruk)->result_array();
@@ -130,6 +154,7 @@
             }
             echo "</small>";
           }
+	  */
 
         ?>
         </td>
@@ -138,11 +163,11 @@
 	?>
         <td align='center'>
           <?php
-          echo "<form method='POST' action='../pegawai/rwyjab'>";          
+          echo "<form method='POST' action='../pegawai/rwykgb'>";          
           echo "<input type='hidden' name='nip' id='nip' maxlength='18' value='$v[nip]'>";
           ?>
           <button type="submit" class="btn btn-warning btn-xs ">
-          <span class="glyphicon glyphicon glyphicon-plus" aria-hidden="true"></span><br/>Rwy Jab
+          <span class="glyphicon glyphicon glyphicon-plus" aria-hidden="true"></span><br/>Rwy KGB
           </button>
           <?php
             echo "</form>";

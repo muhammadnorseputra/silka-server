@@ -243,7 +243,7 @@ class Mkgb extends CI_Model {
 
   public function carirekap($idunker, $thn)
   {
-    $q = $this->db->query("select p.nip, p.nama, p.gelar_belakang, p.gelar_depan, p.fid_jnsjab, p.fid_jabatan, p.fid_jabfu, p.fid_jabft, k.fid_pengantar, k.fid_golru_lama, k.gapok_lama, k.mk_thn_lama, k.mk_bln_lama, k.tmt_gaji_lama, k.fid_status, k.tgl_proses FROM pegawai as p left join kgb as k on k.nip=p.nip and k.tgl_usul like '".$thn."%', ref_unit_kerjav2 as u WHERE p.fid_unit_kerja = u.id_unit_kerja and p.fid_unit_kerja = '".$idunker."' order by p.nip, p.fid_eselon");
+    $q = $this->db->query("select p.nip, p.nama, p.gelar_belakang, p.gelar_depan, p.fid_jnsjab, p.fid_jabatan, p.fid_jabfu, p.fid_jabft, k.fid_pengantar, k.fid_golru_lama, k.gapok_lama, k.mk_thn_lama, k.mk_bln_lama, k.tmt_gaji_lama, k.fid_status, k.alasan, k.tgl_proses FROM pegawai as p left join kgb as k on k.nip=p.nip and k.tgl_usul like '".$thn."%', ref_unit_kerjav2 as u WHERE p.fid_unit_kerja = u.id_unit_kerja and p.fid_unit_kerja = '".$idunker."' order by p.nip, p.fid_eselon");
 
     return $q;
   }
@@ -305,9 +305,9 @@ class Mkgb extends CI_Model {
     return $q;    
   }
 
-  public function getjmlrwyperbulan()
+  public function getjmlrwyperbulan($thn)
   {
-    $query = $this->db->query("select MONTH(tmt), count(nip) as 'jumlah', count(nip) as 'jumlah1' from riwayat_kgb where tmt like '2022%' group by MONTH(tmt) order by MONTH(tmt)");
+    $query = $this->db->query("select MONTH(tmt), count(nip) as 'jumlah', count(nip) as 'jumlah1' from riwayat_kgb where tmt like '$thn%' group by MONTH(tmt) order by MONTH(tmt)");
          
         if($query->num_rows() > 0){
             foreach($query->result() as $data){
@@ -382,4 +382,16 @@ class Mkgb extends CI_Model {
   }
 
   // END KHUSUS ADMIN, Update Pengatar dan Usul KGB
+
+  function getunker_pengantar($id_pengantar)
+  {
+    $qgetjns = $this->db->query("select fid_unit_kerja from kgb_pengantar WHERE id_pengantar='".$id_pengantar."'");
+
+    if ($qgetjns->num_rows()>0)
+    {
+      $row=$qgetjns->row();
+      $unitkerja = $this->munker->getnamaunker($row->fid_unit_kerja);
+      return $unitkerja;
+    }
+  }
 }

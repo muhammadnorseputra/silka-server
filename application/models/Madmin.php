@@ -96,6 +96,19 @@ class Madmin extends CI_Model {
     return $q;    
   }
 
+  public function getUnorIdByNip($nip)
+  {
+    return $this->db->get_where('pegawai', ['nip' => $nip])->row();
+  }
+
+  public function getListUnor() {
+		$this->db->select('id_unit_kerja,nama_unit_kerja');
+		$this->db->from('ref_unit_kerjav2');
+    $this->db->not_like('nama_unit_kerja', '-');
+		$q = $this->db->get();
+		return $q;
+	}
+
   function edit_spesimen($where, $data){
     $this->db->where($where);
     $this->db->update('ref_spesimen',$data);

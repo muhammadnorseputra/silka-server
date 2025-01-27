@@ -96,13 +96,13 @@
                         allowPointSelect: false,
                         cursor: 'pointer',
                         dataLabels: {
-                            enabled: true,
-                          format: '{point.y:f}<br />{point.percentage:.1f} %',
+                          enabled: true,
+                          format: '<span style="font-size: 11px">{point.name}<br/>Jml : {point.y:f}<br />{point.percentage:.1f} %</span>',
                           style: {
                               color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
                           }
                         },
-                        showInLegend: true
+                        showInLegend: false
                     }
 
             },

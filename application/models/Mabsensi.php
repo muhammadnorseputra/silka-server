@@ -112,4 +112,16 @@ class Mabsensi extends CI_Model {
     return $q->result();
   }
 
+  function getabsensi_nikbulantahun($nip, $bulan, $tahun)
+  {
+    $q = $this->db->query("select * from absensi where nip='".$nip."' and bulan='".$bulan."' and tahun='".$tahun."'");
+    return $q;	
+  }
+
+  function getabsensi_nipppkbulantahun($nipppk, $bulan, $tahun)
+  {
+    $q = $this->db->query("select * from absensi_pppk where nipppk='".$nipppk."' and bulan='".$bulan."' and tahun='".$tahun."'");
+    return $q;
+  }
+
 }

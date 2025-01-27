@@ -58,13 +58,12 @@
     <?php
   }
   ?>
-    
-  <table class='table table-condensed'>
-    <tr>
-      <?php
-      if ($this->session->userdata('nonpns_priv') == "Y") { 
-      ?>
-      <td align='center'>
+
+<?php
+  if ($this->session->userdata('nonpns_priv') == "Y") {
+?>
+  <div class='row' atyle='width:80%;'>
+     <div class="col-lg-8" align='center'>	
         <form class="navbar-form navbar-center">
           <div class="form-group">
               <select name="id_unker" id="id_unker" onChange="showData(this.value)">
@@ -73,48 +72,26 @@
                   foreach($unker as $uk)
                   {
                       echo "<option value='".$uk['id_unit_kerja']."'>".$uk['nama_unit_kerja']."</option>";
-                  }
+		  }
               ?>
               </select>
-
           </div>
         </form>
-      </td>
-      <?php
-      }
-      if (($this->session->userdata('nonpns_priv') == "Y") OR ($this->session->userdata('level') == "TAMU")) { 
-      ?>
-        <td>
+     </div>
+     <div class="col-lg-4" align='center'>
             <form class="navbar-form navbar-center" role="search" method="POST" action="../pppk/tampildatacari">
-              <div class="form-group">      
+              <div class="form-group">
                 <input type="text" name="data" id="data" class="form-control" placeholder="Ketik NIP PPPK / Nama" size='25' maxlength='25'>
                 <button type="submit" class="btn btn-warning btn-sm">
                   <span class="glyphicon glyphicon-search" aria-hidden="false"></span> Cari PPPK</button>
               </div>
-            </form>  
-        </td>
-      <?php
-      }
-      ?>
-      <?php
-      if ($this->session->userdata('level') == "ADMIN") {
-      //if (($this->session->userdata('level') != "TAMU") OR ($this->session->userdata('level') == "ADMIN")) { 
-      ?>
-      <td align='center' width='150'>
-        <form method="POST" action="../pppk/add">
-          <input type='hidden' name='nipppk' id='nipppk' maxlength='18' value='<?php echo $v['nipppk']; ?>'>
-          <button type="submit" class="btn btn-success btn-lg">
-            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Tambah Data
-          </button>
-        </form>
-      </td>
-      <?php
-      }
-      ?>
-    </tr>
-  </table>
-  
-  <div>  
+            </form>
+     </div>
+  </div>	
+<?php
+}
+?>
+
   <div id='tampil' style="height: 450px;"></div>
   </div>
 </center>

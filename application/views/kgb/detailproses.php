@@ -31,7 +31,8 @@
   <div class="panel panel-success">  
   <div class="panel-heading" align="left">
   <b>Pengantar KGB Nomor : <?php echo $nopengantar; ?></b><br />
-  <?php echo "Jumlah Data : ", $jmldata, " Usulan"; ?>
+  <?php echo $this->mkgb->getunker_pengantar($idpengantar); ?>
+  <?php echo "<br/>Jumlah Data : ", $jmldata, " Usulan"; ?>
   </div>
   <!-- untuk scrollbar -->
   <div style="padding:3px;overflow:auto;width:99%;height:300px;border:1px solid white" >
@@ -139,7 +140,7 @@
               echo "<input type='hidden' name='id_pengantar' id='id_pengantar' value='$v[id_pengantar]'>";
               ?>
               <p align="right">
-              <button type="submit" class="btn btn-success btn-sm">
+              <button type="submit" class="btn btn-success btn">
               <span class="glyphicon glyphicon-off" aria-hidden="true"></span> Selesaikan
               </button>
               </p>

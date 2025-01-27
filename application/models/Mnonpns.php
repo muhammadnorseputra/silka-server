@@ -212,7 +212,7 @@ class Mnonpns extends CI_Model {
     {
       $sess_nip = $this->session->userdata('nip');
         $q = $this->db->query("
-          select np.nik, np.gelar_depan, np.nama, np.gelar_blk, np.photo, np.berkas,
+          select np.nik, np.gelar_depan, np.dbbkn2022_noreg, np.nama, np.gelar_blk, np.photo, np.berkas,
       np.fid_jenis_nonpns, fid_sumbergaji, u.nama_unit_kerja, j.nama_jabnonpns, np.tmt_sk_awal
       from nonpns as np, ref_unit_kerjav2 as u, ref_jabnonpns as j, ref_instansi_userportal as i
       where np.fid_unit_kerja = u.id_unit_kerja      
@@ -228,7 +228,7 @@ class Mnonpns extends CI_Model {
     {
       $sess_nip = $this->session->userdata('nip');
         $q = $this->db->query("
-          select np.nik, np.gelar_depan, np.nama, np.gelar_blk, np.photo, np.berkas,
+          select np.nik, np.gelar_depan, np.dbbkn2022_noreg, np.nama, np.gelar_blk, np.photo, np.berkas,
       np.fid_jenis_nonpns, np.fid_sumbergaji, u.nama_unit_kerja, j.nama_jabnonpns, np.tmt_sk_awal
       from nonpns as np, ref_unit_kerjav2 as u, ref_jabnonpns as j, ref_instansi_userportal as i
       where np.fid_unit_kerja = u.id_unit_kerja      
@@ -339,7 +339,6 @@ class Mnonpns extends CI_Model {
     $q = $this->db->query("select * from nonpns_rwy_pekerjaan where tmt_awal = (select max(tmt_awal) from nonpns_rwy_pekerjaan where nik='$nik') and nik='$nik'");    
     return $q;    
   }
-
 }
 /* End of file mpegawai.php */
 /* Location: ./application/models/mpegawai.php */

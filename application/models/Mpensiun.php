@@ -112,7 +112,7 @@ class Mpensiun extends CI_Model {
   {
     $sess_nip = $this->session->userdata('nip');
     $q = $this->db->query("select p.nip, p.tgl_lahir, p.alamat, p.fid_unit_kerja, p.tmp_lahir, p.tgl_lahir,
-            p.fid_jnsjab, p.fid_jabft, p.fid_jabfu, p.fid_jabatan,
+            p.fid_jnsjab, p.fid_jabft, p.fid_jabfu, p.fid_jabatan, p.no_ktp,
             CASE
               WHEN p.fid_jnsjab = '1' THEN (select usia_pensiun from ref_jabstruk where id_jabatan = p.fid_jabatan)
               WHEN p.fid_jnsjab = '2' THEN (select usia_pensiun from ref_jabfu where id_jabfu = p.fid_jabfu)
@@ -126,6 +126,25 @@ class Mpensiun extends CI_Model {
           order by p.tgl_lahir");
     return $q;
   }
+
+  function proyeksiByNip($nip, $sess_nip)
+  {
+    $q = $this->db->query("select p.nip, p.gelar_depan,p.nama,p.gelar_belakang, p.tgl_lahir, p.alamat, p.fid_unit_kerja, u.nama_unit_kerja, p.tmp_lahir, p.tgl_lahir,
+            p.fid_jnsjab, p.fid_jabft, p.fid_jabfu, p.fid_jabatan, p.no_ktp, rg.nama_pangkat, rg.nama_golru, rg.id_golru,
+            CASE
+              WHEN p.fid_jnsjab = '1' THEN (select usia_pensiun from ref_jabstruk where id_jabatan = p.fid_jabatan)
+              WHEN p.fid_jnsjab = '2' THEN (select usia_pensiun from ref_jabfu where id_jabfu = p.fid_jabfu)
+               WHEN p.fid_jnsjab = '3' THEN (select usia_pensiun from ref_jabft where id_jabft = p.fid_jabft)
+            ELSE 0
+            END AS usia_pensiun
+          from pegawai as p, ref_unit_kerjav2 as u, ref_instansi_userportal as i, ref_golru as rg
+          where p.fid_unit_kerja=u.id_unit_kerja
+	  and u.fid_instansi_userportal = i.id_instansi and p.fid_golru_skr=rg.id_golru
+          and i.nip_user like '%$sess_nip%' and p.nip = '$nip'
+          order by p.tgl_lahir");
+    return $q;
+  }
+
 
   function cetakproyeksi($tahun)
   {
@@ -141,6 +160,22 @@ class Mpensiun extends CI_Model {
           where p.fid_unit_kerja=u.id_unit_kerja
 	  order by p.tgl_lahir");
     return $q->result_array();
+  }
+
+  function jumlahproyeksi($tahun)
+  {
+    $q = $this->db->query("select $tahun as 'tahun', p.nip, p.tgl_lahir, p.fid_golru_skr, p.fid_unit_kerja, p.tmp_lahir, p.tgl_lahir, 
+	    p.fid_jnsjab, p.fid_jabft, p.fid_jabfu, p.fid_jabatan,
+            CASE
+              WHEN p.fid_jnsjab = '1' THEN (select usia_pensiun from ref_jabstruk where id_jabatan = p.fid_jabatan)
+              WHEN p.fid_jnsjab = '2' THEN (select usia_pensiun from ref_jabfu where id_jabfu = p.fid_jabfu)
+               WHEN p.fid_jnsjab = '3' THEN (select usia_pensiun from ref_jabft where id_jabft = p.fid_jabft)
+            ELSE 0 
+            END AS usia_pensiun
+          from pegawai as p, ref_unit_kerjav2 as u
+          where p.fid_unit_kerja=u.id_unit_kerja
+	  order by p.tgl_lahir");
+    return $q->num_rows();
   }
 
   function getstatpeg($nip)

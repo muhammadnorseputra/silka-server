@@ -138,22 +138,21 @@
             },
             plotOptions: {
               pie: {
-                        allowPointSelect: false,
+                        allowPointSelect: true,
                         cursor: 'pointer',
                         dataLabels: {
-                            enabled: true,
-                          format: '{point.y:f}<br />{point.percentage:.1f} %',
+                          enabled: true,
+                          format: '<span style="font-size: 11px">{point.name}<br/>Jml : {point.y:f}<br />{point.percentage:.1f} %</span>',
                           style: {
                               color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
                           }
                         },
-                        showInLegend: true
-                    }
-
+                        showInLegend: false
+              }
             },
             series: [{
               type : 'pie',
-                name: 'Persentase ',
+                name: 'Persentase',
                 colorByPoint: true,
                 data: [
                   <?php                   
@@ -162,8 +161,7 @@
                   $tinboxbkppd = $cjmlinboxbkppd+$ctjmlinboxbkppd;
                   $tcetaksk = $cjmlcetaksk+$ctjmlcetaksk;
 
-                  if(count($grafik)>0)
-                  {
+                  if(count($grafik) > 0) {
                     foreach ($grafik as $datac) {
                       if ($datac->nama_statuscuti == 'INBOXSKPD') {
                         echo "['Inbox SKPD'," . $tinboxskpd ."],\n";

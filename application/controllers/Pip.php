@@ -1,4 +1,4 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+	<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Pip extends CI_Controller {
 
@@ -867,6 +867,119 @@ class Pip extends CI_Controller {
 
 
   // END REVIEW IPASN DJASN BKN
+
+  // START REVIEW IPASN SIASN BKN
+  function tampilunkernom_siasn()
+  //function tampilunkernom1()
+  {
+    //cek priviledge session user -- nominatif_priv
+    if ($this->session->userdata('nominatif_priv') == "Y") {
+      $data['unker'] = $this->munker->dd_unker()->result_array();
+      $data['tgllap'] = $this->mpip->gettgl_importsiasn()->result_array();
+      $data['content'] = 'pip/tampilprogres_siasn';
+      $data['pesan'] = '';
+      $data['jnspesan'] = '';
+      $this->load->view('template',$data);
+    }
+  }
+
+  function cariprogress_ipasn_siasn() {
+    $idunker = $this->input->get('idunker');
+    $tahun = $this->input->get('tahun');
+    $tl = $this->input->get('tl');
+    
+    $sqlcari = $this->mpip->cariprogress_ipasn_siasn($idunker, $tahun, $tl)->result_array();
+    $jml = count($this->mpip->cariprogress_ipasn_siasn($idunker, $tahun, $tl)->result_array());
+
+    //var_dump($jml);
+    /*
+    $jmlpeg = $this->munker->getjmlpeg($idunker);
+    $persen = round(($jml/$jmlpeg)*100, 2);
+
+    if ($persen <= 25) {
+      $color = 'progress-bar progress-bar-danger progress-bar-striped';
+    } else if (($persen > 25) AND ($persen < 75)) {
+      $color = 'progress-bar progress-bar-warning progress-bar-striped';
+    } else if ($persen >= 75) {
+      $color = 'progress-bar progress-bar-success progress-bar-striped';
+    }
+    */	
+    ?>
+    <br/>
+
+    <div class="row" style="width: 90%">
+        <?php
+        $sqlrata = $this->mpip->nilairata_siasn($idunker, $tahun, $tl)->result_array();
+        foreach($sqlrata as $v):
+                echo "<div class='col-md-2'><blockquote>
+                        <small class='text-success' align='left'>Jumlah ".$v['jnsasn']." : <b>".$v['jmldata']."</b></small>
+                      </blockquote></div>";
+                echo "<div class='col-md-2'><blockquote>
+                        <small class='text-warning' align='left'>Kualifikasi : <b>".round($v['ratakua'],2)."</b></small>
+                      </blockquote></div>";
+                echo "<div class='col-md-2'><blockquote>
+                        <small class='text-info' align='left'>Kompetensi : <b>".round($v['ratakomp'],2)."</b></small>
+                      </blockquote></div>";
+                echo "<div class='col-md-2'><blockquote>
+                        <small class='text-warning' align='left'>Kinerja : <b>".round($v['ratakin'],2)."</b></small>
+                      </blockquote></div>";
+                echo "<div class='col-md-2'><blockquote>
+                        <small class='text-danger' align='left'>Disiplin : <b>".round($v['ratadis'],2)."</b></small>
+                      </blockquote></div>";
+		$total = round($v['ratatotal'],2);
+		
+		if ($total == 0) { $kat = ""; }
+		else if ($total >= 1 AND $total < 61) { $kat = "SANGAT RENDAH"; }
+		else if ($total >= 61 AND $total < 71) { $kat = "RENDAH"; }
+		else if ($total >= 71 AND $total < 81) { $kat = "SEDANG"; }
+                else if ($total >= 81 AND $total < 91) { $kat = "TINGGI"; }
+                else if ($total >= 91 AND $total <= 100) { $kat = "SANGAT TINGGI"; }
+                echo "<div class='col-md-2'><blockquote>
+                        <small class='text-primary' align='left'>Total : <b>".$total."</b> (".$kat.")</small>
+                      </blockquote></div>";
+		
+        endforeach;
+        ?>
+    </div>
+
+    <?php
+    if ($jml != 0) {
+      echo '<br/>';
+      echo '<table class="table table-bordered table-hover" style="width: 70%">';
+      echo "
+      <tr class='info'>
+        <td align='center' width='20' rowspan='2'><b>No</b></td>
+        <td align='center' width='' rowspan='2'><b>NIP | Nama</b></td>
+        <td align='center' colspan='4'><b>Indek Profesionalitas</b></td>
+        <td align='center' width='100' rowspan='2'><b>Total Nilai</b></td>
+      </tr>
+      <tr class='info'>
+        <td align='center' width='80'><b>Kualifikasi</b></td>
+        <td align='center' width='80'><b>Kompetensi</b></td>
+        <td align='center' width='80'><b>Kinerja</b></td>
+        <td align='center' width='80'><b>Disiplin</b></td>
+      </tr>";
+     $no = 1;
+      foreach($sqlcari as $v):
+        echo "<tr><td align='center'>".$no."</td>";
+        echo '<td>', namagelar($v['gelar_depan'],$v['nama'],$v['gelar_belakang']),' (NIP. ',$v['nippeg'],')</td>';
+        if ($v['total']) {
+          echo "<td align='center'>",$v['kualifikasi'],'</td>';
+          echo "<td align='center'>",$v['kompetensi'],'</td>';
+          echo "<td align='center'>",$v['kinerja'],'</td>';
+          echo "<td align='center'>",$v['disiplin'],'</td>';
+          echo "<td align='center'>",$v['total'],'</td>';
+        } else {
+          echo "<td colspan='6' align='center'><b><h5 class='text-primary'>Data Tidak Ditemukan</h5></b></td>";
+        }
+        echo "<tr/>";
+        $no++;
+      endforeach;
+      echo "</table>";
+    }
+  }
+
+  // END REVIEW IPASM SIASN BKN
 }
 
 /* End of file Pip.php */

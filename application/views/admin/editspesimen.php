@@ -48,7 +48,7 @@
 </script>
 
 <center>  
-  <div class="panel panel-default" style="width: 80%">
+  <div class="panel panel-default" style="width: 70%">
     <div class="panel-body">
       <?php
         echo "<form method='POST' action='../admin/carispesimen'>";          
@@ -62,100 +62,154 @@
         echo "</form>";          
       ?>
 
-      <form method='POST' name='formeditspes' action='../admin/editspesimen_aksi'>
+      
       <div class="panel panel-danger">
         <div class='panel-heading' align='left'><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
         EDIT SPESIMEN<br /><b><?php echo $nmunker; ?></b>
         </div>
         <?php
-          foreach($spes as $v):
+          // foreach($spes as $v):
+        if($v != NULL):
         ?>
+        <form method='POST' name='formeditspes' action='../admin/editspesimen_aksi'>
+          <input type='hidden' name='idunker'  size='30' value='<?php echo $v['fid_unit_kerja']; ?>' />
+          <table class="table">
+            <tr>
+              <td align='center'>              
+              
+                <table class='table table-condensed'>
+                  <tr>
+                    <td align='right'>Status :</td>
+                    <td>
+                      <select name="status" id="status" onChange="showData(this.value, formeditspes.nip.value, formeditspes.jabatan.value)" required />
+                        <?php
+                        if ($v['status'] == 'DEFINITIF') {
+                          echo "<option value='DEFINITIF' selected>Definitif</option>";
+                          echo "<option value='PLT'>Pelaksana Tugas</option>";
+                          echo "<option value='PLH'>Pelaksana Harian</option>";
+                          echo "<option value='AN'>Atas Nama</option>";
+                          echo "<option value='PJ'>Penjabat</option>";
+                        } else if ($v['status'] == 'PLT') {
+                          echo "<option value='DEFINITIF'>Definitif</option>";
+                          echo "<option value='PLT' selected>Pelaksana Tugas</option>";
+                          echo "<option value='PLH'>Pelaksana Harian</option>";
+                          echo "<option value='AN'>Atas Nama</option>";
+                          echo "<option value='PJ'>Penjabat</option>";
+                        } else if ($v['status'] == 'PLH') {
+                          echo "<option value='DEFINITIF'>Definitif</option>";
+                          echo "<option value='PLT'>Pelaksana Tugas</option>";
+                          echo "<option value='PLH' selected>Pelaksana Harian</option>";
+                          echo "<option value='AN'>Atas Nama</option>";
+                          echo "<option value='PJ'>Penjabat</option>";
+                        } else if ($v['status'] == 'AN') {
+                          echo "<option value='DEFINITIF'>Definitif</option>";
+                          echo "<option value='PLT'>Pelaksana Tugas</option>";
+                          echo "<option value='PLH'>Pelaksana Harian</option>";
+                          echo "<option value='AN' selected>Atas Nama</option>";
+                          echo "<option value='PJ'>Penjabat</option>";
+                        } else if ($v['status'] == 'PJ') {
+                          echo "<option value='DEFINITIF'>Definitif</option>";
+                          echo "<option value='PLT'>Pelaksana Tugas</option>";
+                          echo "<option value='PLH'>Pelaksana Harian</option>";
+                          echo "<option value='AN'>Atas Nama</option>";
+                          echo "<option value='PJ' selected>Penjabat</option>";
+                        }
 
-        <input type='hidden' name='idunker'  size='30' value='<?php echo $v['fid_unit_kerja']; ?>' />
+                        ?>
+                      </select>                            
+                    </td>
+                    <td rowspan='4' align='center' width='400'>
+                    <div id='tampil'>
+                    <?php
+                    echo "<center><img src=".base_url()."photo/".$v['nip'].".jpg width='90' height='120'></center>";
+                    ?>
+                    </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td align='right'>NIP :</td>
+                    <td>
+                    <input type='hidden' name='nip_lama'  size='30' maxlength='18' value='<?php echo $v['nip']; ?>' />
+                    <input type='text' name='nip' size='30' maxlength='18' value='<?php echo $v['nip']; ?>' onChange='showData(formeditspes.status.value, this.value, formeditspes.jabatan.value)' />
+                    </td>                  
+                  </tr>
+                  <tr>
+                    <td align='right'>Jabatan :</td>
+                    <td>
+                    <input type="text" name='jabatan' size='120' maxlength='200'
+			value='<?php echo $v['jabatan_spesimen']; ?>' onChange='showData(formeditspes.status.value, formeditspes.nip.value, this.value)'/>
+                    </td>                  
+                  </tr>
+                  <tr>
+                    <td align='right' colspan='2'></td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table> 
+        </form>
+        <?php
+        else:
+        $nip_login = $this->session->userdata('nip');
+        echo form_open(base_url('admin/tambahspesimen_aksi'));
+        ?>
         <table class="table">
           <tr>
             <td align='center'>              
              
               <table class='table table-condensed'>
                 <tr>
+                  <td align='right'>Unit Kerja :</td>
+                  <td>
+                    <select name="unorid" id="unorid">
+                      <?php foreach($this->madmin->getListUnor()->result() as $u): ?>
+                        <option value="<?= $u->id_unit_kerja ?>"><?= $u->nama_unit_kerja ?></option>
+                      <?php endforeach; ?>
+                    </select>
+                  </td>    
+                </tr>
+                <tr>
                   <td align='right'>Status :</td>
                   <td>
-                    <select name="status" id="status" onChange="showData(this.value, formeditspes.nip.value, formeditspes.jabatan.value)" required />
+                    <select name="status" id="status" />
                       <?php
-                      if ($v['status'] == 'DEFINITIF') {
-                        echo "<option value='DEFINITIF' selected>Definitif</option>";
-                        echo "<option value='PLT'>Pelaksana Tugas</option>";
-                        echo "<option value='PLH'>Pelaksana Harian</option>";
-                        echo "<option value='AN'>Atas Nama</option>";
-                        echo "<option value='PJ'>Penjabat</option>";
-                      } else if ($v['status'] == 'PLT') {
-                        echo "<option value='DEFINITIF'>Definitif</option>";
-                        echo "<option value='PLT' selected>Pelaksana Tugas</option>";
-                        echo "<option value='PLH'>Pelaksana Harian</option>";
-                        echo "<option value='AN'>Atas Nama</option>";
-                        echo "<option value='PJ'>Penjabat</option>";
-                      } else if ($v['status'] == 'PLH') {
-                        echo "<option value='DEFINITIF'>Definitif</option>";
-                        echo "<option value='PLT'>Pelaksana Tugas</option>";
-                        echo "<option value='PLH' selected>Pelaksana Harian</option>";
-                        echo "<option value='AN'>Atas Nama</option>";
-                        echo "<option value='PJ'>Penjabat</option>";
-                      } else if ($v['status'] == 'AN') {
-                        echo "<option value='DEFINITIF'>Definitif</option>";
-                        echo "<option value='PLT'>Pelaksana Tugas</option>";
-                        echo "<option value='PLH'>Pelaksana Harian</option>";
-                        echo "<option value='AN' selected>Atas Nama</option>";
-                        echo "<option value='PJ'>Penjabat</option>";
-                      } else if ($v['status'] == 'PJ') {
+                        echo "<option value=''>Pilih status jabatan</option>";
                         echo "<option value='DEFINITIF'>Definitif</option>";
                         echo "<option value='PLT'>Pelaksana Tugas</option>";
                         echo "<option value='PLH'>Pelaksana Harian</option>";
                         echo "<option value='AN'>Atas Nama</option>";
-                        echo "<option value='PJ' selected>Penjabat</option>";
-                      }
-
+                        echo "<option value='PJ'>Penjabat</option>";
                       ?>
                     </select>                            
                   </td>
-                  <td rowspan='6' align='center' width='400'>
-                  <div id='tampil'>
-                  <?php
-                  echo "<center><img src=".base_url()."photo/".$v['nip'].".jpg width='90' height='120'></center>";
-                  ?>
-                  </div>
-                  </td>
                 </tr>
+                
                 <tr>
                   <td align='right'>NIP :</td>
                   <td>
-                  <input type='hidden' name='nip_lama'  size='30' maxlength='18' value='<?php echo $v['nip']; ?>' />
-                  <input type='text' name='nip' size='30' maxlength='18' value='<?php echo $v['nip']; ?>' onChange='showData(formeditspes.status.value, this.value, formeditspes.jabatan.value)' />
+                  <input type='text' name='nip' size='30' maxlength='18'/>
                   </td>                  
                 </tr>
                 <tr>
                   <td align='right'>Jabatan :</td>
                   <td>
-                  <input type="text" name='jabatan' size='60' value='<?php echo $v['jabatan_spesimen']; ?>' onChange='showData(formeditspes.status.value, formeditspes.nip.value, this.value)'/>
+                  <input type="text" name='jabatan' size='60'/>
                   </td>                  
                 </tr>
                 <tr>
-                  <td align='right' colspan='2'></td>
-                </tr>
-                <tr>
-                  <td align='right' colspan='2'></td>
-                </tr>
-                <tr>
-                  <td align='right' colspan='2'></td>
+                  <td align='right' colspan='2'>
+                    <button type="submit" class="btn btn-success"><span class='glyphicon glyphicon-floppy-disk' aria-hidden='true'></span>&nbsp;Simpan</button>
+                  </td>
                 </tr>
               </table>
             </td>
           </tr>
         </table>
         <?php
-        endforeach;
+        echo form_close();
+        endif;
         ?>
-      </div>          
-      </form>
+      </div>      
     </div> <!-- end class="panel-body" -->
   </div>  
 </center>

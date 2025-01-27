@@ -41,8 +41,8 @@
       <script type="text/javascript" src="<?php echo base_url('assets/js/sb-admin.js'); ?>"></script>
 
 
-      <link href="<?php echo base_url('assets/css/highcharts-gridlight.css'); ?>" rel="stylesheet" type="text/css">
-
+      <!-- <link href="<?php echo base_url('assets/css/highcharts-gridlight.css'); ?>" rel="stylesheet" type="text/css"> -->
+      <link rel="stylesheet" href="https://binapemdes.balangankab.go.id/template/vertical/plugins/hightcharts/highcharts-gridlight.css">
       <!-- akhir dashboard -->
 
 
@@ -106,8 +106,12 @@
   </head>
   <body>
     <!-- High chart -->
-      <script type="text/javascript" src="<?php echo base_url('assets/js/highcharts.js'); ?>"></script>
-      <script type="text/javascript" src="<?php echo base_url('assets/js/exporting.js'); ?>"></script>
+      <!-- <script type="text/javascript" src="<?php echo base_url('assets/js/highcharts.js'); ?>"></script> -->
+	<script src="https://code.highcharts.com/highcharts.js"></script>
+	<script src="https://code.highcharts.com/highcharts-more.js"></script>
+	
+      <!-- <script type="text/javascript" src="<?php echo base_url('assets/js/exporting.js'); ?>"></script> -->
+      <script src="https://code.highcharts.com/modules/export-data.js"></script>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="<?php echo base_url('assets/js/jquery.min.js') ?>"></script>

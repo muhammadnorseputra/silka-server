@@ -118,24 +118,38 @@ class PDF extends FPDF
       $this->setXY($x,$y);
       $this->MULTICELL(10,5,$no.'.','','C',1); 
       $this->setXY($x+10,$y);
+      if($key->fid_jnsjab == 3) {
+        $jabid = $key->fid_jabft;
+      } elseif($key->fid_jnsjab == 2) {
+        $jabid = $key->fid_jabfu;
+      } else {
+        $jabid = $key->fid_jabatan;
+      }
       $this->MULTICELL(45,5,$key->nama_asn."\n NIP. ".$key->nip,'','L',0);
       $this->setXY($x+50,$y);
       $this->MULTICELL(50,5,$key->nama_syarat_diklat,'','L',1);
       $this->setXY($x+100,$y);
       
-      	// for tupoksi logic
+      // for tupoksi logic
   		$tupoksilimited = strlen($key->tupoksi); // function php get count this word.
-	if ($tupoksilimited <= 150) { 
-        $this->setFont('arial','',8);
-        $tupoksi = $key->tupoksi;
-    } else if (($tupoksilimited > 150) AND ($tupoksilimited <= 300)) {
-        $this->setFont('arial','',6);
-        $tupoksi = $key->tupoksi;
-    } else if ($tupoksilimited > 300) {
-        $this->setFont('arial','',5);
-        $tupoksi = $key->tupoksi;
-    }
-      $this->MULTICELL(70,3,ucwords($tupoksi),'L',1);
+      if ($tupoksilimited <= 150) { 
+          $this->setFont('arial','',8);
+          $tupoksi = $key->tupoksi;
+      } else if (($tupoksilimited > 150) AND ($tupoksilimited <= 300)) {
+          $this->setFont('arial','',6);
+          $tupoksi = $key->tupoksi;
+      } else if ($tupoksilimited > 300) {
+          $this->setFont('arial','',5);
+          $tupoksi = $key->tupoksi;
+      }
+      // $rekomendasi=$dik->md->getRekomendasiDiklat($jabid);
+      // // var_dump($rekomendasi->id_jabatan);
+      // if($rekomendasi->id_jabatan != NULL) {
+      //   $rekomendasiDiklat = $rekomendasi->id_jabatan;
+      // } else {
+      //   $rekomendasiDiklat ="";
+      // }
+      $this->MULTICELL(70,3,$tupoksi,'L',1);
       
       $this->setFont('arial','',8);
       $this->setXY($x+170,$y);

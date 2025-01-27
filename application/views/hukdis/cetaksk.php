@@ -87,32 +87,36 @@ class PDF extends FPDF
             }
 
             $this->setXY(50,$y+50);$this->MULTICELL(5,5,"a.\n\n\nb.\n\nc.\n\nd.",'','J',1);
-            $this->setXY(55,$y+50);$this->MULTICELL(145,5,"Bahwa menurut hasil pemeriksaan tersebut, ".$pgl." ".$opeg->mpegawai->getnama($key->nip)." telah melakukan perbuatan berupa Tidak Masuk Kerja dan meninggalkan tugas serta tanggung jawab sebagai PNS;\nBahwa perbuatan tersebut merupakan pelanggaran terhadap ketentuan Pasal 3 angka 11 Peraturan Pemerintah Nomor 53 Tahun 2010 tentang Disiplin Pegawai Negeri Sipil;\nBahwa untuk menegakkan disiplin, perlu menjatuhkan hukuman disiplin yang setimpal dengan pelanggaran disiplin yang dilakukannya;\nBahwa berdasarkan pertimbangan sebagaimana dimaksud dalam huruf a dan huruf b menetapkan Keputusan tentang Penjatuhan Hukuman Disiplin Teguran Lisan;"
+            // $this->setXY(55,$y+50);$this->MULTICELL(145,5,"Bahwa menurut hasil pemeriksaan tersebut, ".$pgl." ".$opeg->mpegawai->getnama($key->nip)." telah melakukan perbuatan berupa Tidak Masuk Kerja dan meninggalkan tugas serta tanggung jawab sebagai PNS;\nBahwa perbuatan tersebut merupakan pelanggaran terhadap ketentuan Pasal 3 angka 11 Peraturan Pemerintah Nomor 53 Tahun 2010 tentang Disiplin Pegawai Negeri Sipil;\nBahwa untuk menegakkan disiplin, perlu menjatuhkan hukuman disiplin yang setimpal dengan pelanggaran disiplin yang dilakukannya;\nBahwa berdasarkan pertimbangan sebagaimana dimaksud dalam huruf a dan huruf b menetapkan Keputusan tentang Penjatuhan Hukuman Disiplin Teguran Lisan;"
+            //     ,'0','J',1);
+            $this->setXY(55,$y+50);$this->MULTICELL(145,5,"Bahwa menurut hasil pemeriksaan tersebut, ".$pgl." ".$opeg->mpegawai->getnama($key->nip)." telah melakukan perbuatan berupa Tidak Masuk Kerja dan meninggalkan tugas serta tanggung jawab sebagai PNS;\nBahwa perbuatan tersebut merupakan pelanggaran terhadap ketentuan Pasal 4 Huruf F Peraturan Pemerintah Nomor 94 Tahun 2021 tentang Disiplin Pegawai Negeri Sipil;\nBahwa untuk menegakkan disiplin, perlu menjatuhkan hukuman disiplin yang setimpal dengan pelanggaran disiplin yang dilakukannya;\nBahwa berdasarkan pertimbangan sebagaimana dimaksud dalam huruf a dan huruf b menetapkan Keputusan tentang Penjatuhan Hukuman Disiplin Teguran Lisan;"
                 ,'0','J',1);
 
             $this->setXY(20,$y+95);$this->CELL(30,5,"Mengingat",0,1,'L',1);
             $this->setXY(45,$y+95);$this->CELL(5,5,":",0,1,'C',1);
             
-            $this->setXY(50,$y+95);$this->MULTICELL(5,5,"1.\n2.\n3.",'','J',1);
-            $this->setXY(55,$y+95);$this->MULTICELL(145,5,"Undang-Undang Nomor 5 Tahun 2014 tentang Aparatur Sipil Negara;\nPeraturan Pemerintah Nomor 53 Tahun 2010 tentang Disiplin Pegawai Negeri Sipil;\nPeraturan Kepala Badan Kepegawaian Negara Nomor 21 Tahun 2010 tentang Ketentuan Pelaksanaan Peraturan Pemerintah Nomor 53 Tahun 2010 tentang Disiplin Pegawai Negeri Sipil;"
-                ,'0','J',1);
-                        
-            $this->setXY(20,$y+125);$this->MULTICELL(180,5,"MEMUTUSKAN",'0','C',1);           
-            $this->setXY(20,$y+130);$this->CELL(30,5,"Menetapkan",0,1,'L',1);
+            $this->setXY(50,$y+95);$this->MULTICELL(5,5,"1.\n2.\n3.\n\n4.",'','J',1);
+            // $this->setXY(55,$y+95);$this->MULTICELL(145,5,"Undang-Undang Nomor 5 Tahun 2014 tentang Aparatur Sipil Negara;\nPeraturan Pemerintah Nomor 53 Tahun 2010 tentang Disiplin Pegawai Negeri Sipil;\nPeraturan Kepala Badan Kepegawaian Negara Nomor 21 Tahun 2010 tentang Ketentuan Pelaksanaan Peraturan Pemerintah Nomor 53 Tahun 2010 tentang Disiplin Pegawai Negeri Sipil;"
+            //     ,'0','J',1);
+            $this->setXY(55,$y+95);$this->MULTICELL(145,5,"Undang-Undang Nomor 20 Tahun 2023 tentang Aparatur Sipil Negara;\nPeraturan Pemerintah Nomor 94 Tahun 2021 tentang Disiplin Pegawai Negeri Sipil;\nPeraturan Bupati Balangan Nomor 92 Tahun 2022 Tentang Pedoman Pelaksanaan Penegakan Disiplin Pegawai Negeri Sipil;\nPeraturan Badan Kepegawaian Negara Nomor 6 Tahun 2022 tentang Peraturan Pelaksanaan Peraturan Pemerintah Nomor 94 Tahun 2021 tentang Disiplin Pegawai Negeri Sipil;"
+                ,'0','J',1);            
+            $this->setXY(20,$y+130);$this->MULTICELL(180,5,"MEMUTUSKAN",'0','C',1);           
+            $this->setXY(20,$y+135);$this->CELL(30,5,"Menetapkan",0,1,'L',1);
 
-            $this->setXY(20,$y+135);$this->CELL(30,5,"KESATU",0,1,'L',1);
-            $this->setXY(45,$y+135);$this->CELL(5,5,":",0,1,'C',1);
-            $this->setXY(50,$y+135);$this->MULTICELL(135,5,"Menjatuhkan hukuman disiplin berupa Teguran Lisan kepada :",'','J',1);
+            $this->setXY(20,$y+140);$this->CELL(30,5,"KESATU",0,1,'L',1);
+            $this->setXY(45,$y+140);$this->CELL(5,5,":",0,1,'C',1);
+            $this->setXY(50,$y+140);$this->MULTICELL(135,5,"Menjatuhkan hukuman disiplin berupa Teguran Lisan kepada :",'','J',1);
            
             $this->setXY(50,$y+140);$this->MULTICELL(20,5,"Nama\nNIP\nPangkat\nJabatan",'0','J',1);
             $this->setXY(65,$y+140);$this->MULTICELL(5,5,":\n:\n:\n:",'0','C',1);
             $this->setXY(70,$y+140);$this->MULTICELL(130,5,$opeg->mpegawai->getnama($key->nip)."\n".$key->nip."\n".$opeg->mpegawai->getnamapangkat($key->fid_golru)." (".$opeg->mpegawai->getnamagolru($key->fid_golru).")\n".$opeg->mpegawai->namajabnip($key->nip),'0','J',1);
 
-            $this->setXY(50,$y+170);$this->MULTICELL(150,5,"karena yang bersangkutan telah melakukan perbuatan yang melanggar ketentuan Pasal 3 angka 11 Peraturan Pemerintah Nomor 53 Tahun 2010 tentang Disiplin Pegawai Negeri Sipil.",'0','J',1);
+            // $this->setXY(50,$y+170);$this->MULTICELL(150,5,"karena yang bersangkutan telah melakukan perbuatan yang melanggar ketentuan Pasal 3 angka 11 Peraturan Pemerintah Nomor 53 Tahun 2010 tentang Disiplin Pegawai Negeri Sipil.",'0','J',1);
+            $this->setXY(50,$y+163);$this->MULTICELL(150,5,"karena yang bersangkutan telah melakukan perbuatan yang melanggar ketentuan Pasal 4 Huruf F Peraturan Pemerintah Nomor 94 Tahun 2021.",'0','J',1);
             
-            $this->setXY(20,$y+185);$this->CELL(30,5,"KEDUA",0,1,'L',1);
-            $this->setXY(45,$y+185);$this->CELL(5,5,":",0,1,'C',1);
-            $this->setXY(50,$y+185);$this->MULTICELL(140,5,"Keputusan ini mulai berlaku pada tanggal ditetapkan.",'','J',1);
+            $this->setXY(20,$y+175);$this->CELL(30,5,"KEDUA",0,1,'L',1);
+            $this->setXY(45,$y+175);$this->CELL(5,5,":",0,1,'C',1);
+            $this->setXY(50,$y+175);$this->MULTICELL(150,5,"Keputusan ini mulai berlaku pada hari kerja ke-15 (lima belas) terhitung mulai tanggal PNS yang bersangkutan menerima keputusan atau hari kerja ke-15 (lima belas) sejak tanggal diterimanya keputusan Hukuman Disiplin yang dikirim ke alamat PNS yang bersangkutan.",'','J',1);
 
             $this->setXY(20,$y+190);$this->CELL(30,5,"KETIGA",0,1,'L',1);
             $this->setXY(45,$y+190);$this->CELL(5,5,":",0,1,'C',1);

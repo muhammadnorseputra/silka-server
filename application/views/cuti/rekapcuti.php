@@ -24,7 +24,7 @@
   }
   
   
-  function showData(str1, str2)
+  function showData(str1, str2, str3)
   {
     xmlhttp=GetXmlHttpObject();
     if (xmlhttp==null)
@@ -35,6 +35,7 @@
     var url="carirekap";
     url=url+"?idunker="+str1;
     url=url+"&thn="+str2;
+    url=url+"&jnsasn="+str3;
     url=url+"&sid="+Math.random();
     xmlhttp.onreadystatechange=stateChangedData;
     xmlhttp.open("GET",url,true);
@@ -93,8 +94,8 @@
     <form method='POST' name='formupdatestatus'>    
       <table>      
       <tr>        
-        <td>Nama Unit Kerja :&nbsp
-          <select name="id_unker" id="id_unker" required onChange="showData(this.value, formupdatestatus.thn.value)"/>
+        <td>
+          <select name="id_unker" id="id_unker" required />
           <?php
           echo "<option value=''>- Pilih Unit Kerja -</option>";
           foreach($unker as $uk)
@@ -104,8 +105,8 @@
           ?>
           </select>
         </td>
-        <td>&nbspTahun cuti :&nbsp
-          <select name="thn" id="thn" required onChange="showData(formupdatestatus.id_unker.value, this.value)" />
+        <td>
+          <select name="thn" id="thn" required />
           <?php
           echo "<option value=''>- Pilih Tahun Cuti -</option>";
           foreach($tahun as $thn)
@@ -115,6 +116,17 @@
           ?>
           </select>    
         </td>
+	<td>
+          <select name="jnsasn" id="jnsasn" required />
+          <option value=''>- Pilih Jenis ASN -</option>
+	  <option value='PNS'>PNS</option>
+	  <option value='PPPK'>PPPK</option>
+        </td>
+	<td>
+	   <button type="button" class="btn btn-info btn-sm" onClick="showData(formupdatestatus.id_unker.value, formupdatestatus.thn.value, formupdatestatus.jnsasn.value)">
+            <span class="fa fa-cloud-download" aria-hidden="true"></span> Tampil Data
+          </button>
+	</td>
       </tr>
       </table>
       </form>
